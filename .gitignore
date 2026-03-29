@@ -1,0 +1,24 @@
+# 仮想環境
+.venv/
+
+# 大容量データ（JRA-VANソースデータ・生成済みデータ）
+data/raw/master/
+data/processed/
+
+# 学習済みモデル
+models_2025/
+models/
+
+# Python キャッシュ
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Claude Code
+.claude/
+
+# その他
+*.log
+Thumbs.db
+.DS_Store
