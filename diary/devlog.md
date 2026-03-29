@@ -204,6 +204,34 @@
 
 ---
 
+## 2026-03-29（日）続き
+
+### 作業内容
+- data/raw/ ディレクトリ整理（master/ cards/ results/ cache/ misc/ に分類）
+- 関連スクリプトのパス更新（_daily_roi_2026.py / _predict_time_roi_2026.py / 06_predict_from_card.py / 01_make_features.py / weekly_update.py）
+- Gitリポジトリ初期化（ローカル）
+- README.md・requirements.txt 作成
+- 3/29結果をdaily_roi_2026.html・predict_time_roi_2026.htmlに反映
+- **JV-Link API接続成功**
+
+### JV-Link接続の経緯
+- 過去に何度も失敗していた原因判明
+- JV-Link 4.9系では `JVInit()` にサービスキーを渡す仕様が廃止されていた
+- 古い仕様書を参考にして `JVInit(serviceKey)` を呼んでいたのが原因
+- 正しくは `JVInit('UNKNOWN')` で接続 → 設定アプリ側でサービスキー管理
+- JVOpen・データ取得まで確認済み（バージョン4.9.0）
+
+### 投票損益（3/29）
+- daily_roi_2026: 激熱2/0 〇3/1 ▲5/0 ☆6/2 → -3,180円 (-48.2%)
+- 累計: +20,070円 ROI+43.1% (13/28日プラス)
+- predict_time_roi: -3,680円 (-85.6%) → 累計 -20円 ROI-0.2%
+
+### メモ
+- 今後のフロー: 締め（devlog + README + git commit）を習慣化
+- JV-Link次フェーズ: JVOpenでデータを読み込んでみる
+
+---
+
 ## テンプレート（コピーして使う）
 
 ## YYYY-MM-DD（曜）

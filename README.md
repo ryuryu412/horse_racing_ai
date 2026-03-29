@@ -143,3 +143,24 @@ python src/08_evaluate_models.py        # ROI評価確認
 | `G:/マイドライブ/競馬AI/ROI/actual_bet_roi.html` | 実際の馬券ROI |
 | `G:/マイドライブ/競馬AI/daily_roi_2026.html` | 予測ROI日別（最終オッズ） |
 | `G:/マイドライブ/競馬AI/predict_time_roi_2026.html` | 予測ROI（予想時点オッズ） |
+
+---
+
+## JV-Link API接続
+
+```python
+import win32com.client
+jv = win32com.client.Dispatch('JVDTLab.JVLink')
+ret = jv.JVInit('UNKNOWN')  # ← サービスキーは渡さない（v4.9系の仕様）
+```
+
+**注意**: `docs/` にあるJV-Link仕様書（PDF）は古い記述が含まれる。
+JV-Link 4.9系では `JVInit()` の引数にサービスキーを渡す仕様が廃止されており、
+サービスキーはJV-Link設定アプリ側で管理する。
+仕様書の `JVInit(ServiceKey)` の記述は無視すること。
+
+実行環境: **32bitのPython必須**（DLLがSysWow64のため）
+```bash
+py -3.12-32 -m venv .venv32
+.venv32\Scripts\pip install pywin32
+```
