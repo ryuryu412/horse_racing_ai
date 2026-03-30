@@ -256,9 +256,16 @@
 
 ### GitHub Pages ホスティング設定
 - `docs/actual_bet_roi.html` を GitHub Pages で公開
-- URL: https://ryuryu412.github.io/horse_racing_ai/actual_bet_roi.html
+- URL: https://keiba-dragon.github.io/horse_racing_ai/
+- 3本のROI HTML + トップページ（index.html）を公開
 - スマホでも固定URLでそのまま閲覧可能
 - 毎週 `git push` で同じURLが自動更新される
+
+### GitHub・X アカウント整備
+- GitHub username: `keiba-dragon`
+- X（Twitter）: @keibadradragon
+- Xプロフィール文・ヘッダー画像プロンプト作成
+- 将来的にX投稿の自動化を予定（X API無料枠）
 
 ### スマホ対応（actual_bet_roi.html）
 - viewport メタタグ追加
