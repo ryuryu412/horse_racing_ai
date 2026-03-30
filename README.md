@@ -78,10 +78,15 @@ python src/06_predict_from_card.py data/raw/cards/出馬表形式XX月XX日.csv 
 python data/merge_tohyo.py
 # 3. 実馬券ROI HTML更新
 python data/update_roi_html.py
+# 4. GitHub Pages に公開
+git add docs/actual_bet_roi.html
+git commit -m "ROI更新 YYYYMMDD"
+git push
 ```
 
 - `all_tohyo.csv` は上書き更新されるので事前の退避不要
 - アーカイブファイルを戻す作業も不要（差分のみ追記）
+- push 後、数秒で GitHub Pages に反映される
 
 ### 3. ROI集計更新（結果確認CSVをもらったら）
 
@@ -139,11 +144,12 @@ python src/08_evaluate_models.py        # ROI評価確認
 
 ---
 
-## 出力先（Gドライブ）
+## 出力先
 
 | ファイル | 内容 |
 |---|---|
-| `G:/マイドライブ/競馬AI/ROI/actual_bet_roi.html` | 実際の馬券ROI |
+| https://ryuryu412.github.io/horse_racing_ai/actual_bet_roi.html | 実際の馬券ROI（スマホ対応・固定URL） |
+| `G:/マイドライブ/競馬AI/ROI/actual_bet_roi.html` | 実際の馬券ROI（Gドライブ） |
 | `G:/マイドライブ/競馬AI/daily_roi_2026.html` | 予測ROI日別（最終オッズ） |
 | `G:/マイドライブ/競馬AI/predict_time_roi_2026.html` | 予測ROI（予想時点オッズ） |
 
