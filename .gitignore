@@ -1,5 +1,11 @@
 # 仮想環境
 .venv/
+.venv32/
+
+# 出力・サンプル・スクリーンショット
+output/
+sample/
+screenshot/
 
 # 大容量データ（JRA-VANソースデータ・生成済みデータ）
 data/raw/master/
