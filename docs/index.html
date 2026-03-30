@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>競馬AI ROI ダッシュボード</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Hiragino Kaku Gothic Pro",Meiryo,sans-serif;background:#1a1a2e;color:#e0e0e0;min-height:100vh;padding:24px 16px}
+header{text-align:center;padding:32px 0 24px}
+header h1{font-size:1.6em;color:#f0c040;letter-spacing:0.05em}
+header p{color:#aaa;margin-top:8px;font-size:0.9em}
+.cards{display:flex;flex-direction:column;gap:16px;max-width:480px;margin:0 auto}
+.card{background:#16213e;border-radius:12px;padding:20px 24px;text-decoration:none;color:#e0e0e0;display:flex;align-items:center;gap:16px;transition:background 0.2s;border:1px solid #2a2a4a}
+.card:hover{background:#1a3a5a;border-color:#f0c040}
+.card .icon{font-size:2em;min-width:40px;text-align:center}
+.card .body .title{font-size:1.05em;font-weight:bold;color:#f0c040}
+.card .body .desc{font-size:0.82em;color:#aaa;margin-top:4px}
+footer{text-align:center;color:#555;font-size:0.75em;margin-top:40px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🏇 競馬AI ROI ダッシュボード</h1>
+  <p>LightGBM + LambdaMART による競馬予測システム</p>
+</header>
+
+<div class="cards">
+  <a class="card" href="actual_bet_roi.html">
+    <div class="icon">🎫</div>
+    <div class="body">
+      <div class="title">実際の馬券ROI</div>
+      <div class="desc">実際に購入した馬券の損益・ROI集計<br>日別 / 式別 / 月次</div>
+    </div>
+  </a>
+
+  <a class="card" href="daily_roi_2026.html">
+    <div class="icon">📊</div>
+    <div class="body">
+      <div class="title">予測ROI（最終オッズ）</div>
+      <div class="desc">AIの予測に基づくシミュレーション<br>レース確定後の最終オッズ基準</div>
+    </div>
+  </a>
+
+  <a class="card" href="predict_time_roi_2026.html">
+    <div class="icon">⏱️</div>
+    <div class="body">
+      <div class="title">予測ROI（予想時点オッズ）</div>
+      <div class="desc">AIの予測に基づくシミュレーション<br>予想した時点のオッズ基準</div>
+    </div>
+  </a>
+</div>
+
+<footer>
+  <p>ryuryu412 / horse_racing_ai &nbsp;|&nbsp; <a href="https://github.com/ryuryu412/horse_racing_ai" style="color:#4a9eff">GitHub</a></p>
+</footer>
+</body>
+</html>
