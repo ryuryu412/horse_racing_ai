@@ -70,15 +70,18 @@ python src/06_predict_from_card.py data/raw/cards/出馬表形式XX月XX日.csv
 python src/06_predict_from_card.py data/raw/cards/出馬表形式XX月XX日.csv --html-only
 ```
 
-### 2. 馬券データ更新（レース翌日）
+### 2. 馬券データ更新（毎週月曜）
 
 ```bash
-# 1. data/tohyo/YYYYMMDD_tohyo.csv を保存
-# 2. 統合
+# 1. 土日分の YYYYMMDD_tohyo.csv を data/tohyo/ にコピー
+# 2. 統合（アーカイブへの移動も自動）
 python data/merge_tohyo.py
 # 3. 実馬券ROI HTML更新
 python data/update_roi_html.py
 ```
+
+- `all_tohyo.csv` は上書き更新されるので事前の退避不要
+- アーカイブファイルを戻す作業も不要（差分のみ追記）
 
 ### 3. ROI集計更新（結果確認CSVをもらったら）
 
@@ -164,3 +167,37 @@ JV-Link 4.9系では `JVInit()` の引数にサービスキーを渡す仕様が
 py -3.12-32 -m venv .venv32
 .venv32\Scripts\pip install pywin32
 ```
+
+### データ取得の正しい手順
+
+```python
+# 必ずJVReadを呼ぶこと（呼ばないとltsが消費されてデータ再取得不可になる）
+rc, readcnt, dldcnt, lts = jv.JVOpen('RACE', '20260101000000', 1, 0, 0, '')
+if rc == 0 and readcnt > 0:
+    records = []
+    while True:
+        rc2, buff, filename = jv.JVRead()
+        if rc2 == 0:
+            break
+        records.append(buff)
+    jv.JVClose()
+```
+
+### lts（最終取得タイムスタンプ）の仕組み
+- JVOpenが成功するとltsがサーバー最新日時に更新される
+- JVReadを呼ばずにJVCloseするだけでもltsが進む
+- 以降、ltsより新しいデータがないと全スペック -303 になる
+- **ltsはJVLinkAgentのメモリ管理 → PC再起動でリセット**
+- PC再起動後は「JV-Link設定アプリ → 状態を取得する」で再認証が必要
+
+### データ配信タイミング（目安）
+| タイミング | 内容 |
+|-----------|------|
+| レース4〜5日前（水〜木） | 出馬表予備（SEPW） |
+| レース前日（金〜土） | 出馬表確定（SEDW）・馬体重（WCWW） |
+| レース当日 | リアルタイムオッズ（H1SW等） |
+| レース翌日 | 成績確定データ |
+
+### キャッシュ・データ保存先
+- `C:\ProgramData\JRA-VAN\Data Lab\cache\` : 週次差分データ（JVD形式）
+- `C:\ProgramData\JRA-VAN\Data Lab\data\` : 全期間履歴データ（1986年〜）

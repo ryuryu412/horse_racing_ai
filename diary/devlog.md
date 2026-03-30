@@ -232,6 +232,58 @@
 
 ---
 
+## 2026-03-30（月）
+
+### 作業内容
+- PC再起動後のJVLink再認証（JV-Link設定アプリ「状態を取得する」）
+- JVLink lts（最終取得タイムスタンプ）の仕組みを解明
+- データ保存先確認: `C:\ProgramData\JRA-VAN\Data Lab\` (cache: 730ファイル, data: 1986年〜)
+- 各種データスペック（RACE/BN/BR/H1等）を総当たり試行 → 全て -303
+
+### JVLink lts解明（重要な教訓）
+- JVOpen rc=0 → JVCloseしただけで lts がサーバー最新日時に更新された
+- JVRead を呼ばなくてもltsが進む → 以降「新データなし」で全スペック -303
+- 月曜＝非開催日のため、新規配信データそのものがない（-303は正常）
+- **次回: JVOpen成功後は必ずJVReadループでデータを読み切ること**
+
+### 次のデータ取得予定
+- 4/1〜4/2（水〜木）: 来週末(4/4土・4/5日)の出馬表予備が配信開始
+- 再取得手順: JV-Link設定アプリ再認証 → JVOpen(RACE, opt=1) → JVReadループ
+
+### 投票損益
+- 本日レースなし（月曜）
+
+### メモ
+- ltsはJVLinkAgentのメモリ管理（ディスク保存なし）→ PC再起動でリセット
+- JVD形式はzlib+独自バイナリ → JVLink経由でないと読めない
+- dataフォルダに H1VM（1986年〜の単複オッズ）等の歴史的データあり（活用余地）
+
+---
+
+---
+
+## 毎週月曜ルーティン（実馬券ROI更新）
+
+### 手順
+1. JRA-VANまたはnetkeibaから土日分の `YYYYMMDD_tohyo.csv` をダウンロード
+2. ダウンロードフォルダから `data/tohyo/` にコピー（アーカイブ戻し不要）
+3. マージ実行:
+   ```bash
+   python data/merge_tohyo.py
+   ```
+4. ROI HTML 更新:
+   ```bash
+   python data/update_roi_html.py
+   ```
+5. devlog に投票損益を記録
+
+### 注意
+- `merge_tohyo.py` は `data/tohyo/` の `*_tohyo.csv`（`all_tohyo.csv` 除く）を取り込んで `archive/` に移動
+- アーカイブファイルを戻す必要なし（スクリプトが自動で差分追記）
+- 返還の扱い: 購入金額に含める（ROI分母に算入）
+
+---
+
 ## テンプレート（コピーして使う）
 
 ## YYYY-MM-DD（曜）

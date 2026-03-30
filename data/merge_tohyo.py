@@ -21,8 +21,11 @@ tohyo_dir = 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo'
 archive_dir = os.path.join(tohyo_dir, 'archive')
 os.makedirs(archive_dir, exist_ok=True)
 
-# 日付別CSVを読み込んで結合
-files = sorted(glob.glob(os.path.join(tohyo_dir, '*_tohyo.csv')))
+# 日付別CSVを読み込んで結合（all_tohyo.csv は除外）
+files = sorted([
+    f for f in glob.glob(os.path.join(tohyo_dir, '*_tohyo.csv'))
+    if os.path.basename(f) != 'all_tohyo.csv'
+])
 dfs = []
 for f in files:
     fname = os.path.basename(f)
@@ -59,10 +62,12 @@ out_path = os.path.join(tohyo_dir, 'all_tohyo.csv')
 all_df.to_csv(out_path, index=False, encoding='utf-8-sig')
 print(f'保存: {out_path}  ({len(all_df)}行)')
 
-# アーカイブ：日付別CSV + video をアーカイブへ移動
+# アーカイブ：日付別CSV をアーカイブへ移動（all_tohyo.csv は移動しない）
 archived = []
 for f in glob.glob(os.path.join(tohyo_dir, '*_tohyo.csv')):
     fname = os.path.basename(f)
+    if fname == 'all_tohyo.csv':
+        continue
     dest = os.path.join(archive_dir, fname)
     shutil.move(f, dest)
     archived.append(fname)
