@@ -146,10 +146,15 @@ python src/08_evaluate_models.py        # ROI評価確認
 
 ## 出力先
 
-| ファイル | 内容 |
+| GitHub Pages（スマホ対応・固定URL） | 内容 |
 |---|---|
-| https://ryuryu412.github.io/horse_racing_ai/actual_bet_roi.html | 実際の馬券ROI（スマホ対応・固定URL） |
-| `G:/マイドライブ/競馬AI/ROI/actual_bet_roi.html` | 実際の馬券ROI（Gドライブ） |
+| https://ryuryu412.github.io/horse_racing_ai/actual_bet_roi.html | 実際の馬券ROI |
+| https://ryuryu412.github.io/horse_racing_ai/daily_roi_2026.html | 予測ROI日別（最終オッズ） |
+| https://ryuryu412.github.io/horse_racing_ai/predict_time_roi_2026.html | 予測ROI（予想時点オッズ） |
+
+| Gドライブ | 内容 |
+|---|---|
+| `G:/マイドライブ/競馬AI/ROI/actual_bet_roi.html` | 実際の馬券ROI |
 | `G:/マイドライブ/競馬AI/daily_roi_2026.html` | 予測ROI日別（最終オッズ） |
 | `G:/マイドライブ/競馬AI/predict_time_roi_2026.html` | 予測ROI（予想時点オッズ） |
 

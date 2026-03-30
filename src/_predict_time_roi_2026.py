@@ -271,6 +271,12 @@ out = r'G:\マイドライブ\競馬AI\predict_time_roi_2026.html'
 with open(out, 'w', encoding='utf-8') as f:
     f.write(html)
 print(f"\n出力: {out}")
+
+docs_out = 'C:/Users/tsuch/Desktop/horse_racing_ai/docs/predict_time_roi_2026.html'
+os.makedirs(os.path.dirname(docs_out), exist_ok=True)
+with open(docs_out, 'w', encoding='utf-8') as f:
+    f.write(html)
+print(f"出力: {docs_out}")
 if total_days > 0:
     print(f"累計: {('+' if cum_pf>=0 else '')}{cum_pf:,}円  ROI{cum_roi_final:+.1%}  {plus_days}/{total_days}日プラス")
 else:
