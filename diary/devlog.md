@@ -250,6 +250,22 @@
 - 4/1〜4/2（水〜木）: 来週末(4/4土・4/5日)の出馬表予備が配信開始
 - 再取得手順: JV-Link設定アプリ再認証 → JVOpen(RACE, opt=1) → JVReadループ
 
+### 実馬券ROI更新（3/28・3/29分）
+- all_tohyo.csv: 399行 → 463行
+- 損益: -79,910円 / ROI -20.0% / 9勝25日
+
+### GitHub Pages ホスティング設定
+- `docs/actual_bet_roi.html` を GitHub Pages で公開
+- URL: https://ryuryu412.github.io/horse_racing_ai/actual_bet_roi.html
+- スマホでも固定URLでそのまま閲覧可能
+- 毎週 `git push` で同じURLが自動更新される
+
+### スマホ対応（actual_bet_roi.html）
+- viewport メタタグ追加
+- テーブルを横スクロール対応（overflow-x: auto）
+- グラフを `maintainAspectRatio: false` + CSS高さ固定で確実に表示
+- x軸ラベル間引き（maxTicksLimit）・スマホ時フォント縮小
+
 ### 投票損益
 - 本日レースなし（月曜）
 
