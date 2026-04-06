@@ -285,6 +285,42 @@
 
 ---
 
+## 2026-04-07（月）
+
+### 作業内容
+- **退職日** → 以降は個人PC（Gドライブ）環境で運用
+- プロジェクトをデスクトップからGドライブへ全面移行（`G:\マイドライブ\horse_racing_ai`）
+- Python環境再構築
+  - 旧venv（.venv / .venv32）が旧パスを参照して壊れていたため使用不可
+  - Python 3.12 を winget でインストール（`C:\Users\tsuch\AppData\Local\Programs\Python\Python312`）
+  - `.venv_new` を新規作成、requirements.txt から全パッケージ再インストール
+- ROI HTML 更新
+  - `_daily_roi_2026.py`・`_predict_time_roi_2026.py` を `.venv_new` で実行
+  - 4/4・4/5 の結果確認CSV 未入手のため該当日は「印のみ集計」
+  - docs/ に出力 → GitHub Pages へ push
+- **個人ポートフォリオサイト作成・公開**（`G:\マイドライブ\keiba-dragon.github.io`）
+  - URL: https://keiba-dragon.github.io
+  - ダーク系グリーンテーマ、About / Skills / Projects / Contact 構成
+  - Formspree お問い合わせフォーム設定（エンドポイント: mdapybbp）
+  - 競馬AI 予測ROI 2本をプロジェクトとして掲載
+
+### 予測ROI 累計（4/7時点）
+- daily_roi_2026: 累計 **+20,070円 ROI+43.1%** 13/28日プラス
+- predict_time_roi: 累計 -20円 ROI-0.2% 1/2日プラス（4/4・4/5 結果待ち）
+
+### 投票損益
+- 本日レースなし（月曜）
+
+### 残タスク
+- 4/4・4/5 の結果確認CSV を `data/raw/results/` に追加 → ROI再更新
+- `data/raw/cards/`・`data/raw/results/`・`data/tohyo/` の gitignore 対応（JRA-VANデータ公開問題）
+
+### メモ
+- 今後の Python 実行コマンド: `.venv_new\Scripts\python.exe` を使用
+- Gドライブ環境のため PowerShell 経由が確実
+
+---
+
 ## 毎週月曜ルーティン（実馬券ROI更新）
 
 ### 手順
