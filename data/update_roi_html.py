@@ -15,7 +15,7 @@ def normalize_shikibetsu(s):
     return s
 
 # all_tohyo.csv 読み込み（数値済み）
-df = pd.read_csv('C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/all_tohyo.csv', encoding='utf-8-sig')
+df = pd.read_csv('G:/マイドライブ/horse_racing_ai/data/tohyo/all_tohyo.csv', encoding='utf-8-sig')
 df['式別_norm'] = df['式別'].apply(normalize_shikibetsu)
 df['日付'] = df['日付'].astype(str)
 
@@ -258,7 +258,7 @@ with open(out, 'w', encoding='utf-8') as f:
     f.write(html)
 print(f'更新完了: {out}')
 
-docs_out = 'C:/Users/tsuch/Desktop/horse_racing_ai/docs/actual_bet_roi.html'
+docs_out = 'G:/マイドライブ/horse_racing_ai/docs/actual_bet_roi.html'
 os.makedirs(os.path.dirname(docs_out), exist_ok=True)
 with open(docs_out, 'w', encoding='utf-8') as f:
     f.write(html)

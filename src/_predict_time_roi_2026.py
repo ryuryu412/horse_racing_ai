@@ -272,7 +272,7 @@ with open(out, 'w', encoding='utf-8') as f:
     f.write(html)
 print(f"\n出力: {out}")
 
-docs_out = 'C:/Users/tsuch/Desktop/horse_racing_ai/docs/predict_time_roi_2026.html'
+docs_out = 'G:/マイドライブ/horse_racing_ai/docs/predict_time_roi_2026.html'
 os.makedirs(os.path.dirname(docs_out), exist_ok=True)
 with open(docs_out, 'w', encoding='utf-8') as f:
     f.write(html)

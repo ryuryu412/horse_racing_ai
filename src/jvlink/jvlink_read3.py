@@ -4,7 +4,7 @@ pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
 import win32com.client as wc
 import traceback
 
-log = open("C:/Users/tsuch/Desktop/horse_racing_ai/out2.txt", "w", encoding="utf-8")
+log = open("G:/マイドライブ/horse_racing_ai/out2.txt", "w", encoding="utf-8")
 
 def p(s):
     print(s)

@@ -21,18 +21,18 @@ target_dates = ['20260228', '20260301', '20260308', '20260314', '20260315', '202
 
 # 日付別CSVを1つずつ確認
 files = {
-    '20260228': 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/20260228_tohyo.csv',
-    '20260301': 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/20260301_tohyo.csv',
-    '20260308': 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/20260308_tohyo.csv',
-    '20260314': 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/20260314_tohyo.csv',
-    '20260315': 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/20260315_tohyo.csv',
-    '20260322': 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/20260322_tohyo.csv',
+    '20260228': 'G:/マイドライブ/horse_racing_ai/data/tohyo/20260228_tohyo.csv',
+    '20260301': 'G:/マイドライブ/horse_racing_ai/data/tohyo/20260301_tohyo.csv',
+    '20260308': 'G:/マイドライブ/horse_racing_ai/data/tohyo/20260308_tohyo.csv',
+    '20260314': 'G:/マイドライブ/horse_racing_ai/data/tohyo/20260314_tohyo.csv',
+    '20260315': 'G:/マイドライブ/horse_racing_ai/data/tohyo/20260315_tohyo.csv',
+    '20260322': 'G:/マイドライブ/horse_racing_ai/data/tohyo/20260322_tohyo.csv',
 }
 
-video_path = 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/video_tohyo_data.csv'
+video_path = 'G:/マイドライブ/horse_racing_ai/data/tohyo/video_tohyo_data.csv'
 df_video = pd.read_csv(video_path, encoding='utf-8-sig')
 
-with open('C:/Users/tsuch/Desktop/horse_racing_ai/data/debug_dates.txt', 'w', encoding='utf-8') as fw:
+with open('G:/マイドライブ/horse_racing_ai/data/debug_dates.txt', 'w', encoding='utf-8') as fw:
     for date, fpath in files.items():
         for enc in ['cp932', 'utf-8-sig', 'utf-8']:
             try:

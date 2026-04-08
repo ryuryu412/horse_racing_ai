@@ -18,7 +18,7 @@ def parse_amount(val):
         return 0
 
 # 日付別CSVのみ（video除外）
-files = sorted(glob.glob('C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/*_tohyo.csv'))
+files = sorted(glob.glob('G:/マイドライブ/horse_racing_ai/data/tohyo/*_tohyo.csv'))
 dfs = []
 for f in files:
     if 'video_tohyo_data' in f:
@@ -68,7 +68,7 @@ print(f'損益: {net:+,.0f}円 / ROI: {roi:+.1f}%')
 print(f'プラス日数: {int((daily["損益"]>0).sum())}/{len(daily)}日\n')
 print('=== 日付別 ===')
 
-with open('C:/Users/tsuch/Desktop/horse_racing_ai/data/result_novideo.txt', 'w', encoding='utf-8') as fw:
+with open('G:/マイドライブ/horse_racing_ai/data/result_novideo.txt', 'w', encoding='utf-8') as fw:
     fw.write(f'=== 全期間（メイン口のみ） ===\n')
     fw.write(f'総投資: {total_buy:,.0f}円\n')
     fw.write(f'総払戻: {total_pay:,.0f}円\n')
