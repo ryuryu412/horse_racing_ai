@@ -17,7 +17,7 @@ def parse_amount(val):
     except:
         return 0
 
-tohyo_dir = 'G:/マイドライブ/horse_racing_ai/data/tohyo'
+tohyo_dir = 'C:/horse_racing_ai/data/tohyo'
 archive_dir = os.path.join(tohyo_dir, 'archive')
 os.makedirs(archive_dir, exist_ok=True)
 
