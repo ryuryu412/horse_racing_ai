@@ -268,15 +268,64 @@ def predict_day(date_num, card_df):
 
 # ─── メイン ─────────────────────────────────────────────────
 
+CARDS_DIR  = os.path.join(BASE_DIR, 'data', 'raw', 'cards')
+RESULTS_DIR = os.path.join(BASE_DIR, 'data', 'raw', 'results')
+CACHE_DIR  = os.path.join(BASE_DIR, 'data', 'raw', 'cache')
+
 WEEKS = [
     ('3/21', 260321,
-     os.path.join(BASE_DIR, 'data', 'raw', '出馬表形式3月21日.csv'),
-     os.path.join(BASE_DIR, 'data', 'raw', '出馬表形式3月21日結果確認.csv')),
+     os.path.join(CARDS_DIR,   '出馬表形式3月21日.csv'),
+     os.path.join(RESULTS_DIR, '出馬表形式3月21日結果確認.csv')),
     ('3/22', 260322,
-     os.path.join(BASE_DIR, 'data', 'raw', '出馬表形式3月22日.csv'),
-     os.path.join(BASE_DIR, 'data', 'raw', '出馬表形式3月22日結果確認.csv')),
+     os.path.join(CARDS_DIR,   '出馬表形式3月22日.csv'),
+     os.path.join(RESULTS_DIR, '出馬表形式3月22日結果確認.csv')),
+    ('3/28', 260328,
+     os.path.join(CARDS_DIR,   '出馬表形式3月28日.csv'),
+     os.path.join(RESULTS_DIR, '出馬表形式3月28日結果確認.csv')),
+    ('3/29', 260329,
+     os.path.join(CARDS_DIR,   '出馬表形式3月29日.csv'),
+     os.path.join(RESULTS_DIR, '出馬表形式3月29日結果確認.csv')),
+    ('4/4',  260404,
+     os.path.join(CARDS_DIR,   '出馬表形式4月4日.csv'),
+     os.path.join(RESULTS_DIR, '出馬表形式4月4日結果入力.csv')),
+    ('4/5',  260405,
+     os.path.join(CARDS_DIR,   '出馬表形式4月5日.csv'),
+     os.path.join(RESULTS_DIR, '出馬表形式4月5日結果入力.csv')),
 ]
 HTML_BET = {'激熱': 2000, '◎': 1000, '〇': 500, '☆': 300}
+
+# 場所フルネーム→略称マップ（4/4形式対応）
+VENUE_ABBR = {
+    '中山': '中', '阪神': '阪', '東京': '東', '京都': '京',
+    '新潟': '新', '中京': '名', '福島': '福', '小倉': '小',
+    '札幌': '札', '函館': '函',
+}
+
+def load_result(result_path):
+    """結果CSVを読んで (場 R, Ｒ, 配当, 馬名S) を含む DataFrame を返す"""
+    # ヘッダーあり272列形式か、ヘッダーなし33列形式かを判定
+    try:
+        tmp = pd.read_csv(result_path, encoding='cp932', nrows=1)
+    except Exception:
+        tmp = pd.read_csv(result_path, encoding='utf-8', nrows=1)
+
+    if '着' in tmp.columns:
+        # 通常形式（272列・ヘッダーあり）
+        res = pd.read_csv(result_path, encoding='cp932', low_memory=False)
+        res['着順'] = res['着'].apply(norm_int)
+        res['配当'] = pd.to_numeric(res['単勝'], errors='coerce')
+        return res[['場 R', 'Ｒ', '配当', '馬名S', '着順']].copy()
+    else:
+        # 33列ヘッダーなし形式（4/4など）
+        # col0=日付 col1=場所 col2=Ｒ col3=馬番 col7=馬名 col27=払戻 col31=着順
+        res = pd.read_csv(result_path, encoding='cp932', header=None)
+        abbr = res[1].map(VENUE_ABBR).fillna(res[1].astype(str).str[:1])
+        res['場 R'] = abbr + res[2].astype(str)
+        res['Ｒ']   = res[2]
+        res['配当'] = pd.to_numeric(res[27], errors='coerce').replace(0, np.nan)
+        res['馬名S'] = res[7].astype(str)
+        res['着順']  = pd.to_numeric(res[31], errors='coerce')
+        return res[['場 R', 'Ｒ', '配当', '馬名S', '着順']].copy()
 
 all_rows = []
 
@@ -285,22 +334,37 @@ for label, date_num, card_path, result_path in WEEKS:
     print(f"  {label} (date={date_num})")
     print(f"{'='*60}")
 
-    card_df = convert_card(card_path)
-    result  = predict_day(date_num, card_df)
+    # 予測読み込み: キャッシュ優先
+    cache_path = os.path.join(CACHE_DIR, os.path.splitext(os.path.basename(card_path))[0] + '.cache.pkl')
+    result = None
+    if os.path.exists(cache_path):
+        print(f"  キャッシュ読み込み: {os.path.basename(cache_path)}")
+        with open(cache_path, 'rb') as f:
+            cached = pickle.load(f)
+        result = cached['result']
+    else:
+        if not os.path.exists(card_path):
+            print(f"  カードファイルなし: {card_path}")
+            continue
+        card_df = convert_card(card_path)
+        result  = predict_day(date_num, card_df)
     if result is None:
+        print("  予測データなし → スキップ")
         continue
 
     result = apply_marks(result)
 
     # 結果CSV
-    res = pd.read_csv(result_path, encoding='cp932', low_memory=False)
-    res['着順'] = res['着'].apply(norm_int)
-    res['配当'] = pd.to_numeric(res['単勝'], errors='coerce')  # 100円あたり払戻
+    if not os.path.exists(result_path):
+        print(f"  結果ファイルなし: {result_path}")
+        continue
+    res = load_result(result_path)
 
-    # 場 R + Ｒ で1着の配当マップ
-    res1 = res[res['着順'] == 1][['場 R', 'Ｒ', '配当', '馬名S']].drop_duplicates(['場 R', 'Ｒ'])
-    payout_map = {(r['場 R'], int(r['Ｒ'])): r['配当'] for _, r in res1.iterrows()}
-    winner_map  = {(r['場 R'], int(r['Ｒ'])): r['馬名S'] for _, r in res1.iterrows()}
+    # 1着の配当マップ
+    res1 = res[res['着順'] == 1].drop_duplicates('場 R')
+    payout_map = {r['場 R']: r['配当'] for _, r in res1.iterrows()}
+    winner_map  = {r['場 R']: r['馬名S'] for _, r in res1.iterrows()}
+    print(f"  結果: {len(res1)}レース分の1着データ取得")
 
     for _, row in result.iterrows():
         mark = row['_印']
@@ -317,8 +381,8 @@ for label, date_num, card_path, result_path in WEEKS:
             continue
 
         bar_key = f'{venue_abbr}{r_int}'
-        payout  = payout_map.get((bar_key, r_int), np.nan)
-        winner  = winner_map.get((bar_key, r_int), '')
+        payout  = payout_map.get(bar_key, np.nan)
+        winner  = winner_map.get(bar_key, '')
         win     = (row['馬名S'] == winner) if winner else False
         odds_v  = pd.to_numeric(row.get('単勝オッズ', np.nan), errors='coerce')
 

@@ -87,7 +87,7 @@ def _zen(s):
     m = re.search(r'\d+', s)
     return int(m.group()) if m else np.nan
 
-result_csvs = sorted(glob.glob(os.path.join(base_dir, 'data', 'raw', 'results', '出馬表形式*結果確認.csv')))
+result_csvs = sorted(glob.glob(os.path.join(base_dir, 'data', 'raw', 'results', '出馬表形式*結果*.csv')))
 _pq_latest = None  # parquet は必要な場合のみ読む
 
 # 結果確認CSVが存在する日付は test CSV から除外（parquetで再処理）
@@ -371,6 +371,89 @@ for dnum in dates_2026:
         '計_tb': n_g*1000 + n_o*300 + n_d*500 + n_s*200,
     })
 
+# ── 4/4 キャッシュ処理（ノーヘッダー形式のため通常フローで処理不可）──
+_cache44  = os.path.join(base_dir, 'data', 'raw', 'cache', '出馬表形式4月4日.cache.pkl')
+_result44 = os.path.join(base_dir, 'data', 'raw', 'results', '出馬表形式4月4日結果入力.csv')
+_dnum44   = 260404
+
+if (os.path.exists(_cache44) and os.path.exists(_result44)
+        and _dnum44 not in [r.get('日付_num') for r in daily_rows]):
+    print("4/4 キャッシュ処理中...")
+    with open(_cache44, 'rb') as _f44: _c44 = pickle.load(_f44)
+    _res44 = _c44['result'].copy()
+
+    # 結果CSV（33列・ヘッダーなし）
+    _r4 = pd.read_csv(_result44, encoding='cp932', header=None)
+    _r4['馬名S']   = _r4[7].astype(str)
+    _r4['着順_r']  = pd.to_numeric(_r4[31], errors='coerce')
+    _r4['odds_r']  = pd.to_numeric(_r4[30], errors='coerce')
+    # 実際の単勝払戻が取得できないためオッズ×100で近似
+    _r4['tansho_r'] = _r4['odds_r'] * 100
+
+    # キャッシュとマージ（馬名で突合）
+    _res44 = _res44.merge(_r4[['馬名S','着順_r','tansho_r']], on='馬名S', how='left')
+    _res44['_ord']    = _res44['着順_r']
+    _res44['_tansho'] = np.where(_res44['_ord'] == 1, _res44['tansho_r'], np.nan)
+    _res44['_odds']   = pd.to_numeric(_res44['単勝オッズ'], errors='coerce')
+
+    # 印ロジック（_daily_roi_2026 と同一）
+    cr44 = pd.to_numeric(_res44['cur_ランカー順位'], errors='coerce')
+    sr44 = pd.to_numeric(_res44['sub_ランカー順位'], errors='coerce')
+    sd44 = pd.to_numeric(_res44['sub_偏差値の差'],   errors='coerce')
+    cd44 = pd.to_numeric(_res44['cur_偏差値の差'],   errors='coerce')
+    ok3_44     = _res44['_odds'].isna() | (_res44['_odds'] >= 3)
+    ok5_44     = _res44['_odds'].isna() | (_res44['_odds'] >= 5)
+    both_r1_44 = (cr44 == 1) & (sr44 == 1)
+    star_44    = (cr44 <= 3) & (sr44 <= 3) & ~both_r1_44
+
+    _res44['_印'] = ''
+    _res44.loc[star_44 & ~((cr44<=2)&(sr44<=2)) & (sd44>=10) & ok5_44, '_印'] = '☆'
+    _res44.loc[(cr44<=2)&(sr44<=2)&~both_r1_44 & (sd44>=10) & ok5_44, '_印'] = '▲'
+    _res44.loc[both_r1_44 & (sd44>=10) & ok3_44, '_印'] = '〇'
+    _res44.loc[both_r1_44 & (cd44>=10) & (sd44>=10) & ok5_44, '_印'] = '激熱'
+
+    has_result44 = _res44['_ord'].notna().any()
+
+    def _roi44(mask, bet):
+        b = _res44[mask]
+        n = len(b)
+        if n == 0: return 0, 0, 0, 0
+        tb = n * bet
+        if not has_result44:
+            return n, None, None, None
+        hits = int((b['_ord'] == 1).sum())
+        tan_ret = b[b['_ord']==1]['_tansho'].sum() * bet / 100
+        pf = int(tan_ret - tb)
+        roi = tan_ret/tb - 1.0 if tb > 0 else 0
+        return n, pf, roi, hits
+
+    ng44, pfg44, roig44, wg44 = _roi44(_res44['_印']=='激熱', 1000)
+    no44, pfo44, roio44, wo44 = _roi44(_res44['_印']=='〇',    300)
+    nd44, pfd44, roid44, wd44 = _roi44(_res44['_印']=='▲',    500)
+    ns44, pfs44, rois44, ws44 = _roi44(_res44['_印']=='☆',    200)
+
+    ttb44 = ng44*1000 + no44*300 + nd44*500 + ns44*200
+    tret44 = sum(
+        _res44[_res44['_印']==mk][_res44[_res44['_印']==mk]['_ord']==1]['_tansho'].sum() * bt / 100
+        for mk, bt in [('激熱',1000),('〇',300),('▲',500),('☆',200)]
+    )
+    tpf44  = int(tret44 - ttb44) if has_result44 else None
+    troi44 = tret44/ttb44 - 1.0 if (ttb44 > 0 and has_result44) else 0
+
+    print(f"4/4  激熱{ng44}/{wg44}  〇{no44}/{wo44}  ▲{nd44}/{wd44}  ☆{ns44}/{ws44}")
+
+    daily_rows.append({
+        '日付': '2026/04/04', '日付_num': _dnum44,
+        'has_result': has_result44,
+        '激熱_n': ng44, '激熱_w': wg44 or 0, '激熱_pf': pfg44 or 0, '激熱_roi': roig44 or 0,
+        '〇_n':  no44,  '〇_w':  wo44 or 0,  '〇_pf':  pfo44 or 0,  '〇_roi':  roio44 or 0,
+        '▲_n':  nd44,  '▲_w':  wd44 or 0,  '▲_pf':  pfd44 or 0,  '▲_roi':  roid44 or 0,
+        '☆_n':  ns44,  '☆_w':  ws44 or 0,  '☆_pf':  pfs44 or 0,  '☆_roi':  rois44 or 0,
+        '計_pf': tpf44 or 0, '計_roi': troi44 or 0,
+        '計_tb': ttb44,
+    })
+    print(f"4/4 追加完了: {len(_res44)}頭")
+
 df_daily = pd.DataFrame(daily_rows)
 df_res_only = df_daily[df_daily['has_result']]
 
@@ -453,13 +536,26 @@ tr:hover{{background:#1a3a5a}}
 </tbody></table></body></html>'''
 
 out = r'G:\マイドライブ\競馬AI\daily_roi_2026.html'
-with open(out, 'w', encoding='utf-8') as f:
-    f.write(html)
-print(f"\n出力: {out}")
+try:
+    with open(out, 'w', encoding='utf-8') as f:
+        f.write(html)
+    print(f"\n出力: {out}")
+except Exception as e:
+    print(f"\nGドライブ書き込みスキップ: {e}")
 
-docs_out = 'C:/Users/tsuch/Desktop/horse_racing_ai/docs/daily_roi_2026.html'
-os.makedirs(os.path.dirname(docs_out), exist_ok=True)
-with open(docs_out, 'w', encoding='utf-8') as f:
+docs_out = 'G:/マイドライブ/horse_racing_ai/docs/daily_roi_2026.html'
+try:
+    os.makedirs(os.path.dirname(docs_out), exist_ok=True)
+    with open(docs_out, 'w', encoding='utf-8') as f:
+        f.write(html)
+    print(f"出力: {docs_out}")
+except Exception as e:
+    print(f"Gドライブ(docs)書き込みスキップ: {e}")
+
+# ローカルdocsへ出力（GitHub Pages用）
+local_docs = os.path.join(base_dir, 'docs', 'daily_roi_2026.html')
+os.makedirs(os.path.dirname(local_docs), exist_ok=True)
+with open(local_docs, 'w', encoding='utf-8') as f:
     f.write(html)
-print(f"出力: {docs_out}")
+print(f"出力: {local_docs}")
 print(f"累計: {('+' if cum_pf>=0 else '')}{cum_pf:,}円  ROI{cum_roi_final:+.1%}  {plus_days}/{total_days}日プラス")
