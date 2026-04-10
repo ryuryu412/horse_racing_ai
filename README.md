@@ -70,39 +70,72 @@ python src/06_predict_from_card.py data/raw/cards/出馬表形式XX月XX日.csv
 
 - 出力: `card_YYMMDD_YYYYMMDD_HHMM.html`（Gドライブ自動保存）
 - ※ページの馬はレース直前にオッズを再確認してから購入判断
+- 予想時点ROI用に `.cache.pkl` が `data/raw/cache/` に自動保存される
 
 ```bash
 # HTMLのみ再生成（キャッシュ使用・約11秒）
 python src/06_predict_from_card.py data/raw/cards/出馬表形式XX月XX日.csv --html-only
 ```
 
-### 2. 馬券データ更新（毎週月曜）
+### 2. 週次ROI一括更新（毎週月曜）★推奨
 
 ```bash
-# 1. 土日分の YYYYMMDD_tohyo.csv を data/tohyo/ にコピー
-# 2. 統合（アーカイブへの移動も自動）
+# 事前に配置:
+#   data/tohyo/YYYYMMDD_tohyo.csv   ← 土日分の馬券CSV
+#   data/raw/results/出馬表形式XX月XX日結果*.csv  ← 結果CSV
+bash update_roi.sh
+```
+
+これ1コマンドで以下をすべて実行してGitHub Pagesに公開します:
+1. 馬券データ統合 (`merge_tohyo.py`)
+2. 予測ROI更新・HTML生成 (`_daily_roi_2026.py`)
+3. 予想時点ROI更新・HTML生成 (`_predict_time_roi_2026.py`)
+4. 実馬券ROI更新・HTML生成 (`update_roi_html.py`)
+5. `docs/` をコミット & push
+
+```bash
+bash update_roi.sh --no-push   # push なしで動作確認
+```
+
+#### 手動で個別実行する場合
+
+```bash
+# 1. 馬券データ統合（data/tohyo/ の新規CSV を archive へ移動し all_tohyo.csv に追記）
 python data/merge_tohyo.py
-# 3. 実馬券ROI HTML更新
-python data/update_roi_html.py
-# 4. GitHub Pages に公開
-git add docs/actual_bet_roi.html
+
+# 2. 各ROI HTML更新
+python src/_daily_roi_2026.py         # 予測ROI（最終オッズ）
+python src/_predict_time_roi_2026.py  # 予測ROI（予想時点オッズ）
+python data/update_roi_html.py        # 実馬券ROI
+
+# 3. GitHub Pages に公開
+git add docs/daily_roi_2026.html docs/predict_time_roi_2026.html docs/actual_bet_roi.html
 git commit -m "ROI更新 YYYYMMDD"
 git push
 ```
 
-- `all_tohyo.csv` は上書き更新されるので事前の退避不要
-- アーカイブファイルを戻す作業も不要（差分のみ追記）
-- push 後、数秒で GitHub Pages に反映される
+#### 注意事項
 
-### 3. ROI集計更新（結果確認CSVをもらったら）
+**フォーメーション・BOX買い目の購入金額**: `"100／800"` 形式（全角スラッシュ区切り）
+- 左=1点あたり金額、右=合計金額 → `parse_amount` が自動的に合計金額を使用
 
+**結果CSVのフォーマット**:
+- 通常形式: ヘッダーあり（`着`, `単勝`, `単オッズ` 等の列名）
+- 4/4形式（ノーヘッダー33列）: `data/raw/results/出馬表形式4月4日結果入力.csv`
+  - col7=馬名, col30=単勝オッズ, col31=着順; 単勝払戻はオッズ×100で近似
+
+**gitignore 対象ファイルの復元**:
 ```bash
-# 結果確認CSVを data/raw/results/ に保存してから実行
-python src/_daily_roi_2026.py       # 予測ROI（最終オッズ）
-python src/_predict_time_roi_2026.py # 予測ROI（予想時点オッズ）
+# all_tohyo.csv を消してしまった場合（1/4〜3/29分）
+git show 2397b9c:data/tohyo/all_tohyo.csv > data/tohyo/all_tohyo.csv
+python data/merge_tohyo.py   # archiveの未収録日付も自動追記
+
+# 3/28・3/29 の結果CSVが消えた場合
+git show 6124f64:"data/raw/results/出馬表形式3月28日結果確認.csv" > "data/raw/results/出馬表形式3月28日結果確認.csv"
+git show 6124f64:"data/raw/results/出馬表形式3月29日結果確認.csv" > "data/raw/results/出馬表形式3月29日結果確認.csv"
 ```
 
-### 4. マスターデータ更新（週次）
+### 3. マスターデータ更新（週次）
 
 ```bash
 # JRA-VANからrecent_all.csvをダウンロード → data/raw/master/ に上書き保存
