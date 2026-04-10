@@ -26,11 +26,11 @@ tr:hover{background:#1a3a5a}
 </style></head><body>
 <h2>実際の馬券ROI　（最終更新: 2026/04/10）</h2>
 <div class="summary">
-  <div class="card"><div>累計損益</div><div class="val" style="color:#c0392b">-16,070円</div></div>
-  <div class="card"><div>累計ROI</div><div class="val" style="color:#c0392b">-88.3%</div></div>
-  <div class="card"><div>総投資</div><div class="val">18,200円</div></div>
-  <div class="card"><div>総回収</div><div class="val">2,130円</div></div>
-  <div class="card"><div>プラス日数</div><div class="val">0/2日</div></div>
+  <div class="card"><div>累計損益</div><div class="val" style="color:#c0392b">-90,180円</div></div>
+  <div class="card"><div>累計ROI</div><div class="val" style="color:#c0392b">-21.9%</div></div>
+  <div class="card"><div>総投資</div><div class="val">412,400円</div></div>
+  <div class="card"><div>総回収</div><div class="val">322,220円</div></div>
+  <div class="card"><div>プラス日数</div><div class="val">9/27日</div></div>
 </div>
 
 <h3>日別損益グラフ</h3>
@@ -43,10 +43,10 @@ tr:hover{background:#1a3a5a}
 </div>
 
 <script>
-const labels = ["04/04","04/05"];
-const dailyData = [-6900,-9170];
-const cumulData = [-6900,-16070];
-const barColors = ["#c0392b","#c0392b"];
+const labels = ["01/04","01/05","01/10","01/11","01/12","01/17","01/18","01/24","01/25","01/31","02/01","02/07","02/10","02/15","02/21","02/22","02/28","03/01","03/08","03/14","03/15","03/21","03/22","03/28","03/29","04/04","04/05"];
+const dailyData = [-2840,3820,-4900,7100,-7300,100,-15010,-6700,-9720,-2190,840,-5300,200,-2500,3590,-8760,-9460,2700,-2600,-100,40050,-18130,-12810,5630,-35620,-6900,-3370];
+const cumulData = [-2840,980,-3920,3180,-4120,-4020,-19030,-25730,-35450,-37640,-36800,-42100,-41900,-44400,-40810,-49570,-59030,-56330,-58930,-59030,-18980,-37110,-49920,-44290,-79910,-86810,-90180];
+const barColors = ["#c0392b","#2d862d","#c0392b","#2d862d","#c0392b","#2d862d","#c0392b","#c0392b","#c0392b","#c0392b","#2d862d","#c0392b","#2d862d","#c0392b","#2d862d","#c0392b","#c0392b","#2d862d","#c0392b","#c0392b","#2d862d","#c0392b","#c0392b","#2d862d","#c0392b","#c0392b","#c0392b"];
 
 const isMobile = window.innerWidth < 600;
 const maxTicks = isMobile ? 8 : 20;
@@ -120,46 +120,52 @@ new Chart(document.getElementById('cumulChart'), {
 <th>式別</th><th>投資</th><th>払戻</th><th>損益</th><th>ROI</th>
 </tr></thead><tbody>
 <tr>
-<td style="font-weight:bold">単勝</td>
-<td style="text-align:right">7,600円</td>
-<td style="text-align:right">1,080円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-6,520円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-85.8%</td>
-</tr><tr>
 <td style="font-weight:bold">ワイド</td>
-<td style="text-align:right">3,300円</td>
-<td style="text-align:right">0円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-3,300円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-100.0%</td>
-</tr><tr>
-<td style="font-weight:bold">3連複</td>
-<td style="text-align:right">2,400円</td>
-<td style="text-align:right">1,050円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-1,350円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-56.2%</td>
-</tr><tr>
-<td style="font-weight:bold">馬単</td>
-<td style="text-align:right">2,000円</td>
-<td style="text-align:right">0円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-2,000円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-100.0%</td>
-</tr><tr>
-<td style="font-weight:bold">3連単</td>
-<td style="text-align:right">1,400円</td>
-<td style="text-align:right">0円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-1,400円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-100.0%</td>
-</tr><tr>
-<td style="font-weight:bold">馬連</td>
-<td style="text-align:right">1,300円</td>
-<td style="text-align:right">0円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-1,300円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-100.0%</td>
+<td style="text-align:right">103,200円</td>
+<td style="text-align:right">61,670円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-41,530円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-40.2%</td>
 </tr><tr>
 <td style="font-weight:bold">複勝</td>
-<td style="text-align:right">200円</td>
+<td style="text-align:right">85,300円</td>
+<td style="text-align:right">76,680円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-7,620円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-8.9%</td>
+</tr><tr>
+<td style="font-weight:bold">単勝</td>
+<td style="text-align:right">76,000円</td>
+<td style="text-align:right">81,770円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+6,770円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+8.9%</td>
+</tr><tr>
+<td style="font-weight:bold">3連複</td>
+<td style="text-align:right">53,900円</td>
+<td style="text-align:right">15,270円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-38,630円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-71.7%</td>
+</tr><tr>
+<td style="font-weight:bold">馬連</td>
+<td style="text-align:right">40,200円</td>
+<td style="text-align:right">53,290円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+13,090円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+32.6%</td>
+</tr><tr>
+<td style="font-weight:bold">3連単</td>
+<td style="text-align:right">36,200円</td>
+<td style="text-align:right">17,050円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-19,150円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-52.9%</td>
+</tr><tr>
+<td style="font-weight:bold">枠連</td>
+<td style="text-align:right">12,400円</td>
+<td style="text-align:right">14,490円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+2,090円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+16.9%</td>
+</tr><tr>
+<td style="font-weight:bold">馬単</td>
+<td style="text-align:right">5,200円</td>
 <td style="text-align:right">0円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-200円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-5,200円</td>
 <td style="color:#c0392b;font-weight:bold;text-align:right">-100.0%</td>
 </tr>
 </tbody></table></div>
@@ -169,21 +175,221 @@ new Chart(document.getElementById('cumulChart'), {
 <th>日付</th><th>購入金額</th><th>払戻金額</th><th>返還金額</th><th>日計</th><th>ROI</th><th>累計損益</th>
 </tr></thead><tbody>
 <tr>
+<td style="text-align:center">2026/01/04</td>
+<td style="text-align:right">14,100円</td>
+<td style="text-align:right">11,260円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-2,840円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-20.1%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-2,840円</td>
+</tr><tr>
+<td style="text-align:center">2026/01/05</td>
+<td style="text-align:right">7,400円</td>
+<td style="text-align:right">11,220円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+3,820円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+51.6%</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+980円</td>
+</tr><tr>
+<td style="text-align:center">2026/01/10</td>
+<td style="text-align:right">12,000円</td>
+<td style="text-align:right">7,100円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-4,900円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-40.8%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-3,920円</td>
+</tr><tr>
+<td style="text-align:center">2026/01/11</td>
+<td style="text-align:right">31,300円</td>
+<td style="text-align:right">38,400円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+7,100円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+22.7%</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+3,180円</td>
+</tr><tr>
+<td style="text-align:center">2026/01/12</td>
+<td style="text-align:right">8,500円</td>
+<td style="text-align:right">1,200円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-7,300円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-85.9%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-4,120円</td>
+</tr><tr>
+<td style="text-align:center">2026/01/17</td>
+<td style="text-align:right">1,000円</td>
+<td style="text-align:right">1,100円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+100円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+10.0%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-4,020円</td>
+</tr><tr>
+<td style="text-align:center">2026/01/18</td>
+<td style="text-align:right">16,300円</td>
+<td style="text-align:right">1,290円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-15,010円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-92.1%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-19,030円</td>
+</tr><tr>
+<td style="text-align:center">2026/01/24</td>
+<td style="text-align:right">9,100円</td>
+<td style="text-align:right">2,400円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-6,700円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-73.6%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-25,730円</td>
+</tr><tr>
+<td style="text-align:center">2026/01/25</td>
+<td style="text-align:right">11,000円</td>
+<td style="text-align:right">1,280円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-9,720円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-88.4%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-35,450円</td>
+</tr><tr>
+<td style="text-align:center">2026/01/31</td>
+<td style="text-align:right">10,800円</td>
+<td style="text-align:right">8,610円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-2,190円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-20.3%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-37,640円</td>
+</tr><tr>
+<td style="text-align:center">2026/02/01</td>
+<td style="text-align:right">12,800円</td>
+<td style="text-align:right">13,640円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+840円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+6.6%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-36,800円</td>
+</tr><tr>
+<td style="text-align:center">2026/02/07</td>
+<td style="text-align:right">7,500円</td>
+<td style="text-align:right">1,200円</td>
+<td style="text-align:right">1,000円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-5,300円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-70.7%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-42,100円</td>
+</tr><tr>
+<td style="text-align:center">2026/02/10</td>
+<td style="text-align:right">3,000円</td>
+<td style="text-align:right">3,200円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+200円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+6.7%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-41,900円</td>
+</tr><tr>
+<td style="text-align:center">2026/02/15</td>
+<td style="text-align:right">10,900円</td>
+<td style="text-align:right">8,400円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-2,500円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-22.9%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-44,400円</td>
+</tr><tr>
+<td style="text-align:center">2026/02/21</td>
+<td style="text-align:right">25,800円</td>
+<td style="text-align:right">29,390円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+3,590円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+13.9%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-40,810円</td>
+</tr><tr>
+<td style="text-align:center">2026/02/22</td>
+<td style="text-align:right">28,900円</td>
+<td style="text-align:right">20,140円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-8,760円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-30.3%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-49,570円</td>
+</tr><tr>
+<td style="text-align:center">2026/02/28</td>
+<td style="text-align:right">27,300円</td>
+<td style="text-align:right">17,840円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-9,460円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-34.7%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-59,030円</td>
+</tr><tr>
+<td style="text-align:center">2026/03/01</td>
+<td style="text-align:right">3,000円</td>
+<td style="text-align:right">5,700円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+2,700円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+90.0%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-56,330円</td>
+</tr><tr>
+<td style="text-align:center">2026/03/08</td>
+<td style="text-align:right">6,200円</td>
+<td style="text-align:right">3,600円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-2,600円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-41.9%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-58,930円</td>
+</tr><tr>
+<td style="text-align:center">2026/03/14</td>
+<td style="text-align:right">100円</td>
+<td style="text-align:right">0円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-100円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-100.0%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-59,030円</td>
+</tr><tr>
+<td style="text-align:center">2026/03/15</td>
+<td style="text-align:right">16,400円</td>
+<td style="text-align:right">56,450円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+40,050円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+244.2%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-18,980円</td>
+</tr><tr>
+<td style="text-align:center">2026/03/21</td>
+<td style="text-align:right">34,500円</td>
+<td style="text-align:right">16,370円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-18,130円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-52.6%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-37,110円</td>
+</tr><tr>
+<td style="text-align:center">2026/03/22</td>
+<td style="text-align:right">48,100円</td>
+<td style="text-align:right">35,290円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-12,810円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-26.6%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-49,920円</td>
+</tr><tr>
+<td style="text-align:center">2026/03/28</td>
+<td style="text-align:right">12,600円</td>
+<td style="text-align:right">18,230円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+5,630円</td>
+<td style="color:#2d862d;font-weight:bold;text-align:right">+44.7%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-44,290円</td>
+</tr><tr>
+<td style="text-align:center">2026/03/29</td>
+<td style="text-align:right">41,400円</td>
+<td style="text-align:right">4,780円</td>
+<td style="text-align:right">1,000円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-35,620円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-86.0%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-79,910円</td>
+</tr><tr>
 <td style="text-align:center">2026/04/04</td>
 <td style="text-align:right">6,900円</td>
 <td style="text-align:right">0円</td>
 <td style="text-align:right">0円</td>
 <td style="color:#c0392b;font-weight:bold;text-align:right">-6,900円</td>
 <td style="color:#c0392b;font-weight:bold;text-align:right">-100.0%</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-6,900円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-86,810円</td>
 </tr><tr>
 <td style="text-align:center">2026/04/05</td>
-<td style="text-align:right">11,300円</td>
+<td style="text-align:right">5,500円</td>
 <td style="text-align:right">2,130円</td>
 <td style="text-align:right">0円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-9,170円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-81.2%</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-16,070円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-3,370円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-61.3%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-90,180円</td>
 </tr>
 </tbody></table></div>
 
@@ -192,13 +398,37 @@ new Chart(document.getElementById('cumulChart'), {
 <th>月</th><th>購入金額</th><th>払戻金額</th><th>返還金額</th><th>月計</th><th>ROI</th><th>累計損益</th>
 </tr></thead><tbody>
 <tr>
+<td style="text-align:center;font-weight:bold">2026/01</td>
+<td style="text-align:right">121,500円</td>
+<td style="text-align:right">83,860円</td>
+<td style="text-align:right">0円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-37,640円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-31.0%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-37,640円</td>
+</tr><tr>
+<td style="text-align:center;font-weight:bold">2026/02</td>
+<td style="text-align:right">116,200円</td>
+<td style="text-align:right">93,810円</td>
+<td style="text-align:right">1,000円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-21,390円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-18.4%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-59,030円</td>
+</tr><tr>
+<td style="text-align:center;font-weight:bold">2026/03</td>
+<td style="text-align:right">162,300円</td>
+<td style="text-align:right">140,420円</td>
+<td style="text-align:right">1,000円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-20,880円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-12.9%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-79,910円</td>
+</tr><tr>
 <td style="text-align:center;font-weight:bold">2026/04</td>
-<td style="text-align:right">18,200円</td>
+<td style="text-align:right">12,400円</td>
 <td style="text-align:right">2,130円</td>
 <td style="text-align:right">0円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-16,070円</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-88.3%</td>
-<td style="color:#c0392b;font-weight:bold;text-align:right">-16,070円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-10,270円</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-82.8%</td>
+<td style="color:#c0392b;font-weight:bold;text-align:right">-90,180円</td>
 </tr>
 </tbody></table></div>
 </body></html>
