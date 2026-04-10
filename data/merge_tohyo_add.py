@@ -6,8 +6,9 @@ def parse_amount(val):
     s = str(val).strip()
     if s in ('', 'nan', '-'):
         return 0
-    if '/' in s:
-        parts = s.split('/')
+    # 全角・半角スラッシュ両対応（フォーメーション: "100／800" → 800が合計）
+    if '／' in s or '/' in s:
+        parts = re.split(r'[／/]', s)
         for p in reversed(parts):
             p = p.strip().replace(',', '')
             if re.match(r'^\d+$', p):
