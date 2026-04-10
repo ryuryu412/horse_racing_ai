@@ -13,113 +13,7 @@ import argparse
 import subprocess
 from datetime import datetime
 
-# Yahoo競馬オッズ取得（cloudscraper/bs4 が入っていない場合は無効化）
-try:
-    import cloudscraper
-    from bs4 import BeautifulSoup
-    _SCRAPER_AVAILABLE = True
-except ImportError:
-    _SCRAPER_AVAILABLE = False
 
-# JRA-VAN会場略称 → netkeiba場コード
-_VENUE_CODE = {
-    '札': '01', '函': '02', '福': '03', '新': '04',
-    '東': '05', '中山': '06', '中': '06', '中京': '07',
-    '京都': '08', '京': '08', '阪神': '09', '阪': '09',
-    '小倉': '10', '小': '10',
-}
-
-def _make_race_id(kaikai, date_num, r_num):
-    """開催(例:'1東8') + 日付(260315) + R番号(11) → 12桁netkeiba race_id"""
-    try:
-        d = str(int(date_num))          # '260315'
-        year = '20' + d[:2]             # '2026'
-        s = str(kaikai).strip()
-        kai_m   = re.match(r'(\d+)', s)
-        venue_m = re.search(r'\d+([^\d]+)', s)
-        day_m   = re.search(r'(\d+)$', s)
-        kai   = kai_m.group(1).zfill(2)   if kai_m   else '01'
-        abbr  = venue_m.group(1)          if venue_m else ''
-        day   = day_m.group(1).zfill(2)   if day_m   else '01'
-        code  = _VENUE_CODE.get(abbr, '00')
-        r_str = str(int(r_num)).zfill(2)
-        return f"{year}{code}{kai}{day}{r_str}"
-    except Exception:
-        return None
-
-def _yahoo_odds(race_id):
-    """Yahoo競馬から単勝オッズを取得: {馬番str: float}"""
-    if not _SCRAPER_AVAILABLE:
-        return {}
-    yahoo_id = race_id[2:] if len(race_id) == 12 else race_id
-    url = f"https://sports.yahoo.co.jp/keiba/race/odds/tfw/{yahoo_id}/"
-    try:
-        scraper = cloudscraper.create_scraper()
-        soup = BeautifulSoup(scraper.get(url).text, 'html.parser')
-        result = {}
-        for row in soup.find_all('tr'):
-            tds   = row.find_all(['td', 'th'])
-            texts = [td.text.strip() for td in tds if td.text.strip()]
-            if len(texts) < 5:
-                continue
-            digits = [t for t in texts[:3] if t.isdigit() and 1 <= int(t) <= 18]
-            if not digits:
-                continue
-            umaban = digits[-1]
-            for txt in texts:
-                if re.match(r'^\d+\.\d+$', txt):
-                    result[umaban] = float(txt)
-                    break
-        return result
-    except Exception as e:
-        print(f"  Yahoo競馬取得エラー: {e}")
-        return {}
-
-def fetch_odds_if_missing(card_df):
-    """
-    CSVに単勝オッズがあればそのまま使い、なければYahoo競馬からスクレイピングして補完する。
-    """
-    if '単勝オッズ' not in card_df.columns:
-        card_df['単勝オッズ'] = np.nan
-
-    race_keys = [c for c in ['開催', 'Ｒ'] if c in card_df.columns]
-    if not race_keys:
-        return card_df
-
-    fetched_any = False
-    for gk, idx in card_df.groupby(race_keys).groups.items():
-        grp = card_df.loc[idx]
-        odds_vals = pd.to_numeric(grp['単勝オッズ'], errors='coerce')
-        if odds_vals.notna().sum() >= len(grp) * 0.5:
-            continue  # 半数以上埋まっていればスクレイピング不要
-
-        # race_id を構築してYahooから取得
-        kaikai   = grp['開催'].iloc[0]
-        date_num = grp['日付'].iloc[0] if '日付' in grp.columns else None
-        r_num    = gk[1] if len(race_keys) > 1 else grp['Ｒ'].iloc[0]
-        if date_num is None:
-            continue
-        race_id = _make_race_id(kaikai, date_num, r_num)
-        if race_id is None:
-            continue
-
-        odds_dict = _yahoo_odds(race_id)
-        if not odds_dict:
-            continue
-
-        fetched_any = True
-        for i in idx:
-            try:
-                umaban = str(int(float(card_df.at[i, '馬番'])))
-            except Exception:
-                continue
-            if umaban in odds_dict:
-                card_df.at[i, '単勝オッズ'] = odds_dict[umaban]
-
-    if fetched_any:
-        filled = pd.to_numeric(card_df['単勝オッズ'], errors='coerce').notna().sum()
-        print(f"Yahoo競馬オッズ取得完了: {filled}頭分")
-    return card_df
 
 
 def extract_venue(kaikai):
@@ -1305,7 +1199,7 @@ def main():
     parser.add_argument('--no-rebuild', action='store_true', help='特徴量再生成をスキップ')
     parser.add_argument('--no-html', action='store_true', help='HTML出力をスキップ')
     parser.add_argument('--html-only', action='store_true', help='キャッシュから予測結果を読み込んでHTMLのみ生成')
-    parser.add_argument('--html-dir', default=r'G:\マイドライブ\競馬AI', help='HTML保存先フォルダ')
+    parser.add_argument('--html-dir', default=r'G:\マイドライブ\競馬AI\予想レポート', help='HTML保存先フォルダ')
     args = parser.parse_args()
 
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) if 'src' in os.path.abspath(__file__) else '.'
@@ -1324,19 +1218,17 @@ def main():
             print(f"[ERROR] キャッシュが見つかりません: {cache_path}")
             print("  先に通常実行してキャッシュを生成してください。")
             sys.exit(1)
-        print(f"キャッシュ読み込み: {cache_path}")
+        print(f"キャッセュ読み込み: {cache_path}")
         with open(cache_path, 'rb') as f:
             cached = pickle.load(f)
         result      = cached['result']
         card_df     = cached['card_df']
         target_date = cached['target_date']
         print(f"日付: {target_date}  ({len(card_df)}頭)")
+
     else:
         # 1. 出馬表を変換
         card_df = convert_card_to_base_format(args.card_file)
-
-        # 1b. オッズ補完（CSVにあればそのまま / なければYahoo競馬からスクレイピング）
-        card_df = fetch_odds_if_missing(card_df)
 
         dates = card_df['日付'].dropna().unique()
         print(f"日付: {[int(d) for d in sorted(dates)]}")

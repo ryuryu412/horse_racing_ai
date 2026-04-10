@@ -7,7 +7,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 import pandas as pd, numpy as np, os, pickle, json, re, time
 
-base_dir  = r'C:\Users\tsuch\Desktop\horse_racing_ai'
+base_dir  = r'G:\マイドライブ\horse_racing_ai'
 model_dir = os.path.join(base_dir, 'models_2025')
 
 def get_distance_band(dist):

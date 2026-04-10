@@ -19,7 +19,7 @@ def parse_amount(val):
 
 for enc in ['cp932', 'utf-8-sig', 'utf-8']:
     try:
-        df = pd.read_csv('C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/20260322_tohyo.csv', encoding=enc)
+        df = pd.read_csv('G:/マイドライブ/horse_racing_ai/data/tohyo/20260322_tohyo.csv', encoding=enc)
         break
     except:
         pass
@@ -30,7 +30,7 @@ data['払戻_n'] = data['払戻金額'].apply(parse_amount)
 data['返還_n'] = data['返還金額'].apply(parse_amount)
 data['レース'] = data['レース'].apply(lambda x: int(float(str(x))) if str(x).replace('.','').isdigit() else x)
 
-with open('C:/Users/tsuch/Desktop/horse_racing_ai/data/races_0322_byrace.txt', 'w', encoding='utf-8') as fw:
+with open('G:/マイドライブ/horse_racing_ai/data/races_0322_byrace.txt', 'w', encoding='utf-8') as fw:
     grand_buy = grand_pay = 0
     for (venue, race), grp in data.groupby(['場名', 'レース'], sort=True):
         buy = grp['購入_n'].sum()

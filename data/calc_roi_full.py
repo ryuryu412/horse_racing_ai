@@ -2,7 +2,7 @@ import pandas as pd
 import glob, os
 
 # --- 日付別ファイル読み込み ---
-files = sorted(glob.glob('C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/*_tohyo.csv'))
+files = sorted(glob.glob('G:/マイドライブ/horse_racing_ai/data/tohyo/*_tohyo.csv'))
 dfs = []
 for f in files:
     fname = os.path.basename(f)
@@ -17,7 +17,7 @@ for f in files:
             pass
 
 # video_tohyo_data.csv
-video_path = 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/video_tohyo_data.csv'
+video_path = 'G:/マイドライブ/horse_racing_ai/data/tohyo/video_tohyo_data.csv'
 for enc in ['utf-8-sig', 'utf-8', 'cp932']:
     try:
         df_video = pd.read_csv(video_path, encoding=enc)

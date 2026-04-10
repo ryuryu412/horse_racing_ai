@@ -19,7 +19,7 @@ def parse_amount(val):
 
 for enc in ['cp932', 'utf-8-sig', 'utf-8']:
     try:
-        df = pd.read_csv('C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/20260322_tohyo.csv', encoding=enc)
+        df = pd.read_csv('G:/マイドライブ/horse_racing_ai/data/tohyo/20260322_tohyo.csv', encoding=enc)
         print(f'encoding: {enc}')
         break
     except:
@@ -28,7 +28,7 @@ for enc in ['cp932', 'utf-8-sig', 'utf-8']:
 data_rows = df[df['日付'].notna()].copy()
 data_rows['parsed'] = data_rows['購入金額'].apply(parse_amount)
 
-with open('C:/Users/tsuch/Desktop/horse_racing_ai/data/debug_0322.txt', 'w', encoding='utf-8') as fw:
+with open('G:/マイドライブ/horse_racing_ai/data/debug_0322.txt', 'w', encoding='utf-8') as fw:
     fw.write(f'行数: {len(data_rows)}, 合計: {data_rows["parsed"].sum():,.0f}円\n\n')
     fw.write('全行の購入金額raw vs parsed:\n')
     for i, row in data_rows.iterrows():

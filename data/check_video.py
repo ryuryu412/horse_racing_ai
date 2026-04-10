@@ -1,9 +1,9 @@
 import pandas as pd
 
-video_path = 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/video_tohyo_data.csv'
+video_path = 'G:/マイドライブ/horse_racing_ai/data/tohyo/video_tohyo_data.csv'
 df = pd.read_csv(video_path, encoding='utf-8-sig')
 
-with open('C:/Users/tsuch/Desktop/horse_racing_ai/data/video_check.txt', 'w', encoding='utf-8') as fw:
+with open('G:/マイドライブ/horse_racing_ai/data/video_check.txt', 'w', encoding='utf-8') as fw:
     fw.write(f'行数: {len(df)}\n')
     fw.write(f'列: {df.columns.tolist()}\n')
     fw.write(f'\n日付ユニーク:\n{df["日付"].unique()}\n')

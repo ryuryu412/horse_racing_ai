@@ -17,7 +17,7 @@ def parse_amount(val):
     except:
         return 0
 
-files = sorted(glob.glob('C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/*_tohyo.csv'))
+files = sorted(glob.glob('G:/マイドライブ/horse_racing_ai/data/tohyo/*_tohyo.csv'))
 all_dfs = []
 for f in files:
     fname = os.path.basename(f)
@@ -32,7 +32,7 @@ for f in files:
         except:
             pass
 
-video_path = 'C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/video_tohyo_data.csv'
+video_path = 'G:/マイドライブ/horse_racing_ai/data/tohyo/video_tohyo_data.csv'
 df_video = pd.read_csv(video_path, encoding='utf-8-sig')
 df_video['_source'] = 'video_tohyo_data.csv'
 all_dfs.append(df_video)
@@ -59,7 +59,7 @@ print(f'NaN日付の購入金額合計: {nan_rows["購入金額_num"].sum():,.0f
 print('\nNaN行のソース別件数:')
 print(nan_rows['_source'].value_counts())
 if len(nan_rows) > 0:
-    with open('C:/Users/tsuch/Desktop/horse_racing_ai/data/nan_rows.txt', 'w', encoding='utf-8') as fw:
+    with open('G:/マイドライブ/horse_racing_ai/data/nan_rows.txt', 'w', encoding='utf-8') as fw:
         fw.write(nan_rows[['_source','日付','式別','購入金額','払戻金額']].to_string())
     print('\nnan_rows.txtに保存しました')
 

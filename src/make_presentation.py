@@ -315,6 +315,6 @@ txb(s, '「作ること」より「動き続けること」にこだわった',
     1.0, 6.6, 11.3, 0.7, size=16, color=C_GRAY, italic=True, align=PP_ALIGN.CENTER)
 
 
-out = r'C:\Users\tsuch\Desktop\競馬AI_プレゼン.pptx'
+out = r'G:\マイドライブ\horse_racing_ai\競馬AI_プレゼン.pptx'
 prs.save(out)
 print('保存完了:', out)

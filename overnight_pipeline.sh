@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "C:/Users/tsuch/Desktop/horse_racing_ai"
+cd "G:/マイドライブ/horse_racing_ai"
 LOG="data/overnight_pipeline.log"
 echo "=============================" >> $LOG
 echo "Pipeline start: $(date)" >> $LOG

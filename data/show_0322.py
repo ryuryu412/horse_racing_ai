@@ -19,7 +19,7 @@ def parse_amount(val):
 
 for enc in ['cp932', 'utf-8-sig', 'utf-8']:
     try:
-        df = pd.read_csv('C:/Users/tsuch/Desktop/horse_racing_ai/data/tohyo/20260322_tohyo.csv', encoding=enc)
+        df = pd.read_csv('G:/マイドライブ/horse_racing_ai/data/tohyo/20260322_tohyo.csv', encoding=enc)
         break
     except:
         pass
@@ -29,7 +29,7 @@ data['購入_n'] = data['購入金額'].apply(parse_amount)
 data['払戻_n'] = data['払戻金額'].apply(parse_amount)
 data['返還_n'] = data['返還金額'].apply(parse_amount)
 
-with open('C:/Users/tsuch/Desktop/horse_racing_ai/data/races_0322.txt', 'w', encoding='utf-8') as fw:
+with open('G:/マイドライブ/horse_racing_ai/data/races_0322.txt', 'w', encoding='utf-8') as fw:
     fw.write(f'2026/03/22 全馬券一覧（{len(data)}行）\n\n')
     fw.write(f'{"場名":4} {"R":3} {"式別":14} {"馬番":20} {"購入":>6} {"払戻":>7} {"返還":>5}\n')
     fw.write('-'*70 + '\n')
