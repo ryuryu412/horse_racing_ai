@@ -35,7 +35,7 @@ if not cache_files:
 print(f"cache.pkl: {len(cache_files)}件")
 
 # ── 結果確認CSV 一覧（日付 → ファイルパス）──────────────────────
-result_csvs = sorted(glob.glob(os.path.join(base_dir, 'data', 'raw', 'results', '出馬表形式*結果確認.csv')))
+result_csvs = sorted(glob.glob(os.path.join(base_dir, 'data', 'raw', 'results', '出馬表形式*結果*.csv')))
 result_csv_by_dnum = {}
 for rf in result_csvs:
     try:    tmp = pd.read_csv(rf, encoding='cp932', low_memory=False, nrows=1)
@@ -43,6 +43,11 @@ for rf in result_csvs:
     if '日付S' not in tmp.columns: continue
     dn = _dnum_from_str(tmp['日付S'].iloc[0])
     if dn: result_csv_by_dnum[dn] = rf
+
+# 4/4のノーヘッダー形式は別途登録
+_r44 = os.path.join(base_dir, 'data', 'raw', 'results', '出馬表形式4月4日結果入力.csv')
+if os.path.exists(_r44):
+    result_csv_by_dnum[260404] = ('noheader', _r44)
 
 print(f"結果確認CSV: {sorted(result_csv_by_dnum.keys())}")
 
@@ -110,13 +115,29 @@ for cache_path in cache_files:
         continue
 
     # 結果確認CSV 読み込み
-    rf = result_csv_by_dnum[dnum]
-    try:    dfr = pd.read_csv(rf, encoding='cp932', low_memory=False)
-    except: dfr = pd.read_csv(rf, encoding='utf-8',  low_memory=False)
+    rf_entry = result_csv_by_dnum[dnum]
 
-    dfr['着_num'] = dfr['着'].apply(_zen)
-    dfr['_tan']   = pd.to_numeric(dfr['単勝'],    errors='coerce')
-    dfr['_fuku']  = pd.to_numeric(dfr.get('複勝', pd.Series(np.nan, index=dfr.index)), errors='coerce')
+    if isinstance(rf_entry, tuple) and rf_entry[0] == 'noheader':
+        # 4/4 ノーヘッダー33列形式
+        rf = rf_entry[1]
+        _r = pd.read_csv(rf, encoding='cp932', header=None)
+        VENUE_ABBR = {'中山':'中','阪神':'阪','東京':'東','京都':'京',
+                      '新潟':'新','中京':'名','福島':'福','小倉':'小','札幌':'札','函館':'函'}
+        abbr = _r[1].map(VENUE_ABBR).fillna(_r[1].astype(str).str[:1])
+        dfr = pd.DataFrame({
+            '馬名S':  _r[7].astype(str),
+            '着_num': pd.to_numeric(_r[31], errors='coerce'),
+            '_tan':   pd.to_numeric(_r[30], errors='coerce') * 100,  # オッズ×100で近似
+            '_fuku':  np.nan,
+        })
+    else:
+        rf = rf_entry
+        try:    dfr = pd.read_csv(rf, encoding='cp932', low_memory=False)
+        except: dfr = pd.read_csv(rf, encoding='utf-8',  low_memory=False)
+
+        dfr['着_num'] = dfr['着'].apply(_zen)
+        dfr['_tan']   = pd.to_numeric(dfr['単勝'],    errors='coerce')
+        dfr['_fuku']  = pd.to_numeric(dfr.get('複勝', pd.Series(np.nan, index=dfr.index)), errors='coerce')
 
     # 馬名Sで結果とマージ
     merged = res.merge(dfr[['馬名S', '着_num', '_tan', '_fuku']].drop_duplicates('馬名S'),
@@ -268,15 +289,27 @@ tr:hover{{background:#1a3a5a}}
 </tbody></table></body></html>'''
 
 out = r'G:\マイドライブ\競馬AI\predict_time_roi_2026.html'
-with open(out, 'w', encoding='utf-8') as f:
-    f.write(html)
-print(f"\n出力: {out}")
+try:
+    with open(out, 'w', encoding='utf-8') as f:
+        f.write(html)
+    print(f"\n出力: {out}")
+except Exception as e:
+    print(f"\nGドライブ書き込みスキップ: {e}")
 
 docs_out = 'G:/マイドライブ/horse_racing_ai/docs/predict_time_roi_2026.html'
-os.makedirs(os.path.dirname(docs_out), exist_ok=True)
-with open(docs_out, 'w', encoding='utf-8') as f:
+try:
+    os.makedirs(os.path.dirname(docs_out), exist_ok=True)
+    with open(docs_out, 'w', encoding='utf-8') as f:
+        f.write(html)
+    print(f"出力: {docs_out}")
+except Exception as e:
+    print(f"Gドライブ(docs)書き込みスキップ: {e}")
+
+local_docs = os.path.join(base_dir, 'docs', 'predict_time_roi_2026.html')
+os.makedirs(os.path.dirname(local_docs), exist_ok=True)
+with open(local_docs, 'w', encoding='utf-8') as f:
     f.write(html)
-print(f"出力: {docs_out}")
+print(f"出力: {local_docs}")
 if total_days > 0:
     print(f"累計: {('+' if cum_pf>=0 else '')}{cum_pf:,}円  ROI{cum_roi_final:+.1%}  {plus_days}/{total_days}日プラス")
 else:
