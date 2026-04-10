@@ -253,22 +253,28 @@ total_days = len(df_res_only)
 plus_days  = int((df_res_only['計_pf'] >= 0).sum()) if total_days > 0 else 0
 col_all    = '#2d862d' if cum_pf >= 0 else '#c0392b'
 
+last_date = df_res_only["日付"].iloc[-1] if total_days > 0 else "-"
+last_date_clean = re.sub(r'<[^>]+>', '', last_date)  # HTMLタグ除去
+
 html = f'''<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>2026年 予想時点ROI</title>
 <style>
-body{{font-family:"Hiragino Kaku Gothic Pro",Meiryo,sans-serif;background:#1a1a2e;color:#e0e0e0;padding:20px}}
-h2{{color:#f0c040;text-align:center}}
-.note{{text-align:center;font-size:0.85em;color:#aaa;margin:-8px 0 16px}}
-.summary{{display:flex;gap:20px;justify-content:center;margin:10px 0 20px;flex-wrap:wrap}}
-.card{{background:#16213e;border-radius:8px;padding:12px 20px;text-align:center;min-width:120px}}
-.card .val{{font-size:1.6em;font-weight:bold}}
-table{{width:100%;border-collapse:collapse;font-size:0.85em}}
+body{{font-family:"Hiragino Kaku Gothic Pro",Meiryo,sans-serif;background:#1a1a2e;color:#e0e0e0;padding:12px}}
+h2{{color:#f0c040;text-align:center;font-size:1.1em;margin-bottom:4px}}
+.note{{text-align:center;font-size:0.85em;color:#aaa;margin:-4px 0 12px}}
+.summary{{display:flex;gap:10px;justify-content:center;margin:10px 0 16px;flex-wrap:wrap}}
+.card{{background:#16213e;border-radius:8px;padding:10px 14px;text-align:center;min-width:90px;flex:1 1 90px;max-width:160px}}
+.card .val{{font-size:1.3em;font-weight:bold}}
+.tbl-wrap{{overflow-x:auto;-webkit-overflow-scrolling:touch}}
+table{{width:100%;border-collapse:collapse;font-size:0.82em;white-space:nowrap}}
 th{{background:#16213e;color:#f0c040;padding:6px 8px;text-align:center;position:sticky;top:0}}
 td{{padding:5px 8px;border-bottom:1px solid #2a2a4a}}
 tr:nth-child(even){{background:#16213e88}}
 tr:hover{{background:#1a3a5a}}
+@media(max-width:480px){{body{{padding:8px}}.card .val{{font-size:1.1em}}table{{font-size:0.78em}}}}
 </style></head><body>
-<h2>2026年 予想時点ROI　（最終更新: {df_res_only["日付"].iloc[-1] if total_days > 0 else "-"}）</h2>
+<h2>2026年 予想時点ROI　（最終更新: {last_date_clean}）</h2>
 <p class="note">予想実行時点のオッズ・印を使用（最終オッズによる印変動なし）</p>
 <div class="summary">
   <div class="card"><div>累計損益</div><div class="val" style="color:{col_all}">{("+" if cum_pf>=0 else "")}{cum_pf:,}円</div></div>
@@ -277,7 +283,7 @@ tr:hover{{background:#1a3a5a}}
   <div class="card"><div>激熱的中率</div><div class="val">{int(df_res_only["激熱_w"].sum()) if total_days>0 else 0}/{int(df_res_only["激熱_n"].sum()) if total_days>0 else 0}頭</div></div>
   <div class="card"><div>▲的中率</div><div class="val">{int(df_res_only["▲_w"].sum()) if total_days>0 else 0}/{int(df_res_only["▲_n"].sum()) if total_days>0 else 0}頭</div></div>
 </div>
-<table><thead><tr>
+<div class="tbl-wrap"><table><thead><tr>
 <th>日付</th>
 <th>激熱<br>単1000円</th>
 <th>〇<br>単300円</th>
@@ -286,7 +292,7 @@ tr:hover{{background:#1a3a5a}}
 <th>日計</th><th>累計損益</th>
 </tr></thead><tbody>
 {rows_html}
-</tbody></table></body></html>'''
+</tbody></table></div></body></html>'''
 
 out = r'G:\マイドライブ\競馬AI\predict_time_roi_2026.html'
 try:

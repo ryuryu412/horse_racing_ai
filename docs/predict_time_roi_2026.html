@@ -1,19 +1,22 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>2026年 予想時点ROI</title>
 <style>
-body{font-family:"Hiragino Kaku Gothic Pro",Meiryo,sans-serif;background:#1a1a2e;color:#e0e0e0;padding:20px}
-h2{color:#f0c040;text-align:center}
-.note{text-align:center;font-size:0.85em;color:#aaa;margin:-8px 0 16px}
-.summary{display:flex;gap:20px;justify-content:center;margin:10px 0 20px;flex-wrap:wrap}
-.card{background:#16213e;border-radius:8px;padding:12px 20px;text-align:center;min-width:120px}
-.card .val{font-size:1.6em;font-weight:bold}
-table{width:100%;border-collapse:collapse;font-size:0.85em}
+body{font-family:"Hiragino Kaku Gothic Pro",Meiryo,sans-serif;background:#1a1a2e;color:#e0e0e0;padding:12px}
+h2{color:#f0c040;text-align:center;font-size:1.1em;margin-bottom:4px}
+.note{text-align:center;font-size:0.85em;color:#aaa;margin:-4px 0 12px}
+.summary{display:flex;gap:10px;justify-content:center;margin:10px 0 16px;flex-wrap:wrap}
+.card{background:#16213e;border-radius:8px;padding:10px 14px;text-align:center;min-width:90px;flex:1 1 90px;max-width:160px}
+.card .val{font-size:1.3em;font-weight:bold}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:0.82em;white-space:nowrap}
 th{background:#16213e;color:#f0c040;padding:6px 8px;text-align:center;position:sticky;top:0}
 td{padding:5px 8px;border-bottom:1px solid #2a2a4a}
 tr:nth-child(even){background:#16213e88}
 tr:hover{background:#1a3a5a}
+@media(max-width:480px){body{padding:8px}.card .val{font-size:1.1em}table{font-size:0.78em}}
 </style></head><body>
-<h2>2026年 予想時点ROI　（最終更新: 2026/04/05<br><small style='color:#aaa'>01:51予想</small>）</h2>
+<h2>2026年 予想時点ROI　（最終更新: 2026/04/0501:51予想）</h2>
 <p class="note">予想実行時点のオッズ・印を使用（最終オッズによる印変動なし）</p>
 <div class="summary">
   <div class="card"><div>累計損益</div><div class="val" style="color:#c0392b">-1,400円</div></div>
@@ -22,7 +25,7 @@ tr:hover{background:#1a3a5a}
   <div class="card"><div>激熱的中率</div><div class="val">1/1頭</div></div>
   <div class="card"><div>▲的中率</div><div class="val">0/5頭</div></div>
 </div>
-<table><thead><tr>
+<div class="tbl-wrap"><table><thead><tr>
 <th>日付</th>
 <th>激熱<br>単1000円</th>
 <th>〇<br>単300円</th>
@@ -63,4 +66,4 @@ tr:hover{background:#1a3a5a}
 <td style="color:#2d862d;font-weight:bold;text-align:right">+900円<br><small>(+33.3%)</small></td>
 <td style="color:#c0392b;font-weight:bold;text-align:right">-1,400円</td>
 </tr>
-</tbody></table></body></html>
+</tbody></table></div></body></html>
