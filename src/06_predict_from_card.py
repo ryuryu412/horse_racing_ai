@@ -279,6 +279,23 @@ def predict_date(base_dir, target_date_num, card_df=None):
             # 1走前_base = latestの当該レース結果そのもの
             if _base in df_latest.columns and f'1走前_{_base}' in df_latest.columns:
                 df_latest[f'1走前_{_base}'] = df_latest[_base]
+        # 「前走xxx」列も同様にシフト補正（前走 ≒ 1走前、parquetの最新行は1走前のxxx→今走のxxx）
+        _mae_base_map = {
+            '前走着順_num':       '着順_num',
+            '前走走破タイム_sec':  '走破タイム_sec',
+            '前走上り3F':         '上り3F',
+            '前走上り3F_指数':    '上り3F_指数',
+            '前走馬体重':         '馬体重',
+            '前走馬体重増減':     '馬体重増減',
+            '前走タイム指数':     'タイム指数',
+            '前走脚質_num':       '脚質_num',
+            '前走単勝オッズ':     '単勝オッズ',
+            '前走PCI':            'PCI',
+            '前走RPCI':           'RPCI',
+        }
+        for _m_col, _b_col in _mae_base_map.items():
+            if _m_col in df_latest.columns and _b_col in df_latest.columns:
+                df_latest[_m_col] = df_latest[_b_col]
         day = card_df.drop_duplicates('馬名S').copy()
         all_feats_now = list(set((sub_features or []) + (cur_features or [])))
         pq_cols = (['馬名S', '日付', '距離'] +
