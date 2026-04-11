@@ -97,6 +97,32 @@ def convert_card_to_base_format(card_path):
     return df
 
 
+def merge_results_to_card_extra(base_dir, result_dfs):
+    """結果ファイルをcard_extra.csvに反映（feature engineeringは実行しない）"""
+    import glob as glob_mod
+    card_path = os.path.join(base_dir, 'data', 'raw', 'card_extra.csv')
+
+    if not result_dfs:
+        return
+
+    combined = pd.concat(result_dfs, ignore_index=True)
+    new_dates = set(pd.to_numeric(combined['日付'], errors='coerce').dropna())
+
+    if os.path.exists(card_path):
+        try:
+            existing = pd.read_csv(card_path, encoding='utf-8-sig', low_memory=False)
+            existing['_d'] = pd.to_numeric(existing['日付'], errors='coerce')
+            keep = existing[~existing['_d'].isin(new_dates)].drop(columns=['_d'])
+            if len(keep) > 0:
+                common = [c for c in keep.columns if c in combined.columns]
+                combined = pd.concat([keep[common], combined[common]], ignore_index=True)
+        except Exception:
+            pass
+
+    combined.to_csv(card_path, index=False, encoding='utf-8-sig')
+    print(f"  card_extra.csv 結果反映: {len(result_dfs)}ファイル → {len(combined):,}行")
+
+
 def run_feature_engineering(base_dir, extra_df):
     """card_extra.csv に変換済みデータを書き、01_make_features.py を実行"""
     card_path = os.path.join(base_dir, 'data', 'raw', 'card_extra.csv')
@@ -1200,6 +1226,7 @@ def main():
     parser.add_argument('--no-html', action='store_true', help='HTML出力をスキップ')
     parser.add_argument('--html-only', action='store_true', help='キャッシュから予測結果を読み込んでHTMLのみ生成')
     parser.add_argument('--html-dir', default=r'G:\マイドライブ\競馬AI\予想レポート', help='HTML保存先フォルダ')
+    parser.add_argument('--no-results', action='store_true', help='data/raw/results/の結果ファイル自動読み込みをスキップ')
     args = parser.parse_args()
 
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) if 'src' in os.path.abspath(__file__) else '.'
@@ -1236,7 +1263,29 @@ def main():
 
         target_date = int(sorted(dates)[-1])
 
-        # 2. 特徴量再生成
+        # 2. 結果ファイルをcard_extraに先行反映（N走前特徴量の精度向上）
+        if not args.no_rebuild and not args.no_results:
+            import glob as glob_mod
+            result_dir = os.path.join(base_dir, 'data', 'raw', 'results')
+            result_dfs = []
+            if os.path.exists(result_dir):
+                for rf in sorted(glob_mod.glob(os.path.join(result_dir, '*.csv'))):
+                    try:
+                        rdf = convert_card_to_base_format(rf)
+                        # 予測日より前の日付のみ（予測日当日の結果は不要）
+                        rdf_dates = pd.to_numeric(rdf['日付'], errors='coerce')
+                        rdf = rdf[rdf_dates < target_date]
+                        if len(rdf) > 0:
+                            result_dfs.append(rdf)
+                            dates_in = sorted(rdf_dates[rdf_dates < target_date].dropna().unique().astype(int))
+                            print(f"  結果ファイル読込: {os.path.basename(rf)} 日付={dates_in}")
+                    except Exception as e:
+                        print(f"  [skip] {os.path.basename(rf)}: {e}")
+            if result_dfs:
+                merge_results_to_card_extra(base_dir, result_dfs)
+                print(f"  → 結果ファイル {len(result_dfs)}件をcard_extraに反映（N走前特徴量補完）")
+
+        # 3. 特徴量再生成
         if not args.no_rebuild:
             run_feature_engineering(base_dir, card_df)
         else:
