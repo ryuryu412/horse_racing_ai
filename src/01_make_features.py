@@ -15,6 +15,7 @@ def clean_finish(series):
     def _to_num(x):
         s = str(x).strip()
         s = s.translate(str.maketrans('０１２３４５６７８９', '0123456789'))  # 全角→半角
+        s = s.replace('着', '')  # '1着' → '1'
         return FINISH_MAP.get(s, s)
     return series.map(_to_num).pipe(pd.to_numeric, errors='coerce')
 

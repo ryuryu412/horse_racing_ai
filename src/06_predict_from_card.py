@@ -214,7 +214,10 @@ def predict_date(base_dir, target_date_num, card_df=None):
     if os.path.exists(feat_pq) and os.path.getmtime(feat_pq) >= os.path.getmtime(feat_csv):
         # 必要な列だけ読み込んでメモリ節約
         _essential = ['馬名S', '日付', '距離', '開催', '芝・ダ', 'クラス_rank',
-                      '単勝オッズ', '馬体重', '馬体重増減', '前距離', '間隔', '性別_num']
+                      '単勝オッズ', '馬体重', '馬体重増減', '前距離', '間隔', '性別_num',
+                      # N走前シフト補正のために必要な基底列
+                      '着順_num', '頭数', '斤量', '4角', '前走着差タイム',
+                      'タイム指数', '走破タイム_sec', '上り3F', '上り3F_指数', 'PCI', 'RPCI', '馬番']
         _feat_cols = list(set((sub_features or []) + (cur_features or [])))
         _need = set(_essential + _feat_cols)
         try:
@@ -254,6 +257,28 @@ def predict_date(base_dir, target_date_num, card_df=None):
         df_hist = df_all[df_all['日付_num'] < target_date_num]
         df_latest = (df_hist.sort_values('日付_num')
                      .groupby('馬名S', sort=False).last().reset_index())
+        # N走前シフト補正: df_latestの最新行自体が「前走」になるため
+        # 1走前_f = latest行のf, 2走前_f = latest行の1走前_f, ... とシフト
+        _nmaebo_re = re.compile(r'^(\d+)走前_(.+)$')
+        _base_cols = set()
+        _max_n_for_base = {}
+        for _col in df_latest.columns:
+            _m = _nmaebo_re.match(_col)
+            if _m:
+                _n, _base = int(_m.group(1)), _m.group(2)
+                _base_cols.add(_base)
+                _max_n_for_base[_base] = max(_max_n_for_base.get(_base, 0), _n)
+        for _base in _base_cols:
+            _max_n = _max_n_for_base[_base]
+            # 大きいNから順に前の値をずらす
+            for _n in range(min(_max_n, 9), 0, -1):
+                _col_n1 = f'{_n+1}走前_{_base}'
+                _col_n  = f'{_n}走前_{_base}'
+                if _col_n in df_latest.columns and _col_n1 in df_latest.columns:
+                    df_latest[_col_n1] = df_latest[_col_n]
+            # 1走前_base = latestの当該レース結果そのもの
+            if _base in df_latest.columns and f'1走前_{_base}' in df_latest.columns:
+                df_latest[f'1走前_{_base}'] = df_latest[_base]
         day = card_df.drop_duplicates('馬名S').copy()
         all_feats_now = list(set((sub_features or []) + (cur_features or [])))
         pq_cols = (['馬名S', '日付', '距離'] +
