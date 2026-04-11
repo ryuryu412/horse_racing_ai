@@ -1129,10 +1129,14 @@ def generate_html(result, card_df, target_date_num, out_path):
             elif nomi_mark:     row_bg = 'background:#fff8f0'
             else:               row_bg = ''
 
-            bw   = r.get('dc_馬体重', '-')
+            bw   = r.get('dc_馬体重', '')
             bw_d = r.get('dc_増減', '')
-            try: taiju = f"{bw}({'+' if float(bw_d)>=0 else ''}{int(float(bw_d))})" if pd.notna(bw_d) and bw_d != '' else str(bw)
-            except: taiju = str(bw)
+            bw_valid = bw not in ('', None) and str(bw) not in ('nan', '-', 'None') and pd.notna(bw)
+            if not bw_valid:
+                taiju = '-'
+            else:
+                try: taiju = f"{bw}({'+' if float(bw_d)>=0 else ''}{int(float(bw_d))})" if pd.notna(bw_d) and str(bw_d) not in ('', 'nan') else str(bw)
+                except: taiju = str(bw)
 
             odds_v = r.get('dc_単勝オッズ') if pd.notna(r.get('dc_単勝オッズ')) else r.get('単勝オッズ')
 
