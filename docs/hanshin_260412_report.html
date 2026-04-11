@@ -6,7 +6,7 @@
 <title>阪神競馬 現地観戦レポート 2026/4/12</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color:#e6edf3;font-size:13px}
+body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color:#e6edf3;font-size:13px;line-height:1.5}
 .top-bar{background:linear-gradient(135deg,#1a1f3a 0%,#2d1b4e 100%);padding:20px 16px;border-bottom:4px solid #e8b400}
 .top-bar h1{font-size:24px;color:#e8b400;letter-spacing:2px}
 .top-bar .date{font-size:15px;color:#fff;margin-top:6px;font-weight:bold}
@@ -14,11 +14,13 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
 .sticky-nav{position:sticky;top:0;z-index:100;background:#161b22;border-bottom:1px solid #30363d;padding:8px 12px;display:flex;gap:6px;overflow-x:auto;flex-wrap:wrap}
 .nav-item{padding:4px 12px;background:#21262d;border-radius:12px;color:#58a6ff;text-decoration:none;font-size:12px;font-weight:bold;white-space:nowrap}
 .nav-item:hover{background:#30363d}
+
 .picks-box{margin:16px;padding:14px 16px;background:linear-gradient(135deg,#1a0a0a,#2d1010);border:2px solid #c0392b;border-radius:10px}
 .picks-title{font-size:16px;font-weight:bold;color:#e74c3c;margin-bottom:10px}
 .picks-table{width:100%;border-collapse:collapse}
 .picks-table th{background:#3d1010;color:#e74c3c;padding:6px 10px;text-align:center;font-size:12px}
 .picks-table td{padding:7px 10px;text-align:center;border-bottom:1px solid #3d1010}
+
 .race-card{margin:12px;background:#161b22;border-radius:10px;border:1px solid #30363d;overflow:hidden}
 .race-header{padding:12px 14px;background:linear-gradient(90deg,#1f2937,#1a2035);display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
 .race-number{font-size:32px;font-weight:900;color:#e8b400;min-width:52px;line-height:1}
@@ -29,6 +31,31 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
 .cls-badge{padding:3px 10px;background:#30363d;border-radius:10px;color:#aaa;font-size:12px}
 .race-time{color:#58a6ff;font-size:12px}
 .race-comment{font-size:12px;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.06)}
+
+/* コース特性 */
+.course-box{margin:0;padding:12px 16px;background:#0f1923;border-bottom:1px solid #1c2a3a}
+.course-title{font-size:13px;font-weight:bold;color:#58a6ff;padding-bottom:6px;border-bottom:2px solid #1a5276;margin-bottom:8px}
+.course-body{font-size:12px}
+.course-shape{color:#aaa;margin-bottom:6px;padding-left:4px}
+.course-points{padding-left:16px;color:#c8d8e8;margin-bottom:8px}
+.course-points li{margin-bottom:3px}
+.course-blood{color:#b8860b;background:rgba(184,134,11,0.1);padding:6px 10px;border-radius:6px;border-left:3px solid #b8860b;font-size:11.5px}
+
+/* 血統ワンポイント */
+.blood-box{margin:0;padding:12px 16px;background:#0d1a0d;border-bottom:1px solid #1a2e1a}
+.blood-title{font-size:13px;font-weight:bold;color:#27ae60;margin-bottom:8px}
+.blood-items{display:flex;flex-wrap:wrap;gap:8px}
+.sire-tip{display:flex;gap:8px;align-items:flex-start;background:#0f1f0f;border:1px solid #1a3a1a;border-radius:8px;padding:8px 10px;flex:1;min-width:240px;max-width:400px}
+.sire-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.sire-content{flex:1}
+.sire-horse{font-weight:bold;color:#e6edf3;font-size:13px}
+.sire-name{font-size:11px;color:#888;margin-left:4px}
+.sire-type{font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px;font-weight:bold}
+.sire-芝{background:#1a4a1a;color:#27ae60}
+.sire-ダ{background:#4a2a0a;color:#e67e22}
+.sire-万{background:#1a1a4a;color:#58a6ff}
+.sire-comment{font-size:11.5px;color:#aaa;margin-top:3px;line-height:1.4}
+
 .table-wrap{overflow-x:auto}
 .horse-table{width:100%;border-collapse:collapse;min-width:650px}
 .horse-table thead tr{background:#21262d}
@@ -44,7 +71,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
 <div class="top-bar">
   <h1>🏇 阪神競馬 現地観戦レポート</h1>
   <div class="date">2026年4月12日（土）阪神競馬場 全12レース</div>
-  <div class="subtitle">距離モデル × クラスモデル AIスコア完全版　赤背景＝両モデル激熱　緑背景＝片方高評価</div>
+  <div class="subtitle">距離モデル × クラスモデル AIスコア完全版　コース特性・血統ワンポイント付き</div>
 </div>
 <nav class="sticky-nav"><a href="#r1" class="nav-item">1R</a><a href="#r2" class="nav-item">2R</a><a href="#r3" class="nav-item">3R</a><a href="#r4" class="nav-item">4R</a><a href="#r5" class="nav-item">5R</a><a href="#r6" class="nav-item">6R</a><a href="#r7" class="nav-item">7R</a><a href="#r8" class="nav-item">8R</a><a href="#r9" class="nav-item">9R</a><a href="#r10" class="nav-item">10R</a><a href="#r11" class="nav-item">11R</a><a href="#r12" class="nav-item">12R</a></nav>
 <div class="picks-box">
@@ -64,17 +91,119 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment"><span style="color:#27ae60;font-weight:bold">✓ ゼルダ が距離・クラス両モデル1位</span></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">💎</span>
+              <div class="sire-content">
+                <span class="sire-horse">クリスプレミアム</span>
+                <span class="sire-name">(ダノンプレミアム)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">マイルG1馬。産駒は切れる末脚を持つマイラー傾向。芝1600m外回りで輝くタイプが多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⭐</span>
+              <div class="sire-content">
+                <span class="sire-horse">オーブフレッシュ</span>
+                <span class="sire-name">(スワーヴリチャード)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">大阪杯馬。産駒は芝中距離向きでスピードとスタミナのバランスが良い。阪神芝との相性も◎。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🏃</span>
+              <div class="sire-content">
+                <span class="sire-horse">カネトシフレイア</span>
+                <span class="sire-name">(ミッキーアイル)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">NHKマイルC勝ち馬。産駒はスプリント〜マイルに適性。芝の短距離戦で末脚を活かすタイプが多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🎯</span>
+              <div class="sire-content">
+                <span class="sire-horse">ステライヴ</span>
+                <span class="sire-name">(マクフィ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">欧州マイルG1馬。産駒はダート適性が高く、先行してしぶとく粘るタイプが多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🔥</span>
+              <div class="sire-content">
+                <span class="sire-horse">ファイアプレイス</span>
+                <span class="sire-name">(パイロ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダートスプリンターとして実績。産駒は先行型スピード馬が多く、砂のスプリント戦で本領発揮。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⚡</span>
+              <div class="sire-content">
+                <span class="sire-horse">アスターエポワス</span>
+                <span class="sire-name">(カフジテイク)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダート短〜中距離で活躍。スピード型の産駒が多く先行して粘る競馬が得意。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🏋️</span>
+              <div class="sire-content">
+                <span class="sire-horse">メイショウナナユキ</span>
+                <span class="sire-name">(ホッコータルマエ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダートチャンピオン。産駒はスタミナ豊富でダート長距離〜中距離向き。馬力型で渋い馬場も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⚡</span>
+              <div class="sire-content">
+                <span class="sire-horse">チョウスター</span>
+                <span class="sire-name">(エスポワールシチー)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ゴールドアリュール直子でダート実績豊富。産駒もダート適性高く粘り強いタイプ多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🚀</span>
+              <div class="sire-content">
+                <span class="sire-horse">ルージュアイラ</span>
+                <span class="sire-name">(ドレフォン)</span>
+                <span class="sire-type sire-ダ">ダ芝適性</span>
+                <div class="sire-comment">BCスプリント勝ち馬。産駒はスピード豊富でダート短距離に高適性。芝もこなせる万能型多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🌟</span>
+              <div class="sire-content">
+                <span class="sire-horse">オーロアルジェント</span>
+                <span class="sire-name">(シルバーステート)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子で種牡馬としても大成。産駒は芝マイル〜中距離で高適性、外回り向きの末脚タイプ。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⚡</span>
+              <div class="sire-content">
+                <span class="sire-horse">スマッシング</span>
+                <span class="sire-name">(ダノンスマッシュ)</span>
+                <span class="sire-type sire-芝">芝ダ適性</span>
+                <div class="sire-comment">スプリントG1馬。産駒はスピード型が多く、芝・ダート問わず短距離で活躍が期待できる。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">ロージーキャンドル</span>
+                <span class="sire-name">(サトノクラウン)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">宝塚記念・香港ヴァーズ馬。産駒は芝中距離向きで独特のしぶとさを持つ。重馬場での粘りが光る。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ヴォメロ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ヴォメロ</div></td>
           <td style="color:#aaa;font-size:12px">原優介</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">50.8</td>
@@ -87,7 +216,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">クリスプレミアム</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">クリスプレミアム</div><div style="font-size:10px;color:#888;margin-top:1px">💎 ダノンプレミアム</div></td>
           <td style="color:#aaa;font-size:12px">太宰啓介</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">80.8</td>
@@ -100,7 +229,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">オーブフレッシュ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">オーブフレッシュ</div><div style="font-size:10px;color:#888;margin-top:1px">⭐ スワーヴリチャード</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">9.1</td>
@@ -113,7 +242,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">カネトシフレイア</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">カネトシフレイア</div><div style="font-size:10px;color:#888;margin-top:1px">🏃 ミッキーアイル</div></td>
           <td style="color:#aaa;font-size:12px">森田誠也</td>
           <td style="color:#8b949e;font-size:11px">牝 nankg</td>
           <td style="font-weight:bold;color:#f0a500">89.9</td>
@@ -126,7 +255,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">セヴェンヌ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">セヴェンヌ</div></td>
           <td style="color:#aaa;font-size:12px">松山弘平</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">4.6</td>
@@ -139,7 +268,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ステライヴ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ステライヴ</div><div style="font-size:10px;color:#888;margin-top:1px">🎯 マクフィ</div></td>
           <td style="color:#aaa;font-size:12px">西村淳也</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">6.6</td>
@@ -152,7 +281,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ファイアプレイス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ファイアプレイス</div><div style="font-size:10px;color:#888;margin-top:1px">🔥 パイロ</div></td>
           <td style="color:#aaa;font-size:12px">池添謙一</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">33.5</td>
@@ -165,7 +294,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アスターエポワス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アスターエポワス</div><div style="font-size:10px;color:#888;margin-top:1px">⚡ カフジテイク</div></td>
           <td style="color:#aaa;font-size:12px">古川吉洋</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">7.5</td>
@@ -178,7 +307,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">レーヌペスカ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">レーヌペスカ</div></td>
           <td style="color:#aaa;font-size:12px">高杉吏麒</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">37.6</td>
@@ -191,7 +320,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ゼルダ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ゼルダ</div></td>
           <td style="color:#aaa;font-size:12px">田口貫太</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">12.1</td>
@@ -204,7 +333,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">メイショウナナユキ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">メイショウナナユキ</div><div style="font-size:10px;color:#888;margin-top:1px">🏋️ ホッコータルマエ</div></td>
           <td style="color:#aaa;font-size:12px">菱田裕二</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">19.4</td>
@@ -217,7 +346,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">12</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">チョウスター</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">チョウスター</div><div style="font-size:10px;color:#888;margin-top:1px">⚡ エスポワールシチー</div></td>
           <td style="color:#aaa;font-size:12px">柴田裕一</td>
           <td style="color:#8b949e;font-size:11px">牝 nankg</td>
           <td style="font-weight:bold;color:#f0a500">71.9</td>
@@ -230,7 +359,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">13</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ルージュアイラ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ルージュアイラ</div><div style="font-size:10px;color:#888;margin-top:1px">🚀 ドレフォン</div></td>
           <td style="color:#aaa;font-size:12px">団野大成</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">25.3</td>
@@ -243,7 +372,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">14</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">オーロアルジェント</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">オーロアルジェント</div><div style="font-size:10px;color:#888;margin-top:1px">🌟 シルバーステート</div></td>
           <td style="color:#aaa;font-size:12px">北村友一</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">18.5</td>
@@ -256,7 +385,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">15</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">スマッシング</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">スマッシング</div><div style="font-size:10px;color:#888;margin-top:1px">⚡ ダノンスマッシュ</div></td>
           <td style="color:#aaa;font-size:12px">幸英明</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">3.7</td>
@@ -269,7 +398,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">16</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ロージーキャンドル</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ロージーキャンドル</div><div style="font-size:10px;color:#888;margin-top:1px">👑 サトノクラウン</div></td>
           <td style="color:#aaa;font-size:12px">鮫島克駿</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">30.4</td>
@@ -295,17 +424,79 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment"><span style="color:#27ae60;font-weight:bold">✓ エルナト が距離・クラス両モデル1位</span></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">ミッキーロビン</span>
+                <span class="sire-name">(ジャスタウェイ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">天皇賞秋・ドバイDF馬。産駒は芝マイル〜中距離。ロングスパートが得意で末脚の持続力が武器。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⭐</span>
+              <div class="sire-content">
+                <span class="sire-horse">エトワールブルー</span>
+                <span class="sire-name">(サートゥルナーリア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">皐月賞・ホープフルS馬。産駒はスピードとスタミナのバランスが良く、芝マイル〜中距離向き。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🏋️</span>
+              <div class="sire-content">
+                <span class="sire-horse">バケラッタ</span>
+                <span class="sire-name">(ホッコータルマエ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダートチャンピオン。産駒はスタミナ豊富でダート長距離〜中距離向き。馬力型で渋い馬場も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🌟</span>
+              <div class="sire-content">
+                <span class="sire-horse">ゼンノスタニング</span>
+                <span class="sire-name">(シルバーステート)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子で種牡馬としても大成。産駒は芝マイル〜中距離で高適性、外回り向きの末脚タイプ。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">ハイラブレジェンド</span>
+                <span class="sire-name">(リアルスティール)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子でUAEダービー馬。産駒は芝マイル〜中距離向きで末脚が武器。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🎯</span>
+              <div class="sire-content">
+                <span class="sire-horse">ヴレパリジャン</span>
+                <span class="sire-name">(マクフィ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">欧州マイルG1馬。産駒はダート適性が高く、先行してしぶとく粘るタイプが多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🏋️</span>
+              <div class="sire-content">
+                <span class="sire-horse">メイショウセンドウ</span>
+                <span class="sire-name">(ホッコータルマエ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダートチャンピオン。産駒はスタミナ豊富でダート長距離〜中距離向き。馬力型で渋い馬場も苦にしない。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">エルナト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">エルナト</div></td>
           <td style="color:#aaa;font-size:12px">団野大成</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">5.9</td>
@@ -318,7 +509,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ミッキーロビン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ミッキーロビン</div><div style="font-size:10px;color:#888;margin-top:1px">💫 ジャスタウェイ</div></td>
           <td style="color:#aaa;font-size:12px">松山弘平</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">10.6</td>
@@ -331,7 +522,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">エトワールブルー</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">エトワールブルー</div><div style="font-size:10px;color:#888;margin-top:1px">⭐ サートゥルナーリア</div></td>
           <td style="color:#aaa;font-size:12px">太宰啓介</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">25.1</td>
@@ -344,7 +535,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">バケラッタ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">バケラッタ</div><div style="font-size:10px;color:#888;margin-top:1px">🏋️ ホッコータルマエ</div></td>
           <td style="color:#aaa;font-size:12px">鮫島克駿</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">8.6</td>
@@ -357,7 +548,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">フチサンチャチャ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">フチサンチャチャ</div></td>
           <td style="color:#aaa;font-size:12px">岡田祥嗣</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">85.0</td>
@@ -370,7 +561,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">メンデレーエフ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">メンデレーエフ</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">7.3</td>
@@ -383,7 +574,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ゼンノスタニング</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ゼンノスタニング</div><div style="font-size:10px;color:#888;margin-top:1px">🌟 シルバーステート</div></td>
           <td style="color:#aaa;font-size:12px">森田誠也</td>
           <td style="color:#8b949e;font-size:11px">牡 nankg</td>
           <td style="font-weight:bold;color:#f0a500">67.5</td>
@@ -396,7 +587,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">スマートグロワール</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">スマートグロワール</div></td>
           <td style="color:#aaa;font-size:12px">北村友一</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">4.2</td>
@@ -409,7 +600,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ハイラブレジェンド</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ハイラブレジェンド</div><div style="font-size:10px;color:#888;margin-top:1px">💫 リアルスティール</div></td>
           <td style="color:#aaa;font-size:12px">藤懸貴志</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">15.6</td>
@@ -422,7 +613,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">シンゼンコジロウ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">シンゼンコジロウ</div></td>
           <td style="color:#aaa;font-size:12px">今村聖奈</td>
           <td style="color:#8b949e;font-size:11px">牡 nankg</td>
           <td style="font-weight:bold;color:#f0a500">26.4</td>
@@ -435,7 +626,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ジュウハチキン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ジュウハチキン</div></td>
           <td style="color:#aaa;font-size:12px">幸英明</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">28.7</td>
@@ -448,7 +639,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">12</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ピコオーバル</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ピコオーバル</div></td>
           <td style="color:#aaa;font-size:12px">菱田裕二</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">6.2</td>
@@ -461,7 +652,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">13</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ウイングリフィス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ウイングリフィス</div></td>
           <td style="color:#aaa;font-size:12px">田口貫太</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">56.7</td>
@@ -474,7 +665,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">14</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ヴレパリジャン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ヴレパリジャン</div><div style="font-size:10px;color:#888;margin-top:1px">🎯 マクフィ</div></td>
           <td style="color:#aaa;font-size:12px">富田暁</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">60.4</td>
@@ -487,7 +678,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">15</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ガラード</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ガラード</div></td>
           <td style="color:#aaa;font-size:12px">古川吉洋</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">22.1</td>
@@ -500,7 +691,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">16</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">メイショウセンドウ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">メイショウセンドウ</div><div style="font-size:10px;color:#888;margin-top:1px">🏋️ ホッコータルマエ</div></td>
           <td style="color:#aaa;font-size:12px">池添謙一</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">18.3</td>
@@ -526,17 +717,71 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment"><span style="color:#e74c3c;font-weight:bold">🔥 ザキノフレンズ が両モデル高評価</span></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">🚀</span>
+              <div class="sire-content">
+                <span class="sire-horse">ショーライトイヤー</span>
+                <span class="sire-name">(ドレフォン)</span>
+                <span class="sire-type sire-ダ">ダ芝適性</span>
+                <div class="sire-comment">BCスプリント勝ち馬。産駒はスピード豊富でダート短距離に高適性。芝もこなせる万能型多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🔥</span>
+              <div class="sire-content">
+                <span class="sire-horse">ドリームハーモニー</span>
+                <span class="sire-name">(パイロ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダートスプリンターとして実績。産駒は先行型スピード馬が多く、砂のスプリント戦で本領発揮。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💪</span>
+              <div class="sire-content">
+                <span class="sire-horse">ミスヘンリー</span>
+                <span class="sire-name">(ヘニーヒューズ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダートで圧倒的実績を持つ米国産。産駒はスピード×パワーの砂巧者が多く、ダート短〜中距離は鉄板。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🦾</span>
+              <div class="sire-content">
+                <span class="sire-horse">スーパーシスター</span>
+                <span class="sire-name">(シニスターミニスター)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダート中長距離に強い米国系。パワーとスタミナを兼ね備えた産駒が多く、時計のかかる馬場で真価発揮。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🏋️</span>
+              <div class="sire-content">
+                <span class="sire-horse">メイショウカスミ</span>
+                <span class="sire-name">(ホッコータルマエ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダートチャンピオン。産駒はスタミナ豊富でダート長距離〜中距離向き。馬力型で渋い馬場も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💪</span>
+              <div class="sire-content">
+                <span class="sire-horse">ウルダ</span>
+                <span class="sire-name">(ヘニーヒューズ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダートで圧倒的実績を持つ米国産。産駒はスピード×パワーの砂巧者が多く、ダート短〜中距離は鉄板。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ベリルスフィア</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ベリルスフィア</div></td>
           <td style="color:#aaa;font-size:12px">田口貫太</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">47.0</td>
@@ -549,7 +794,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ショーライトイヤー</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ショーライトイヤー</div><div style="font-size:10px;color:#888;margin-top:1px">🚀 ドレフォン</div></td>
           <td style="color:#aaa;font-size:12px">太宰啓介</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">13.8</td>
@@ -562,7 +807,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">モズガネシア</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">モズガネシア</div></td>
           <td style="color:#aaa;font-size:12px">富田暁</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">12.2</td>
@@ -575,7 +820,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-both">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ザキノフレンズ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ザキノフレンズ</div></td>
           <td style="color:#aaa;font-size:12px">団野大成</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">3.5</td>
@@ -588,7 +833,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ドリームハーモニー</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ドリームハーモニー</div><div style="font-size:10px;color:#888;margin-top:1px">🔥 パイロ</div></td>
           <td style="color:#aaa;font-size:12px">荻野琢真</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">48.7</td>
@@ -601,7 +846,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">グラディオール</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">グラディオール</div></td>
           <td style="color:#aaa;font-size:12px">津村明秀</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">15.1</td>
@@ -614,7 +859,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ロングフルスペック</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ロングフルスペック</div></td>
           <td style="color:#aaa;font-size:12px">角田大和</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">11.9</td>
@@ -627,7 +872,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">タマモキャロル</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">タマモキャロル</div></td>
           <td style="color:#aaa;font-size:12px">吉村誠之</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">15.7</td>
@@ -640,7 +885,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ミスヘンリー</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ミスヘンリー</div><div style="font-size:10px;color:#888;margin-top:1px">💪 ヘニーヒューズ</div></td>
           <td style="color:#aaa;font-size:12px">幸英明</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">5.8</td>
@@ -653,7 +898,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">スーパーシスター</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">スーパーシスター</div><div style="font-size:10px;color:#888;margin-top:1px">🦾 シニスターミニスター</div></td>
           <td style="color:#aaa;font-size:12px">今村聖奈</td>
           <td style="color:#8b949e;font-size:11px">牝 nankg</td>
           <td style="font-weight:bold;color:#f0a500">9.3</td>
@@ -666,7 +911,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ナムラソラン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ナムラソラン</div></td>
           <td style="color:#aaa;font-size:12px">柴田裕一</td>
           <td style="color:#8b949e;font-size:11px">牝 nankg</td>
           <td style="font-weight:bold;color:#f0a500">31.3</td>
@@ -679,7 +924,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">12</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">クリコファルコン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">クリコファルコン</div></td>
           <td style="color:#aaa;font-size:12px">菱田裕二</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">11.4</td>
@@ -692,7 +937,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">13</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">モノノケ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">モノノケ</div></td>
           <td style="color:#aaa;font-size:12px">原優介</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">22.2</td>
@@ -705,7 +950,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">14</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">メイショウカスミ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">メイショウカスミ</div><div style="font-size:10px;color:#888;margin-top:1px">🏋️ ホッコータルマエ</div></td>
           <td style="color:#aaa;font-size:12px">石橋脩</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">17.1</td>
@@ -718,7 +963,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">15</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ウルダ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ウルダ</div><div style="font-size:10px;color:#888;margin-top:1px">💪 ヘニーヒューズ</div></td>
           <td style="color:#aaa;font-size:12px">城戸義政</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">36.2</td>
@@ -731,7 +976,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">16</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">エナクローム</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">エナクローム</div></td>
           <td style="color:#aaa;font-size:12px">井上敏樹</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">34.4</td>
@@ -757,17 +1002,87 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment">距離1位: <b>ララファキュルテ</b> / クラス1位: <b>ソルトアイリス</b></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">⭐</span>
+              <div class="sire-content">
+                <span class="sire-horse">パナテナイア</span>
+                <span class="sire-name">(サートゥルナーリア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">皐月賞・ホープフルS馬。産駒はスピードとスタミナのバランスが良く、芝マイル〜中距離向き。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">タナブイハチターボ</span>
+                <span class="sire-name">(イスラボニータ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">皐月賞馬。産駒はフットワークが軽く芝マイル〜中距離向き。速いペースにも対応できる。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🥇</span>
+              <div class="sire-content">
+                <span class="sire-horse">バロッカネーラ</span>
+                <span class="sire-name">(キタサンブラック)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">三冠馬。産駒は先行力とスタミナを兼備。内回りコースでの先行競馬で真価を発揮するタイプ多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⚡</span>
+              <div class="sire-content">
+                <span class="sire-horse">ソルトアイリス</span>
+                <span class="sire-name">(アドマイヤマーズ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">NHKマイルC・香港マイル馬。産駒はスプリント〜マイル向きの切れ者が多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🏆</span>
+              <div class="sire-content">
+                <span class="sire-horse">エイシンミスリル</span>
+                <span class="sire-name">(タリスマニック)</span>
+                <span class="sire-type sire-芝">芝ダ適性</span>
+                <div class="sire-comment">BCターフ馬。欧州系のスタミナ血統で産駒はタフな競馬が得意。芝・ダート両用タイプも出る。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">ジャスティンカレラ</span>
+                <span class="sire-name">(エピファネイア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">菊花賞・JC馬。産駒はスタミナ豊富で芝中距離からクラシック路線が主戦場。タフな競馬も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">ブランヴァンダイク</span>
+                <span class="sire-name">(エピファネイア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">菊花賞・JC馬。産駒はスタミナ豊富で芝中距離からクラシック路線が主戦場。タフな競馬も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⭐</span>
+              <div class="sire-content">
+                <span class="sire-horse">ガルフコースト</span>
+                <span class="sire-name">(スワーヴリチャード)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">大阪杯馬。産駒は芝中距離向きでスピードとスタミナのバランスが良い。阪神芝との相性も◎。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">パナテナイア</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">パナテナイア</div><div style="font-size:10px;color:#888;margin-top:1px">⭐ サートゥルナーリア</div></td>
           <td style="color:#aaa;font-size:12px">北村友一</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">16.2</td>
@@ -780,7 +1095,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ココプレミア</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ココプレミア</div></td>
           <td style="color:#aaa;font-size:12px">高杉吏麒</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">38.7</td>
@@ -793,7 +1108,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">セコンドトゥベスト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">セコンドトゥベスト</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">5.7</td>
@@ -806,7 +1121,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">セルヴァジオ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">セルヴァジオ</div></td>
           <td style="color:#aaa;font-size:12px">富田暁</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">59.9</td>
@@ -819,7 +1134,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">タナブイハチターボ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">タナブイハチターボ</div><div style="font-size:10px;color:#888;margin-top:1px">💫 イスラボニータ</div></td>
           <td style="color:#aaa;font-size:12px">古川吉洋</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">7.2</td>
@@ -832,7 +1147,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">バロッカネーラ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">バロッカネーラ</div><div style="font-size:10px;color:#888;margin-top:1px">🥇 キタサンブラック</div></td>
           <td style="color:#aaa;font-size:12px">西村淳也</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">11.1</td>
@@ -845,7 +1160,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アイサーベル</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アイサーベル</div></td>
           <td style="color:#aaa;font-size:12px">ルメール</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">7.9</td>
@@ -858,7 +1173,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ソルトアイリス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ソルトアイリス</div><div style="font-size:10px;color:#888;margin-top:1px">⚡ アドマイヤマーズ</div></td>
           <td style="color:#aaa;font-size:12px">武豊</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">9.3</td>
@@ -871,7 +1186,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">シバノパージャン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">シバノパージャン</div></td>
           <td style="color:#aaa;font-size:12px">田口貫太</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">36.2</td>
@@ -884,7 +1199,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">エイシンミスリル</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">エイシンミスリル</div><div style="font-size:10px;color:#888;margin-top:1px">🏆 タリスマニック</div></td>
           <td style="color:#aaa;font-size:12px">荻野琢真</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">52.4</td>
@@ -897,7 +1212,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ララファキュルテ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ララファキュルテ</div></td>
           <td style="color:#aaa;font-size:12px">団野大成</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">4.4</td>
@@ -910,7 +1225,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">12</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">オーケーエレガンス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">オーケーエレガンス</div></td>
           <td style="color:#aaa;font-size:12px">吉村誠之</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">89.1</td>
@@ -923,7 +1238,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">13</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ジャスティンカレラ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ジャスティンカレラ</div><div style="font-size:10px;color:#888;margin-top:1px">👑 エピファネイア</div></td>
           <td style="color:#aaa;font-size:12px">戸崎圭太</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">31.0</td>
@@ -936,7 +1251,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">14</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ブランヴァンダイク</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ブランヴァンダイク</div><div style="font-size:10px;color:#888;margin-top:1px">👑 エピファネイア</div></td>
           <td style="color:#aaa;font-size:12px">鮫島克駿</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">8.7</td>
@@ -949,7 +1264,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">15</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ガルフコースト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ガルフコースト</div><div style="font-size:10px;color:#888;margin-top:1px">⭐ スワーヴリチャード</div></td>
           <td style="color:#aaa;font-size:12px">浜中俊</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">46.5</td>
@@ -962,7 +1277,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">16</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ハクサンモッピー</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ハクサンモッピー</div></td>
           <td style="color:#aaa;font-size:12px">藤懸貴志</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">85.4</td>
@@ -975,7 +1290,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">17</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">メイショウショカツ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">メイショウショカツ</div></td>
           <td style="color:#aaa;font-size:12px">坂井瑠星</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">30.8</td>
@@ -988,7 +1303,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">18</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ショウナンアネモネ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ショウナンアネモネ</div></td>
           <td style="color:#aaa;font-size:12px">幸英明</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">52.4</td>
@@ -1014,17 +1329,20 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment">距離1位: <b>ワイドグンサ</b> / クラス1位: <b>ブロンテス</b></div>
         </div>
       </div>
+      
+      
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ラッキーバック</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ラッキーバック</div></td>
           <td style="color:#aaa;font-size:12px">吉村誠之</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">19.3</td>
@@ -1037,7 +1355,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">カフジクロミエ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">カフジクロミエ</div></td>
           <td style="color:#aaa;font-size:12px">柴田裕一</td>
           <td style="color:#8b949e;font-size:11px">牝 nankg</td>
           <td style="font-weight:bold;color:#f0a500">23.1</td>
@@ -1050,7 +1368,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ハードシングス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ハードシングス</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">18.7</td>
@@ -1063,7 +1381,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ダンシングドール</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ダンシングドール</div></td>
           <td style="color:#aaa;font-size:12px">森田誠也</td>
           <td style="color:#8b949e;font-size:11px">牝 nankg</td>
           <td style="font-weight:bold;color:#f0a500">4.9</td>
@@ -1076,7 +1394,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">エスカレイト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">エスカレイト</div></td>
           <td style="color:#aaa;font-size:12px">高杉吏麒</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">25.9</td>
@@ -1089,7 +1407,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ブロンテス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ブロンテス</div></td>
           <td style="color:#aaa;font-size:12px">古川吉洋</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">12.3</td>
@@ -1102,7 +1420,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ゴールデンバランス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ゴールデンバランス</div></td>
           <td style="color:#aaa;font-size:12px">松山弘平</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">12.5</td>
@@ -1115,7 +1433,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">リサシテーション</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">リサシテーション</div></td>
           <td style="color:#aaa;font-size:12px">菱田裕二</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">12.1</td>
@@ -1128,7 +1446,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ワイドグンサ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ワイドグンサ</div></td>
           <td style="color:#aaa;font-size:12px">西村淳也</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">14.7</td>
@@ -1141,7 +1459,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アンプイットアップ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アンプイットアップ</div></td>
           <td style="color:#aaa;font-size:12px">団野大成</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">36.1</td>
@@ -1154,7 +1472,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">スターオブロンドン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">スターオブロンドン</div></td>
           <td style="color:#aaa;font-size:12px">坂井瑠星</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">8.7</td>
@@ -1167,7 +1485,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">12</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">タマモヒロイン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">タマモヒロイン</div></td>
           <td style="color:#aaa;font-size:12px">田口貫太</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">48.8</td>
@@ -1180,7 +1498,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">13</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ラエトゥス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ラエトゥス</div></td>
           <td style="color:#aaa;font-size:12px">鮫島克駿</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">56.2</td>
@@ -1193,7 +1511,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">14</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">テーオーパーセル</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">テーオーパーセル</div></td>
           <td style="color:#aaa;font-size:12px">藤懸貴志</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">7.1</td>
@@ -1206,7 +1524,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">15</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アンティミスト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アンティミスト</div></td>
           <td style="color:#aaa;font-size:12px">津村明秀</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">12.2</td>
@@ -1219,7 +1537,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">16</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ポッドリプル</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ポッドリプル</div></td>
           <td style="color:#aaa;font-size:12px">荻野極</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">6.8</td>
@@ -1245,17 +1563,55 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment"><span style="color:#27ae60;font-weight:bold">✓ アスクガンバーレ が距離・クラス両モデル1位</span></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">サマーナイト</span>
+                <span class="sire-name">(ルーラーシップ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">クイーンエリザベス2世C馬。産駒は芝中長距離向きで先行してスタミナを活かす競馬が得意。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⭐</span>
+              <div class="sire-content">
+                <span class="sire-horse">アスクガンバーレ</span>
+                <span class="sire-name">(サートゥルナーリア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">皐月賞・ホープフルS馬。産駒はスピードとスタミナのバランスが良く、芝マイル〜中距離向き。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">ロードアルディート</span>
+                <span class="sire-name">(ドゥラメンテ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">クラシック二冠馬。産駒は芝中距離向きでクラシック路線に多数送り込む。スタミナと瞬発力を兼備。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🚀</span>
+              <div class="sire-content">
+                <span class="sire-horse">ソニックステップ</span>
+                <span class="sire-name">(ドレフォン)</span>
+                <span class="sire-type sire-ダ">ダ芝適性</span>
+                <div class="sire-comment">BCスプリント勝ち馬。産駒はスピード豊富でダート短距離に高適性。芝もこなせる万能型多い。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">メイショウクモイ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">メイショウクモイ</div></td>
           <td style="color:#aaa;font-size:12px">森田誠也</td>
           <td style="color:#8b949e;font-size:11px">牡 nankg</td>
           <td style="font-weight:bold;color:#f0a500">18.3</td>
@@ -1268,7 +1624,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">サマーナイト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">サマーナイト</div><div style="font-size:10px;color:#888;margin-top:1px">👑 ルーラーシップ</div></td>
           <td style="color:#aaa;font-size:12px">高杉吏麒</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">14.5</td>
@@ -1281,7 +1637,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ソングコレクター</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ソングコレクター</div></td>
           <td style="color:#aaa;font-size:12px">鮫島克駿</td>
           <td style="color:#8b949e;font-size:11px">牝 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">52.6</td>
@@ -1294,7 +1650,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">クレスコドルフィン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">クレスコドルフィン</div></td>
           <td style="color:#aaa;font-size:12px">藤懸貴志</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">31.0</td>
@@ -1307,7 +1663,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アスクガンバーレ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アスクガンバーレ</div><div style="font-size:10px;color:#888;margin-top:1px">⭐ サートゥルナーリア</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">4.0</td>
@@ -1320,7 +1676,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">レーヴドアンジュ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">レーヴドアンジュ</div></td>
           <td style="color:#aaa;font-size:12px">柴田裕一</td>
           <td style="color:#8b949e;font-size:11px">牝 nankg</td>
           <td style="font-weight:bold;color:#f0a500">88.6</td>
@@ -1333,7 +1689,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アイファーリーベン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アイファーリーベン</div></td>
           <td style="color:#aaa;font-size:12px">荻野琢真</td>
           <td style="color:#8b949e;font-size:11px">牝 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">72.6</td>
@@ -1346,7 +1702,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ロードアルディート</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ロードアルディート</div><div style="font-size:10px;color:#888;margin-top:1px">👑 ドゥラメンテ</div></td>
           <td style="color:#aaa;font-size:12px">ルメール</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">2.4</td>
@@ -1359,7 +1715,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">モズプリヴェール</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">モズプリヴェール</div></td>
           <td style="color:#aaa;font-size:12px">松山弘平</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">8.8</td>
@@ -1372,7 +1728,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ソニックステップ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ソニックステップ</div><div style="font-size:10px;color:#888;margin-top:1px">🚀 ドレフォン</div></td>
           <td style="color:#aaa;font-size:12px">西村淳也</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">3.5</td>
@@ -1398,17 +1754,79 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment"><span style="color:#27ae60;font-weight:bold">✓ ジャサルディア が距離・クラス両モデル1位</span></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">ジャサルディア</span>
+                <span class="sire-name">(キズナ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープインパクト直子。産駒は芝マイル〜中距離で高適性。上り3F勝負に強く外回り向き。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🏆</span>
+              <div class="sire-content">
+                <span class="sire-horse">マルカオペラ</span>
+                <span class="sire-name">(ハービンジャー)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">欧州最強クラスの競走馬。産駒はスタミナ型で芝2000m前後に高適性。重い馬場でも走れる欧州色が強い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🌟</span>
+              <div class="sire-content">
+                <span class="sire-horse">ガストン</span>
+                <span class="sire-name">(シルバーステート)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子で種牡馬としても大成。産駒は芝マイル〜中距離で高適性、外回り向きの末脚タイプ。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🌟</span>
+              <div class="sire-content">
+                <span class="sire-horse">サクラオーラ</span>
+                <span class="sire-name">(シルバーステート)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子で種牡馬としても大成。産駒は芝マイル〜中距離で高適性、外回り向きの末脚タイプ。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">ブルボンクイーン</span>
+                <span class="sire-name">(キズナ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープインパクト直子。産駒は芝マイル〜中距離で高適性。上り3F勝負に強く外回り向き。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">ロンドボス</span>
+                <span class="sire-name">(モーリス)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">G1を6勝した名馬。産駒は芝マイル〜中距離向きで、持続する末脚を持つ。内外問わず活躍。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">イゾラフェリーチェ</span>
+                <span class="sire-name">(サトノクラウン)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">宝塚記念・香港ヴァーズ馬。産駒は芝中距離向きで独特のしぶとさを持つ。重馬場での粘りが光る。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">エルサトアナ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">エルサトアナ</div></td>
           <td style="color:#aaa;font-size:12px">今村聖奈</td>
           <td style="color:#8b949e;font-size:11px">牝 nankg</td>
           <td style="font-weight:bold;color:#f0a500">14.2</td>
@@ -1421,7 +1839,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ジャサルディア</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ジャサルディア</div><div style="font-size:10px;color:#888;margin-top:1px">💫 キズナ</div></td>
           <td style="color:#aaa;font-size:12px">ルメール</td>
           <td style="color:#8b949e;font-size:11px">牝 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">1.4</td>
@@ -1434,7 +1852,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">マルカオペラ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">マルカオペラ</div><div style="font-size:10px;color:#888;margin-top:1px">🏆 ハービンジャー</div></td>
           <td style="color:#aaa;font-size:12px">北村友一</td>
           <td style="color:#8b949e;font-size:11px">牝 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">20.4</td>
@@ -1447,7 +1865,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">バガン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">バガン</div></td>
           <td style="color:#aaa;font-size:12px">森田誠也</td>
           <td style="color:#8b949e;font-size:11px">牡 nankg</td>
           <td style="font-weight:bold;color:#f0a500">32.8</td>
@@ -1460,7 +1878,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ガストン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ガストン</div><div style="font-size:10px;color:#888;margin-top:1px">🌟 シルバーステート</div></td>
           <td style="color:#aaa;font-size:12px">幸英明</td>
           <td style="color:#8b949e;font-size:11px">セ 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">52.4</td>
@@ -1473,7 +1891,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">サクラオーラ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">サクラオーラ</div><div style="font-size:10px;color:#888;margin-top:1px">🌟 シルバーステート</div></td>
           <td style="color:#aaa;font-size:12px">松山弘平</td>
           <td style="color:#8b949e;font-size:11px">牝 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">15.5</td>
@@ -1486,7 +1904,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">タイキエクセロン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">タイキエクセロン</div></td>
           <td style="color:#aaa;font-size:12px">柴田裕一</td>
           <td style="color:#8b949e;font-size:11px">牡 nankg</td>
           <td style="font-weight:bold;color:#f0a500">36.6</td>
@@ -1499,7 +1917,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ブルボンクイーン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ブルボンクイーン</div><div style="font-size:10px;color:#888;margin-top:1px">💫 キズナ</div></td>
           <td style="color:#aaa;font-size:12px">角田大和</td>
           <td style="color:#8b949e;font-size:11px">牝 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">13.1</td>
@@ -1512,7 +1930,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アスクキングコング</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アスクキングコング</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">セ 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">27.7</td>
@@ -1525,7 +1943,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ロンドボス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ロンドボス</div><div style="font-size:10px;color:#888;margin-top:1px">👑 モーリス</div></td>
           <td style="color:#aaa;font-size:12px">西村淳也</td>
           <td style="color:#8b949e;font-size:11px">牝 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">6.1</td>
@@ -1538,7 +1956,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">イゾラフェリーチェ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">イゾラフェリーチェ</div><div style="font-size:10px;color:#888;margin-top:1px">👑 サトノクラウン</div></td>
           <td style="color:#aaa;font-size:12px">荻野極</td>
           <td style="color:#8b949e;font-size:11px">牝 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">22.9</td>
@@ -1564,17 +1982,55 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment">距離1位: <b>ゼンエスポワール</b> / クラス1位: <b>サンライズバレット</b></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">🦾</span>
+              <div class="sire-content">
+                <span class="sire-horse">スマートカイロス</span>
+                <span class="sire-name">(シニスターミニスター)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダート中長距離に強い米国系。パワーとスタミナを兼ね備えた産駒が多く、時計のかかる馬場で真価発揮。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🦾</span>
+              <div class="sire-content">
+                <span class="sire-horse">アリエスキング</span>
+                <span class="sire-name">(シニスターミニスター)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダート中長距離に強い米国系。パワーとスタミナを兼ね備えた産駒が多く、時計のかかる馬場で真価発揮。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🏆</span>
+              <div class="sire-content">
+                <span class="sire-horse">ソウルアンドジャズ</span>
+                <span class="sire-name">(ブリックスアンドモルタル)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">BCターフ馬。産駒は芝中距離向きで安定したパフォーマンスを示す。外回りコースが得意。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">サンライズバレット</span>
+                <span class="sire-name">(リアルスティール)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子でUAEダービー馬。産駒は芝マイル〜中距離向きで末脚が武器。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">スマートカイロス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">スマートカイロス</div><div style="font-size:10px;color:#888;margin-top:1px">🦾 シニスターミニスター</div></td>
           <td style="color:#aaa;font-size:12px">高杉吏麒</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">9.2</td>
@@ -1587,7 +2043,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アリエスキング</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アリエスキング</div><div style="font-size:10px;color:#888;margin-top:1px">🦾 シニスターミニスター</div></td>
           <td style="color:#aaa;font-size:12px">田口貫太</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">7.5</td>
@@ -1600,7 +2056,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ソウルアンドジャズ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ソウルアンドジャズ</div><div style="font-size:10px;color:#888;margin-top:1px">🏆 ブリックスアンドモルタル</div></td>
           <td style="color:#aaa;font-size:12px">坂井瑠星</td>
           <td style="color:#8b949e;font-size:11px">セ 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">5.5</td>
@@ -1613,7 +2069,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">オセアバトルプラン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">オセアバトルプラン</div></td>
           <td style="color:#aaa;font-size:12px">古川吉洋</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">22.6</td>
@@ -1626,7 +2082,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">クアトロジャック</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">クアトロジャック</div></td>
           <td style="color:#aaa;font-size:12px">西村淳也</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">24.1</td>
@@ -1639,7 +2095,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">スルーザナイト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">スルーザナイト</div></td>
           <td style="color:#aaa;font-size:12px">北村友一</td>
           <td style="color:#8b949e;font-size:11px">牝 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">11.3</td>
@@ -1652,7 +2108,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">マナエトレ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">マナエトレ</div></td>
           <td style="color:#aaa;font-size:12px">吉村誠之</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">30.8</td>
@@ -1665,7 +2121,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ゼンエスポワール</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ゼンエスポワール</div></td>
           <td style="color:#aaa;font-size:12px">角田大和</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">12.4</td>
@@ -1678,7 +2134,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">エクストラノート</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">エクストラノート</div></td>
           <td style="color:#aaa;font-size:12px">藤懸貴志</td>
           <td style="color:#8b949e;font-size:11px">セ 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">17.5</td>
@@ -1691,7 +2147,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ユウトザユウト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ユウトザユウト</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">6.0</td>
@@ -1704,7 +2160,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">サンライズバレット</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">サンライズバレット</div><div style="font-size:10px;color:#888;margin-top:1px">💫 リアルスティール</div></td>
           <td style="color:#aaa;font-size:12px">鮫島克駿</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">3.1</td>
@@ -1730,17 +2186,111 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment">距離1位: <b>ダーリングハースト</b> / クラス1位: <b>ウィズクィーン</b></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">レダアトミカ</span>
+                <span class="sire-name">(リアルスティール)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子でUAEダービー馬。産駒は芝マイル〜中距離向きで末脚が武器。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">メイプルハッピー</span>
+                <span class="sire-name">(サトノクラウン)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">宝塚記念・香港ヴァーズ馬。産駒は芝中距離向きで独特のしぶとさを持つ。重馬場での粘りが光る。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🌟</span>
+              <div class="sire-content">
+                <span class="sire-horse">ニシノサリーナ</span>
+                <span class="sire-name">(シルバーステート)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子で種牡馬としても大成。産駒は芝マイル〜中距離で高適性、外回り向きの末脚タイプ。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">ダーリングハースト</span>
+                <span class="sire-name">(エピファネイア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">菊花賞・JC馬。産駒はスタミナ豊富で芝中距離からクラシック路線が主戦場。タフな競馬も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">フォーチュンライド</span>
+                <span class="sire-name">(エピファネイア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">菊花賞・JC馬。産駒はスタミナ豊富で芝中距離からクラシック路線が主戦場。タフな競馬も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">カラペルソナ</span>
+                <span class="sire-name">(エピファネイア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">菊花賞・JC馬。産駒はスタミナ豊富で芝中距離からクラシック路線が主戦場。タフな競馬も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">ピカキウイ</span>
+                <span class="sire-name">(エピファネイア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">菊花賞・JC馬。産駒はスタミナ豊富で芝中距離からクラシック路線が主戦場。タフな競馬も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">フルールドール</span>
+                <span class="sire-name">(エピファネイア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">菊花賞・JC馬。産駒はスタミナ豊富で芝中距離からクラシック路線が主戦場。タフな競馬も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">アドマイヤシュラ</span>
+                <span class="sire-name">(エピファネイア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">菊花賞・JC馬。産駒はスタミナ豊富で芝中距離からクラシック路線が主戦場。タフな競馬も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">ソルパッサーレ</span>
+                <span class="sire-name">(キズナ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープインパクト直子。産駒は芝マイル〜中距離で高適性。上り3F勝負に強く外回り向き。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⚡</span>
+              <div class="sire-content">
+                <span class="sire-horse">ジュウリョクピエロ</span>
+                <span class="sire-name">(オルフェーヴル)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">三冠馬。産駒は芝中長距離で圧倒的な末脚を発揮する。斬れ味鋭く、直線勝負で真価を見せる。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">レダアトミカ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">レダアトミカ</div><div style="font-size:10px;color:#888;margin-top:1px">💫 リアルスティール</div></td>
           <td style="color:#aaa;font-size:12px">津村明秀</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">24.9</td>
@@ -1753,7 +2303,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">メイプルハッピー</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">メイプルハッピー</div><div style="font-size:10px;color:#888;margin-top:1px">👑 サトノクラウン</div></td>
           <td style="color:#aaa;font-size:12px">幸英明</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">67.5</td>
@@ -1766,7 +2316,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ニシノサリーナ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ニシノサリーナ</div><div style="font-size:10px;color:#888;margin-top:1px">🌟 シルバーステート</div></td>
           <td style="color:#aaa;font-size:12px">池添謙一</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">13.9</td>
@@ -1779,7 +2329,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">バースデイフライト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">バースデイフライト</div></td>
           <td style="color:#aaa;font-size:12px">田口貫太</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">82.5</td>
@@ -1792,7 +2342,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ダーリングハースト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ダーリングハースト</div><div style="font-size:10px;color:#888;margin-top:1px">👑 エピファネイア</div></td>
           <td style="color:#aaa;font-size:12px">ルメール</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">3.0</td>
@@ -1805,7 +2355,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">フォーチュンライド</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">フォーチュンライド</div><div style="font-size:10px;color:#888;margin-top:1px">👑 エピファネイア</div></td>
           <td style="color:#aaa;font-size:12px">川田将雅</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">5.8</td>
@@ -1818,7 +2368,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ウィズクィーン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ウィズクィーン</div></td>
           <td style="color:#aaa;font-size:12px">武豊</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">32.2</td>
@@ -1831,7 +2381,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">カラペルソナ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">カラペルソナ</div><div style="font-size:10px;color:#888;margin-top:1px">👑 エピファネイア</div></td>
           <td style="color:#aaa;font-size:12px">戸崎圭太</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">7.0</td>
@@ -1844,7 +2394,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ピカキウイ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ピカキウイ</div><div style="font-size:10px;color:#888;margin-top:1px">👑 エピファネイア</div></td>
           <td style="color:#aaa;font-size:12px">西村淳也</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">41.4</td>
@@ -1857,7 +2407,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">エクリュ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">エクリュ</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">68.1</td>
@@ -1870,7 +2420,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">フルールドール</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">フルールドール</div><div style="font-size:10px;color:#888;margin-top:1px">👑 エピファネイア</div></td>
           <td style="color:#aaa;font-size:12px">松山弘平</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">65.2</td>
@@ -1883,7 +2433,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">12</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アドマイヤシュラ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アドマイヤシュラ</div><div style="font-size:10px;color:#888;margin-top:1px">👑 エピファネイア</div></td>
           <td style="color:#aaa;font-size:12px">坂井瑠星</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">7.8</td>
@@ -1896,7 +2446,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">13</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ソルパッサーレ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ソルパッサーレ</div><div style="font-size:10px;color:#888;margin-top:1px">💫 キズナ</div></td>
           <td style="color:#aaa;font-size:12px">浜中俊</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">5.7</td>
@@ -1909,7 +2459,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">14</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ジュウリョクピエロ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ジュウリョクピエロ</div><div style="font-size:10px;color:#888;margin-top:1px">⚡ オルフェーヴル</div></td>
           <td style="color:#aaa;font-size:12px">今村聖奈</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">12.2</td>
@@ -1935,17 +2485,87 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment">距離1位: <b>ヴァリディシームス</b> / クラス1位: <b>バッデレイト</b></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">🏆</span>
+              <div class="sire-content">
+                <span class="sire-horse">チルカーノ</span>
+                <span class="sire-name">(ハービンジャー)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">欧州最強クラスの競走馬。産駒はスタミナ型で芝2000m前後に高適性。重い馬場でも走れる欧州色が強い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💎</span>
+              <div class="sire-content">
+                <span class="sire-horse">バッデレイト</span>
+                <span class="sire-name">(サトノダイヤモンド)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">有馬記念・菊花賞馬。産駒はスタミナ型で芝中長距離に高適性。ディープの父系を受け継ぐ。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🏆</span>
+              <div class="sire-content">
+                <span class="sire-horse">ミュージシャン</span>
+                <span class="sire-name">(ブリックスアンドモルタル)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">BCターフ馬。産駒は芝中距離向きで安定したパフォーマンスを示す。外回りコースが得意。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">ヴァリディシームス</span>
+                <span class="sire-name">(キズナ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープインパクト直子。産駒は芝マイル〜中距離で高適性。上り3F勝負に強く外回り向き。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">キングスコール</span>
+                <span class="sire-name">(ドゥラメンテ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">クラシック二冠馬。産駒は芝中距離向きでクラシック路線に多数送り込む。スタミナと瞬発力を兼備。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">サトノクローク</span>
+                <span class="sire-name">(サトノクラウン)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">宝塚記念・香港ヴァーズ馬。産駒は芝中距離向きで独特のしぶとさを持つ。重馬場での粘りが光る。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⚡</span>
+              <div class="sire-content">
+                <span class="sire-horse">クレバーテースト</span>
+                <span class="sire-name">(オルフェーヴル)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">三冠馬。産駒は芝中長距離で圧倒的な末脚を発揮する。斬れ味鋭く、直線勝負で真価を見せる。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🥇</span>
+              <div class="sire-content">
+                <span class="sire-horse">キーパフォーマー</span>
+                <span class="sire-name">(キタサンブラック)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">三冠馬。産駒は先行力とスタミナを兼備。内回りコースでの先行競馬で真価を発揮するタイプ多い。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アレナリア</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アレナリア</div></td>
           <td style="color:#aaa;font-size:12px">吉村誠之</td>
           <td style="color:#8b949e;font-size:11px">牝 54.0kg</td>
           <td style="font-weight:bold;color:#f0a500">14.8</td>
@@ -1958,7 +2578,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">マイネルエニグマ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">マイネルエニグマ</div></td>
           <td style="color:#aaa;font-size:12px">津村明秀</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">13.4</td>
@@ -1971,7 +2591,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">チルカーノ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">チルカーノ</div><div style="font-size:10px;color:#888;margin-top:1px">🏆 ハービンジャー</div></td>
           <td style="color:#aaa;font-size:12px">北村友一</td>
           <td style="color:#8b949e;font-size:11px">牝 53.0kg</td>
           <td style="font-weight:bold;color:#f0a500">19.0</td>
@@ -1984,7 +2604,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">リッケンバッカー</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">リッケンバッカー</div></td>
           <td style="color:#aaa;font-size:12px">古川吉洋</td>
           <td style="color:#8b949e;font-size:11px">牡 53.0kg</td>
           <td style="font-weight:bold;color:#f0a500">44.9</td>
@@ -1997,7 +2617,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">バッデレイト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">バッデレイト</div><div style="font-size:10px;color:#888;margin-top:1px">💎 サトノダイヤモンド</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">牡 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">10.4</td>
@@ -2010,7 +2630,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">イケイケドンドン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">イケイケドンドン</div></td>
           <td style="color:#aaa;font-size:12px">高杉吏麒</td>
           <td style="color:#8b949e;font-size:11px">牡 54.0kg</td>
           <td style="font-weight:bold;color:#f0a500">34.4</td>
@@ -2023,7 +2643,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ミュージシャン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ミュージシャン</div><div style="font-size:10px;color:#888;margin-top:1px">🏆 ブリックスアンドモルタル</div></td>
           <td style="color:#aaa;font-size:12px">坂井瑠星</td>
           <td style="color:#8b949e;font-size:11px">牡 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">6.8</td>
@@ -2036,7 +2656,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ヴァリディシームス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ヴァリディシームス</div><div style="font-size:10px;color:#888;margin-top:1px">💫 キズナ</div></td>
           <td style="color:#aaa;font-size:12px">川田将雅</td>
           <td style="color:#8b949e;font-size:11px">牡 56.0kg</td>
           <td style="font-weight:bold;color:#f0a500">3.3</td>
@@ -2049,7 +2669,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ウイントレメンデス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ウイントレメンデス</div></td>
           <td style="color:#aaa;font-size:12px">松山弘平</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">8.0</td>
@@ -2062,7 +2682,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">キングスコール</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">キングスコール</div><div style="font-size:10px;color:#888;margin-top:1px">👑 ドゥラメンテ</div></td>
           <td style="color:#aaa;font-size:12px">西村淳也</td>
           <td style="color:#8b949e;font-size:11px">牡 57.0kg</td>
           <td style="font-weight:bold;color:#f0a500">7.5</td>
@@ -2075,7 +2695,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ソリダリティ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ソリダリティ</div></td>
           <td style="color:#aaa;font-size:12px">幸英明</td>
           <td style="color:#8b949e;font-size:11px">牡 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">20.1</td>
@@ -2088,7 +2708,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">12</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">サトノクローク</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">サトノクローク</div><div style="font-size:10px;color:#888;margin-top:1px">👑 サトノクラウン</div></td>
           <td style="color:#aaa;font-size:12px">菱田裕二</td>
           <td style="color:#8b949e;font-size:11px">牡 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">61.0</td>
@@ -2101,7 +2721,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">13</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">クレバーテースト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">クレバーテースト</div><div style="font-size:10px;color:#888;margin-top:1px">⚡ オルフェーヴル</div></td>
           <td style="color:#aaa;font-size:12px">荻野琢真</td>
           <td style="color:#8b949e;font-size:11px">セ 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">30.5</td>
@@ -2114,7 +2734,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">14</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">エゾダイモン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">エゾダイモン</div></td>
           <td style="color:#aaa;font-size:12px">浜中俊</td>
           <td style="color:#8b949e;font-size:11px">牡 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">33.8</td>
@@ -2127,7 +2747,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">15</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">キーパフォーマー</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">キーパフォーマー</div><div style="font-size:10px;color:#888;margin-top:1px">🥇 キタサンブラック</div></td>
           <td style="color:#aaa;font-size:12px">戸崎圭太</td>
           <td style="color:#8b949e;font-size:11px">牝 53.0kg</td>
           <td style="font-weight:bold;color:#f0a500">12.2</td>
@@ -2153,17 +2773,111 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment">距離1位: <b>ギャラボーグ</b> / クラス1位: <b>アランカール</b></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">⭐</span>
+              <div class="sire-content">
+                <span class="sire-horse">フェスティバルヒル</span>
+                <span class="sire-name">(サートゥルナーリア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">皐月賞・ホープフルS馬。産駒はスピードとスタミナのバランスが良く、芝マイル〜中距離向き。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🚀</span>
+              <div class="sire-content">
+                <span class="sire-horse">サンアントワーヌ</span>
+                <span class="sire-name">(ドレフォン)</span>
+                <span class="sire-type sire-ダ">ダ芝適性</span>
+                <div class="sire-comment">BCスプリント勝ち馬。産駒はスピード豊富でダート短距離に高適性。芝もこなせる万能型多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⭐</span>
+              <div class="sire-content">
+                <span class="sire-horse">ディアダイヤモンド</span>
+                <span class="sire-name">(サートゥルナーリア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">皐月賞・ホープフルS馬。産駒はスピードとスタミナのバランスが良く、芝マイル〜中距離向き。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">アランカール</span>
+                <span class="sire-name">(エピファネイア)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">菊花賞・JC馬。産駒はスタミナ豊富で芝中距離からクラシック路線が主戦場。タフな競馬も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">👑</span>
+              <div class="sire-content">
+                <span class="sire-horse">ロンギングセリーヌ</span>
+                <span class="sire-name">(モーリス)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">G1を6勝した名馬。産駒は芝マイル〜中距離向きで、持続する末脚を持つ。内外問わず活躍。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💎</span>
+              <div class="sire-content">
+                <span class="sire-horse">ナムラコスモス</span>
+                <span class="sire-name">(ダノンプレミアム)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">マイルG1馬。産駒は切れる末脚を持つマイラー傾向。芝1600m外回りで輝くタイプが多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🌟</span>
+              <div class="sire-content">
+                <span class="sire-horse">リリージョワ</span>
+                <span class="sire-name">(シルバーステート)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子で種牡馬としても大成。産駒は芝マイル〜中距離で高適性、外回り向きの末脚タイプ。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">ドリームコア</span>
+                <span class="sire-name">(キズナ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープインパクト直子。産駒は芝マイル〜中距離で高適性。上り3F勝負に強く外回り向き。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🚀</span>
+              <div class="sire-content">
+                <span class="sire-horse">スターアニス</span>
+                <span class="sire-name">(ドレフォン)</span>
+                <span class="sire-type sire-ダ">ダ芝適性</span>
+                <div class="sire-comment">BCスプリント勝ち馬。産駒はスピード豊富でダート短距離に高適性。芝もこなせる万能型多い。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">ショウナンカリス</span>
+                <span class="sire-name">(リアルスティール)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子でUAEダービー馬。産駒は芝マイル〜中距離向きで末脚が武器。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🥇</span>
+              <div class="sire-content">
+                <span class="sire-horse">ブラックチャリス</span>
+                <span class="sire-name">(キタサンブラック)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">三冠馬。産駒は先行力とスタミナを兼備。内回りコースでの先行競馬で真価を発揮するタイプ多い。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">フェスティバルヒル</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">フェスティバルヒル</div><div style="font-size:10px;color:#888;margin-top:1px">⭐ サートゥルナーリア</div></td>
           <td style="color:#aaa;font-size:12px">坂井瑠星</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">21.0</td>
@@ -2176,7 +2890,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">サンアントワーヌ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">サンアントワーヌ</div><div style="font-size:10px;color:#888;margin-top:1px">🚀 ドレフォン</div></td>
           <td style="color:#aaa;font-size:12px">荻野極</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">82.5</td>
@@ -2189,7 +2903,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ディアダイヤモンド</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ディアダイヤモンド</div><div style="font-size:10px;color:#888;margin-top:1px">⭐ サートゥルナーリア</div></td>
           <td style="color:#aaa;font-size:12px">戸崎圭太</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">16.7</td>
@@ -2202,7 +2916,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">エレガンスアスク</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">エレガンスアスク</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">135.8</td>
@@ -2215,7 +2929,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ギャラボーグ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ギャラボーグ</div></td>
           <td style="color:#aaa;font-size:12px">西村淳也</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">15.5</td>
@@ -2228,7 +2942,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アイニードユー</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アイニードユー</div></td>
           <td style="color:#aaa;font-size:12px">川田将雅</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">62.4</td>
@@ -2241,7 +2955,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">アランカール</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">アランカール</div><div style="font-size:10px;color:#888;margin-top:1px">👑 エピファネイア</div></td>
           <td style="color:#aaa;font-size:12px">武豊</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">6.6</td>
@@ -2254,7 +2968,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ロンギングセリーヌ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ロンギングセリーヌ</div><div style="font-size:10px;color:#888;margin-top:1px">👑 モーリス</div></td>
           <td style="color:#aaa;font-size:12px">石橋脩</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">133.6</td>
@@ -2267,7 +2981,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ルールザウェイヴ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ルールザウェイヴ</div></td>
           <td style="color:#aaa;font-size:12px">原優介</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">105.9</td>
@@ -2280,7 +2994,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ナムラコスモス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ナムラコスモス</div><div style="font-size:10px;color:#888;margin-top:1px">💎 ダノンプレミアム</div></td>
           <td style="color:#aaa;font-size:12px">田口貫太</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">24.2</td>
@@ -2293,7 +3007,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ジッピーチューン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ジッピーチューン</div></td>
           <td style="color:#aaa;font-size:12px">北村友一</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">72.8</td>
@@ -2306,7 +3020,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">12</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">スウィートハピネス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">スウィートハピネス</div></td>
           <td style="color:#aaa;font-size:12px">高杉吏麒</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">22.1</td>
@@ -2319,7 +3033,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">13</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">リリージョワ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">リリージョワ</div><div style="font-size:10px;color:#888;margin-top:1px">🌟 シルバーステート</div></td>
           <td style="color:#aaa;font-size:12px">浜中俊</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">8.0</td>
@@ -2332,7 +3046,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">14</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ドリームコア</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ドリームコア</div><div style="font-size:10px;color:#888;margin-top:1px">💫 キズナ</div></td>
           <td style="color:#aaa;font-size:12px">ルメール</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">3.1</td>
@@ -2345,7 +3059,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">15</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">スターアニス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">スターアニス</div><div style="font-size:10px;color:#888;margin-top:1px">🚀 ドレフォン</div></td>
           <td style="color:#aaa;font-size:12px">松山弘平</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">3.3</td>
@@ -2358,7 +3072,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">16</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ショウナンカリス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ショウナンカリス</div><div style="font-size:10px;color:#888;margin-top:1px">💫 リアルスティール</div></td>
           <td style="color:#aaa;font-size:12px">池添謙一</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">188.1</td>
@@ -2371,7 +3085,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">17</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ブラックチャリス</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ブラックチャリス</div><div style="font-size:10px;color:#888;margin-top:1px">🥇 キタサンブラック</div></td>
           <td style="color:#aaa;font-size:12px">津村明秀</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">30.9</td>
@@ -2384,7 +3098,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">18</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">プレセピオ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">プレセピオ</div></td>
           <td style="color:#aaa;font-size:12px">富田暁</td>
           <td style="color:#8b949e;font-size:11px">牝 55.0kg</td>
           <td style="font-weight:bold;color:#f0a500">245.8</td>
@@ -2410,17 +3124,79 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
           <div class="race-comment">距離1位: <b>バッケンレコード</b> / クラス1位: <b>ペンナヴェローチェ</b></div>
         </div>
       </div>
+      
+      <div class="blood-box">
+          <div class="blood-title">🧬 血統ワンポイント</div>
+          <div class="blood-items"><div class="sire-tip">
+              <span class="sire-icon">🏋️</span>
+              <div class="sire-content">
+                <span class="sire-horse">キュールエフウジン</span>
+                <span class="sire-name">(ホッコータルマエ)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダートチャンピオン。産駒はスタミナ豊富でダート長距離〜中距離向き。馬力型で渋い馬場も苦にしない。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🦾</span>
+              <div class="sire-content">
+                <span class="sire-horse">ポルポラジール</span>
+                <span class="sire-name">(シニスターミニスター)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダート中長距離に強い米国系。パワーとスタミナを兼ね備えた産駒が多く、時計のかかる馬場で真価発揮。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">シャルクハフト</span>
+                <span class="sire-name">(リアルスティール)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープ直子でUAEダービー馬。産駒は芝マイル〜中距離向きで末脚が武器。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">ロングウェイホーム</span>
+                <span class="sire-name">(ジャスタウェイ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">天皇賞秋・ドバイDF馬。産駒は芝マイル〜中距離。ロングスパートが得意で末脚の持続力が武器。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">🦾</span>
+              <div class="sire-content">
+                <span class="sire-horse">ワンパット</span>
+                <span class="sire-name">(シニスターミニスター)</span>
+                <span class="sire-type sire-ダ">ダ適性</span>
+                <div class="sire-comment">ダート中長距離に強い米国系。パワーとスタミナを兼ね備えた産駒が多く、時計のかかる馬場で真価発揮。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">⚡</span>
+              <div class="sire-content">
+                <span class="sire-horse">バッケンレコード</span>
+                <span class="sire-name">(オルフェーヴル)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">三冠馬。産駒は芝中長距離で圧倒的な末脚を発揮する。斬れ味鋭く、直線勝負で真価を見せる。</div>
+              </div>
+            </div><div class="sire-tip">
+              <span class="sire-icon">💫</span>
+              <div class="sire-content">
+                <span class="sire-horse">ペンナヴェローチェ</span>
+                <span class="sire-name">(キズナ)</span>
+                <span class="sire-type sire-芝">芝適性</span>
+                <div class="sire-comment">ディープインパクト直子。産駒は芝マイル〜中距離で高適性。上り3F勝負に強く外回り向き。</div>
+              </div>
+            </div></div>
+        </div>
       <div class="table-wrap">
         <table class="horse-table">
           <thead><tr>
-            <th>印</th><th>馬番</th><th>馬名</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
-            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
+            <th>印</th><th>馬番</th><th>馬名 / 父</th><th>騎手</th><th>性齢/斤量</th><th>オッズ</th>
+            <th>強さPT<br><span style="font-size:9px;font-weight:normal">50=平均</span></th>
+            <th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th>
             <th>前走着順</th>
           </tr></thead>
           <tbody><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">1</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ゴールドダイアー</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ゴールドダイアー</div></td>
           <td style="color:#aaa;font-size:12px">幸英明</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">26.7</td>
@@ -2433,7 +3209,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">2</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">シンビリーブ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">シンビリーブ</div></td>
           <td style="color:#aaa;font-size:12px">川田将雅</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">3.6</td>
@@ -2446,7 +3222,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">3</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ホルトバージ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ホルトバージ</div></td>
           <td style="color:#aaa;font-size:12px">菱田裕二</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">34.7</td>
@@ -2459,7 +3235,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">4</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">キュールエフウジン</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">キュールエフウジン</div><div style="font-size:10px;color:#888;margin-top:1px">🏋️ ホッコータルマエ</div></td>
           <td style="color:#aaa;font-size:12px">角田大和</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">59.8</td>
@@ -2472,7 +3248,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">5</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ポルポラジール</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ポルポラジール</div><div style="font-size:10px;color:#888;margin-top:1px">🦾 シニスターミニスター</div></td>
           <td style="color:#aaa;font-size:12px">浜中俊</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">15.2</td>
@@ -2485,7 +3261,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">6</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ダブルジョーク</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ダブルジョーク</div></td>
           <td style="color:#aaa;font-size:12px">池添謙一</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">15.2</td>
@@ -2498,7 +3274,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">7</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">シャルクハフト</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">シャルクハフト</div><div style="font-size:10px;color:#888;margin-top:1px">💫 リアルスティール</div></td>
           <td style="color:#aaa;font-size:12px">吉村誠之</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">12.9</td>
@@ -2511,7 +3287,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">8</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ロングウェイホーム</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ロングウェイホーム</div><div style="font-size:10px;color:#888;margin-top:1px">💫 ジャスタウェイ</div></td>
           <td style="color:#aaa;font-size:12px">荻野極</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">13.0</td>
@@ -2524,7 +3300,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">9</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ワンパット</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ワンパット</div><div style="font-size:10px;color:#888;margin-top:1px">🦾 シニスターミニスター</div></td>
           <td style="color:#aaa;font-size:12px">太宰啓介</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">15.1</td>
@@ -2537,7 +3313,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="row-top">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">10</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">バッケンレコード</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">バッケンレコード</div><div style="font-size:10px;color:#888;margin-top:1px">⚡ オルフェーヴル</div></td>
           <td style="color:#aaa;font-size:12px">武豊</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">5.9</td>
@@ -2550,7 +3326,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">11</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">リューデスハイム</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">リューデスハイム</div></td>
           <td style="color:#aaa;font-size:12px">西村淳也</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">8.3</td>
@@ -2563,7 +3339,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">12</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">メイプルタピット</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">メイプルタピット</div></td>
           <td style="color:#aaa;font-size:12px">藤懸貴志</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">16.4</td>
@@ -2576,7 +3352,7 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </tr><tr class="">
           <td style="width:28px;"></td>
           <td style="width:32px;font-weight:bold;color:#8b949e">13</td>
-          <td style="text-align:left;font-weight:bold;font-size:13px">ペンナヴェローチェ</td>
+          <td style="text-align:left"><div style="font-weight:bold;font-size:13px">ペンナヴェローチェ</div><div style="font-size:10px;color:#888;margin-top:1px">💫 キズナ</div></td>
           <td style="color:#aaa;font-size:12px">岩田望来</td>
           <td style="color:#8b949e;font-size:11px">牡 58.0kg</td>
           <td style="font-weight:bold;color:#f0a500">5.1</td>
@@ -2590,6 +3366,6 @@ body{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;color
         </table>
       </div>
     </div>
-<div style="text-align:center;padding:20px;color:#444;font-size:11px">競馬AI 2026-04-12 ／ diff=偏差値差（高いほど高評価）</div>
+<div style="text-align:center;padding:20px;color:#444;font-size:11px">競馬AI 2026-04-12 ／ 強さPT=コース偏差値（50=平均）／ diff=偏差値差</div>
 </body>
 </html>
