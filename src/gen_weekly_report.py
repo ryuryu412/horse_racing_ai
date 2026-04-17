@@ -431,6 +431,9 @@ def main():
     venue_names_str = '・'.join([VENUE_FULL.get(v,v) for v in venues])
     total_races = sum(df[df['_venue_abbr'] == v]['Ｒ'].nunique() for v in venues)
 
+    from datetime import datetime as _dt
+    generated_at = _dt.now().strftime('%Y-%m-%d %H:%M:%S')
+
     html = f'''<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -444,6 +447,7 @@ body{{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;colo
 .top-bar h1{{font-size:24px;color:#e8b400;letter-spacing:2px}}
 .top-bar .date{{font-size:15px;color:#fff;margin-top:6px;font-weight:bold}}
 .top-bar .subtitle{{color:#aaa;font-size:12px;margin-top:4px}}
+.top-bar .generated-at{{color:#666;font-size:11px;margin-top:4px}}
 .top-nav{{position:sticky;top:0;z-index:100;background:#161b22;border-bottom:2px solid #30363d;padding:10px 12px;display:flex;gap:8px;overflow-x:auto;flex-wrap:wrap}}
 .top-nav-item{{padding:5px 14px;background:#21262d;border-radius:14px;text-decoration:none;font-size:13px;font-weight:bold;white-space:nowrap;border:1px solid transparent}}
 .top-nav-item:hover{{background:#30363d}}
@@ -500,6 +504,7 @@ body{{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;colo
   <h1>🏇 競馬新聞 AI予想版</h1>
   <div class="date">{date_label} — {venue_names_str} 計{total_races}レース</div>
   <div class="subtitle">距離モデル × クラスモデル AIスコア完全版　コース特性・血統ワンポイント付き</div>
+  <div class="generated-at">🕐 生成日時: {generated_at}</div>
 </div>
 <nav class="top-nav">{top_nav}</nav>
 {summary_html}
