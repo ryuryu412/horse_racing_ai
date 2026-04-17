@@ -61,6 +61,36 @@ def get_sire_info(sire):
     if pd.isna(sire): return None
     return SIRE_DB.get(str(sire).strip())
 
+def assign_marks(df):
+    """06_predict_from_card.py と同じロジックで _印 を付与"""
+    cur_diff = pd.to_numeric(df.get('cur_偏差値の差'), errors='coerce')
+    sub_diff = pd.to_numeric(df.get('sub_偏差値の差'), errors='coerce')
+    cur_r    = pd.to_numeric(df.get('cur_ランカー順位'), errors='coerce')
+    sub_r    = pd.to_numeric(df.get('sub_ランカー順位'), errors='coerce')
+    if cur_diff.isna().all() or cur_r.isna().all():
+        df['_印'] = ''
+        return df
+    both_r1  = (cur_r == 1) & (sub_r == 1)
+    star     = (cur_r <= 3) & (sub_r <= 3) & ~both_r1
+    _odds = pd.to_numeric(df['dc_単勝オッズ'] if 'dc_単勝オッズ' in df.columns else pd.Series(np.nan, index=df.index), errors='coerce')
+    if _odds.isna().all() and '単勝オッズ' in df.columns:
+        _odds = pd.to_numeric(df['単勝オッズ'], errors='coerce')
+    odds_ok3 = _odds.isna() | (_odds >= 3)
+    odds_ok5 = _odds.isna() | (_odds >= 5)
+    mask_gekiatu = both_r1 & (cur_diff >= 10) & (sub_diff >= 10) & odds_ok5
+    mask_maru    = both_r1 & (sub_diff >= 10) & odds_ok3 & ~mask_gekiatu
+    mask_diamond = (cur_r <= 2) & (sub_r <= 2) & ~both_r1 & (sub_diff >= 10) & odds_ok5
+    mask_hoshi   = star & ~((cur_r <= 2) & (sub_r <= 2)) & odds_ok5 & (sub_diff >= 10)
+    def mark_of(i):
+        if mask_gekiatu.iloc[i]: return '激熱'
+        if mask_maru.iloc[i]:    return '〇'
+        if mask_diamond.iloc[i]: return '▲'
+        if mask_hoshi.iloc[i]:   return '☆'
+        return ''
+    df = df.copy()
+    df['_印'] = [mark_of(i) for i in range(len(df))]
+    return df
+
 # ── ヘルパー ──
 def fmt_odds(v):
     try:
@@ -329,6 +359,9 @@ def main():
     # 日付ラベル抽出
     m = re.search(r'出馬表形式(.+)\.cache\.pkl', cache_name)
     date_label = m.group(1) if m else cache_name
+
+    # 印付与（generate_html と同ロジック）
+    df = assign_marks(df)
 
     # 会場一覧
     df['_venue_abbr'] = df['開催'].astype(str).apply(extract_venue_abbr)
