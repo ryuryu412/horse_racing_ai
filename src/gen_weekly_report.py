@@ -382,36 +382,59 @@ def main():
         for v in venues
     ])
 
-    # 全会場ピックサマリ
-    all_picks = []
+    # 全印馬サマリ
+    MARK_ORDER = {'激熱': 0, '〇': 1, '▲': 2, '☆': 3}
+    MARK_COLOR = {'激熱': '#e74c3c', '〇': '#27ae60', '▲': '#2471a3', '☆': '#f39c12'}
+    all_marks = []
     for v in venues:
         dv = df[df['_venue_abbr'] == v]
         for r_num, grp in dv.groupby('Ｒ'):
-            if 'cur_偏差値の差' not in grp.columns: continue
-            double = grp[
-                (grp['cur_偏差値の差'].fillna(-99) >= 15) &
-                (grp['sub_偏差値の差'].fillna(-99) >= 15)
-            ] if 'sub_偏差値の差' in grp.columns else pd.DataFrame()
-            for _, h in double.iterrows():
-                odds = fmt_odds(h.get('単勝オッズ', h.get('dc_単勝オッズ','')))
-                all_picks.append((VENUE_FULL.get(v,v), int(float(r_num)), h['馬名S'], odds,
-                                  h.get('cur_偏差値の差', np.nan), h.get('sub_偏差値の差', np.nan)))
+            for _, h in grp.iterrows():
+                mark = h.get('_印', '')
+                if not mark: continue
+                odds = fmt_odds(h.get('単勝オッズ', h.get('dc_単勝オッズ', '')))
+                cur_d = h.get('cur_偏差値の差', np.nan)
+                sub_d = h.get('sub_偏差値の差', np.nan)
+                cur_r = int(h['cur_ランカー順位']) if 'cur_ランカー順位' in grp.columns and pd.notna(h.get('cur_ランカー順位')) else '-'
+                sub_r = int(h['sub_ランカー順位']) if 'sub_ランカー順位' in grp.columns and pd.notna(h.get('sub_ランカー順位')) else '-'
+                all_marks.append({
+                    'venue': VENUE_FULL.get(v, v),
+                    'r': int(float(r_num)),
+                    'mark': mark,
+                    'horse': h['馬名S'],
+                    'odds': odds,
+                    'cur_d': cur_d,
+                    'sub_d': sub_d,
+                    'cur_r': cur_r,
+                    'sub_r': sub_r,
+                    'sort_key': (MARK_ORDER.get(mark, 9), int(float(r_num))),
+                })
+    all_marks.sort(key=lambda x: x['sort_key'])
 
     summary_html = ''
-    if all_picks:
-        rows = ''.join([
-            f'<tr><td style="color:#aaa">{venue}</td>'
-            f'<td style="font-weight:bold;color:#e8b400">{r}R</td>'
-            f'<td style="font-weight:bold;color:#fff">{hname}</td>'
-            f'<td style="color:#f39c12">{odds}</td>'
-            f'<td style="color:#2ecc71">+{cd:.1f}</td>'
-            f'<td style="color:#3498db">+{sd:.1f}</td></tr>'
-            for venue, r, hname, odds, cd, sd in all_picks
-        ])
+    if all_marks:
+        rows = ''
+        for m in all_marks:
+            mc = MARK_COLOR.get(m['mark'], '#aaa')
+            cd = f"+{m['cur_d']:.1f}" if pd.notna(m['cur_d']) else '-'
+            sd = f"+{m['sub_d']:.1f}" if pd.notna(m['sub_d']) else '-'
+            rows += (
+                f'<tr>'
+                f'<td style="font-weight:bold;color:{mc};font-size:15px">{m["mark"]}</td>'
+                f'<td style="color:#aaa">{m["venue"]}</td>'
+                f'<td style="font-weight:bold;color:#e8b400">{m["r"]}R</td>'
+                f'<td style="font-weight:bold;color:#fff;font-size:14px">{m["horse"]}</td>'
+                f'<td style="color:#f0a500;font-weight:bold">{m["odds"]}</td>'
+                f'<td style="color:#8b949e">{m["cur_r"]}位</td>'
+                f'<td style="color:#2ecc71">{cd}</td>'
+                f'<td style="color:#8b949e">{m["sub_r"]}位</td>'
+                f'<td style="color:#3498db">{sd}</td>'
+                f'</tr>'
+            )
         summary_html = f'''<div class="summary-box">
-          <div class="summary-title">🔥 本日の激熱ピック一覧（両モデル偏差値差+15以上）</div>
+          <div class="summary-title">📋 本日の全印馬一覧</div>
           <table class="picks-table">
-            <thead><tr><th>会場</th><th>R</th><th>馬名</th><th>オッズ</th><th>距離diff</th><th>クラスdiff</th></tr></thead>
+            <thead><tr><th>印</th><th>会場</th><th>R</th><th>馬名</th><th>オッズ</th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th></tr></thead>
             <tbody>{rows}</tbody>
           </table>
         </div>'''
