@@ -348,12 +348,16 @@ def main():
     ap = argparse.ArgumentParser(description='週次競馬新聞レポート生成')
     ap.add_argument('--date', default=None, help='日付キー(例:4月12日)。省略時は最新キャッシュ')
     ap.add_argument('--venue', default=None, help='会場絞り込み(例:阪、東)。省略時は全会場')
+    ap.add_argument('--cache-file', default=None, help='キャッシュファイルを直接指定')
     args = ap.parse_args()
 
     cache_dir = os.path.join(base_dir, 'data', 'raw', 'cache')
-    if args.date:
-        pattern = os.path.join(cache_dir, f'出馬表形式{args.date}.cache.pkl')
-        cache_files = glob.glob(pattern)
+    if args.cache_file:
+        cache_files = [args.cache_file]
+    elif args.date:
+        # オッズ確認用など suffix 付きも含めて最新を選ぶ
+        pattern = os.path.join(cache_dir, f'出馬表形式{args.date}*.cache.pkl')
+        cache_files = sorted(glob.glob(pattern))
     else:
         cache_files = sorted(glob.glob(os.path.join(cache_dir, '出馬表形式*.cache.pkl')))
 
@@ -370,8 +374,8 @@ def main():
     df = cached['result']
     card_df = cached.get('card_df')
 
-    # 日付ラベル抽出
-    m = re.search(r'出馬表形式(.+)\.cache\.pkl', cache_name)
+    # 日付ラベル抽出（オッズ確認用などのsuffixは除去）
+    m = re.search(r'出馬表形式(.+?)(?:オッズ確認用)?\.cache\.pkl', cache_name)
     date_label = m.group(1) if m else cache_name
 
     # 印付与（generate_html と同ロジック）
@@ -530,7 +534,7 @@ def main():
     total_races = sum(df[df['_venue_abbr'] == v]['Ｒ'].nunique() for v in venues)
 
     from datetime import datetime as _dt
-    generated_at = _dt.now().strftime('%Y-%m-%d %H:%M:%S')
+    updated_at = _dt.now().strftime('%Y-%m-%d %H:%M:%S')
 
     html = f'''<!DOCTYPE html>
 <html lang="ja">
@@ -602,7 +606,7 @@ body{{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;colo
   <h1>🏇 競馬新聞 AI予想版</h1>
   <div class="date">{date_label} — {venue_names_str} 計{total_races}レース</div>
   <div class="subtitle">距離モデル × クラスモデル AIスコア完全版　コース特性・血統ワンポイント付き</div>
-  <div class="generated-at">🕐 生成日時: {generated_at}</div>
+  <div class="generated-at">🕐 更新日時: {updated_at}</div>
 </div>
 <nav class="top-nav">{top_nav}</nav>
 {summary_html}
@@ -613,9 +617,15 @@ body{{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;colo
 </html>'''
 
     os.makedirs(os.path.join(base_dir, 'output'), exist_ok=True)
-    # ファイル名: weekly_report_4月12日.html
-    safe_date = re.sub(r'[\\/:*?"<>|]', '_', date_label)
-    out = os.path.join(base_dir, 'output', f'weekly_report_{safe_date}.html')
+    # ファイル名: weekly_report_YYMMDD.html（docs/ に保存）
+    m_date = re.search(r'(\d+)月(\d+)日', date_label)
+    if m_date:
+        file_date = f'26{int(m_date.group(1)):02d}{int(m_date.group(2)):02d}'
+    else:
+        file_date = re.sub(r'[\\/:*?"<>|]', '_', date_label)
+    docs_dir = os.path.join(base_dir, 'docs')
+    os.makedirs(docs_dir, exist_ok=True)
+    out = os.path.join(docs_dir, f'weekly_report_{file_date}.html')
     with open(out, 'w', encoding='utf-8') as f:
         f.write(html)
     print(f'出力完了: {out}')
