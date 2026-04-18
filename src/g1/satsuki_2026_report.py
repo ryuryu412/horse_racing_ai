@@ -36,12 +36,19 @@ SIRE_RATE = {
 WEIGHT_RATE = [(5, 999, 4.5), (-4, 5, 7.6), (-999, -4, 3.4)]
 
 WEIGHTS = {
-    "prep": 0.18, "ti": 0.16, "ur": 0.13, "model": 0.14,
-    "interval": 0.13, "style": 0.10, "sire": 0.09, "waku": 0.04, "weight": 0.03,
+    "model":    0.30,  # 普段モデル（距離/クラスランカー）を軸
+    "jockey":   0.15,  # 騎手勝率（全指標中最強相関 rho=0.49）
+    "prep":     0.15,  # 前走クラス×着順
+    "ti":       0.14,  # タイム指数ピーク
+    "interval": 0.10,  # 間隔・成長補正
+    "ur":       0.08,  # 上り3F指数
+    "sire":     0.08,  # 種牡馬
+    # style/waku/weight は相関ほぼゼロのため削除
 }
 NORM = {
-    "prep": 33.3, "ti": 20.0, "ur": 8.3, "model": 1.0,
-    "interval": 13.9, "style": 9.5, "sire": 33.3, "waku": 7.7, "weight": 7.6,
+    "model": 1.0, "jockey": 0.25,
+    "prep": 33.3, "ti": 20.0, "ur": 8.3,
+    "interval": 13.9, "sire": 33.3,
 }
 
 CLS_LABEL = {9: "G1", 8: "G2", 7: "G3", 6: "OP", 5: "3勝", 4: "2勝", 3: "1勝"}
@@ -94,42 +101,16 @@ def score_horse(h):
     s["interval"] = iv_r / NORM["interval"]
     d["interval"] = {"rate": iv_r, "label": f"{int(iv)}週 / {iv_comment}", "max": 13.9}
 
-    # 前脚質（文字列）を正とする。前走脚質_numはコード体系が異なるため不使用
-    style_txt = str(h.get("前脚質", "") or "").strip()
-    style_map_txt = {"逃": (1, "逃げ"), "先": (2, "先行"), "中": (3, "差し(中団)"), "後": (4, "後方追込")}
-    sn_int, st_l = style_map_txt.get(style_txt, (3, f"不明({style_txt})"))
-    st_r = STYLE_RATE.get(sn_int, 3.2)
-    s["style"] = st_r / NORM["style"]
-    d["style"] = {"rate": st_r, "label": st_l, "max": 9.5}
-
     sire = str(h.get("種牡馬", "") or "")
     si_r = SIRE_RATE.get(sire, 3.0)
     s["sire"] = min(si_r / NORM["sire"], 1.0)
     d["sire"] = {"rate": si_r, "label": sire or "不明", "max": 33.3,
                  "notable": sire in SIRE_RATE}
 
-    bnum = int(float(h.get("馬番", 1) or 1))
-    if bnum <= 6:
-        wg, wr = "内枠(1-6)", 5.1
-    elif bnum <= 12:
-        wg, wr = "中枠(7-12)", 7.7
-    else:
-        wg, wr = "外枠(13-18)", 4.2
-    s["waku"] = wr / NORM["waku"]
-    d["waku"] = {"rate": wr, "label": f"{bnum}番 {wg}", "max": 7.7}
-
-    # 馬体重増減は当日計量後に確定するため現時点では使用不可
-    bw_raw = h.get("馬体重", None)
-    bw_available = bw_raw is not None and str(bw_raw) not in ("NaN", "nan", "", "None")
-    if bw_available:
-        wd = float(h.get("馬体重増減", 0) or 0)
-        wt_r = lookup(wd, WEIGHT_RATE)
-        bw_label = f"{int(wd):+d}kg（{bw_raw}kg）"
-    else:
-        wt_r = None  # 未確定
-        bw_label = "⏳ 当日計量待ち"
-    s["weight"] = (wt_r / NORM["weight"]) if wt_r is not None else None
-    d["weight"] = {"rate": wt_r, "label": bw_label, "max": 7.6, "pending": wt_r is None}
+    jk_wr = float(h.get("騎手_勝率", 0) or 0)
+    s["jockey"] = min(jk_wr / NORM["jockey"], 1.0)
+    jk_name = str(h.get("騎手", "-") or "-")
+    d["jockey"] = {"rate": jk_wr * 100, "label": f"{jk_name}（全体勝率{jk_wr*100:.1f}%）", "max": 25.0}
 
     cur_r = int(h.get("cur_ランカー順位", 18) or 18)
     sub_r = int(h.get("sub_ランカー順位", 18) or 18)
@@ -204,11 +185,15 @@ def horse_card(rank, h_data, total, scores, details, odds):
     dam_sire = str(h_data.get("母父名", "") or "")
 
     dim_labels = {
-        "prep": "前走クラス×着順", "ti": "タイム指数ピーク", "ur": "上り3F指数",
-        "model": "AIモデル（距離/クラス）", "interval": "間隔・成長補正",
-        "style": "脚質（中山適性）", "sire": "種牡馬", "waku": "枠番", "weight": "馬体重増減",
+        "model":    "AIモデル（距離/クラス）",
+        "jockey":   "騎手（全体勝率）",
+        "prep":     "前走クラス×着順",
+        "ti":       "タイム指数ピーク",
+        "interval": "間隔・成長補正",
+        "ur":       "上り3F指数",
+        "sire":     "種牡馬",
     }
-    dims_html = "".join(dim_block(k, dim_labels[k], details[k], scores[k]) for k in dim_labels)
+    dims_html = "".join(dim_block(k, dim_labels[k], details[k], scores[k]) for k in dim_labels if k in details)
 
     # 総合評価コメント
     strengths = [dim_labels[k] for k in scores if scores[k] is not None and scores[k] >= 0.7]
@@ -259,6 +244,7 @@ def horse_card(rank, h_data, total, scores, details, odds):
 
 
 WEIGHTS_NO_MODEL = {k: v for k, v in WEIGHTS.items() if k != "model"}
+PARQUET_STYLE_MAP = {0: 1, 1: 2, 2: 3, 3: 4}  # 互換性のため残す（未使用）
 
 # 枠番ルックアップ（parquetには馬番列がある想定）
 PARQUET_STYLE_MAP = {0: 1, 1: 2, 2: 3, 3: 4}  # parquet encoding → STYLE_RATE key
@@ -300,27 +286,14 @@ def score_horse_historical(h) -> float:
     iv = safe_float(h.get("間隔", 0))
     s["interval"] = lookup(iv, INTERVAL_RATE) / NORM["interval"]
 
-    # parquetの脚質: 0=逃,1=先,2=中,3=後 → STYLE_RATE key
-    sn_raw = h.get("前走脚質_num", None)
-    if sn_raw is not None and not (isinstance(sn_raw, float) and np.isnan(float(sn_raw) if sn_raw is not None else float("nan"))):
-        sn = PARQUET_STYLE_MAP.get(safe_int(sn_raw, 2), 3)
-    else:
-        sn = 3
-    s["style"] = STYLE_RATE.get(sn, 3.2) / NORM["style"]
-
     sire = str(h.get("種牡馬", "") or "")
     s["sire"] = min(SIRE_RATE.get(sire, 3.0) / NORM["sire"], 1.0)
 
-    bnum = safe_int(h.get("馬番", 9), 9)
-    wr = 5.1 if bnum <= 6 else 7.7 if bnum <= 12 else 4.2
-    s["waku"] = wr / NORM["waku"]
+    jk_wr = safe_float(h.get("騎手_勝率", 0))
+    s["jockey"] = min(jk_wr / NORM["jockey"], 1.0)
 
-    wd = safe_float(h.get("馬体重増減", 0))
-    wt_r = lookup(wd, WEIGHT_RATE)
-    s["weight"] = wt_r / NORM["weight"]
-
-    total = sum(s[k] * WEIGHTS_NO_MODEL[k] for k in WEIGHTS_NO_MODEL) \
-          / sum(WEIGHTS_NO_MODEL[k] for k in WEIGHTS_NO_MODEL) * 100
+    active = {k: v for k, v in WEIGHTS_NO_MODEL.items() if k in s}
+    total = sum(s[k] * active[k] for k in active) / sum(active.values()) * 100
     return total
 
 
@@ -685,13 +658,13 @@ def generate():
           <td style="text-align:center;color:#aaa">{pop_str}</td>
           <td style="color:#f0a500;text-align:center">{odds_str}</td>
           <td style="text-align:center;font-weight:bold;color:{color}">{item['total']:.1f}</td>
-          <td style="text-align:center">{'🟢' if sc['prep']>=0.7 else '🟡' if sc['prep']>=0.4 else '🔴'}</td>
-          <td style="text-align:center">{'🟢' if sc['interval']>=0.7 else '🟡' if sc['interval']>=0.4 else '🔴'}</td>
-          <td style="text-align:center">{'🟢' if sc['ti']>=0.7 else '🟡' if sc['ti']>=0.4 else '🔴'}</td>
-          <td style="text-align:center">{'🟢' if sc['ur']>=0.7 else '🟡' if sc['ur']>=0.4 else '🔴'}</td>
-          <td style="text-align:center">{'🟢' if sc['style']>=0.7 else '🟡' if sc['style']>=0.4 else '🔴'}</td>
           <td style="text-align:center">{'🟢' if sc['model']>=0.7 else '🟡' if sc['model']>=0.4 else '🔴'}</td>
-          <td style="text-align:center;color:#555">{'⏳' if sc['weight'] is None else ('🟢' if sc['weight']>=0.7 else '🟡' if sc['weight']>=0.4 else '🔴')}</td>
+          <td style="text-align:center">{'🟢' if sc['jockey']>=0.7 else '🟡' if sc['jockey']>=0.4 else '🔴'}</td>
+          <td style="text-align:center">{'🟢' if sc['prep']>=0.7 else '🟡' if sc['prep']>=0.4 else '🔴'}</td>
+          <td style="text-align:center">{'🟢' if sc['ti']>=0.7 else '🟡' if sc['ti']>=0.4 else '🔴'}</td>
+          <td style="text-align:center">{'🟢' if sc['interval']>=0.7 else '🟡' if sc['interval']>=0.4 else '🔴'}</td>
+          <td style="text-align:center">{'🟢' if sc['ur']>=0.7 else '🟡' if sc['ur']>=0.4 else '🔴'}</td>
+          <td style="text-align:center">{'🟢' if sc['sire']>=0.7 else '🟡' if sc['sire']>=0.4 else '🔴'}</td>
         </tr>"""
 
     # 消し馬分析セクション
@@ -762,8 +735,8 @@ def generate():
   <thead>
     <tr>
       <th>総合Rnk</th><th>馬名</th><th>騎手</th><th>人気</th><th>単勝</th>
-      <th>総合スコア<br><span style="font-weight:normal;color:#555;font-size:10px">8指標・AIモデル込み</span></th>
-      <th>前走<br>クラス×着順</th><th>間隔<br>成長補正</th><th>TI<br>ピーク</th><th>上り3F<br>指数</th><th>脚質</th><th>AIモデル</th>
+      <th>総合スコア</th>
+      <th>AIモデル<br>30%</th><th>騎手<br>15%</th><th>前走<br>クラス15%</th><th>TI<br>14%</th><th>間隔<br>10%</th><th>上り3F<br>8%</th><th>種牡馬<br>8%</th>
     </tr>
   </thead>
   <tbody>{summary_rows}</tbody>
@@ -776,15 +749,13 @@ def generate():
 <table class="weight-table">
   <thead><tr><th>指標</th><th>重み</th><th>根拠（過去皐月賞の勝率帯）</th></tr></thead>
   <tbody>
-    <tr><td>前走クラス×着順</td><td>18%</td><td>G1-1着:33.3% 〜 G2-1着:4.0%（最大差が大きく最重要）</td></tr>
-    <tr><td>タイム指数ピーク</td><td>16%</td><td>68+:20.0% / 58-63:8.0% / 63-68:3.8%</td></tr>
-    <tr><td>AIモデル（距離/クラス）</td><td>14%</td><td>過去走から学習したLightGBM LambdaMARTランカー順位</td></tr>
-    <tr><td>間隔・成長補正</td><td>13%</td><td>9-12週:13.9% / 13週以上:11.5% / 5-6週:1.8%（3歳特有）</td></tr>
-    <tr><td>上り3F指数</td><td>13%</td><td>60-65:8.3% / 55-60:5.6% / 65以上:2.8%（高すぎに注意）</td></tr>
-    <tr><td>脚質（中山適性）</td><td>10%</td><td>逃げ:9.5% / 先行:4.6% / 差し:3.2% / 追込:0%</td></tr>
-    <tr><td>種牡馬</td><td>9%</td><td>キタサンブラック:25% / ドレフォン:33% / ハーツクライ:0%(18頭で0勝)</td></tr>
-    <tr><td>枠番</td><td>4%</td><td>中(7-12):7.7% / 内(1-6):5.1% / 外(13-18):4.2%</td></tr>
-    <tr><td>馬体重増減</td><td>3%</td><td>維持(-4~+4):7.6% / 増加:4.5% / 減少:3.4%</td></tr>
+    <tr><td>AIモデル（距離/クラス）</td><td>30%</td><td>LightGBM LambdaMARTランカー順位。普段の予想モデルを軸に</td></tr>
+    <tr><td>騎手（全体勝率）</td><td>15%</td><td>全指標中最強の相関（rho=0.49）。優秀騎手は強い馬に乗る傾向も反映</td></tr>
+    <tr><td>前走クラス×着順</td><td>15%</td><td>G1前走1着:33.3% / G3前走1着:16.2% / G2前走1着:4.0%</td></tr>
+    <tr><td>タイム指数ピーク</td><td>14%</td><td>68以上:20.0% / 58-63:8.0% / 63-68:3.8%</td></tr>
+    <tr><td>間隔・成長補正</td><td>10%</td><td>9-12週:13.9% / 13週以上:11.5% / 5-6週:1.8%（3歳特有）</td></tr>
+    <tr><td>上り3F指数</td><td>8%</td><td>60-65:8.3% / 55-60:5.6% / 65以上:2.8%（高すぎに注意）</td></tr>
+    <tr><td>種牡馬</td><td>8%</td><td>キタサンブラック:25% / ドレフォン:33% / エピファネイア:14%</td></tr>
   </tbody>
 </table>
 
