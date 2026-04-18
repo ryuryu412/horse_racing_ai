@@ -258,6 +258,182 @@ def horse_card(rank, h_data, total, scores, details, odds):
   </div>"""
 
 
+WEIGHTS_NO_MODEL = {k: v for k, v in WEIGHTS.items() if k != "model"}
+
+# 枠番ルックアップ（parquetには馬番列がある想定）
+PARQUET_STYLE_MAP = {0: 1, 1: 2, 2: 3, 3: 4}  # parquet encoding → STYLE_RATE key
+
+
+def score_horse_historical(h) -> float:
+    """過去データ用スコアリング（model次元除外 / 枠番はparquet馬番から算出）"""
+    s = {}
+
+    def safe_int(val, default):
+        try:
+            v = float(val)
+            return default if np.isnan(v) else int(v)
+        except (TypeError, ValueError):
+            return default
+
+    def safe_float(val, default=0.0):
+        try:
+            v = float(val)
+            return default if np.isnan(v) else v
+        except (TypeError, ValueError):
+            return default
+
+    cls = safe_int(h.get("1走前_クラス_rank", 0), 0)
+    pos = safe_int(h.get("1走前_着順_num", 99), 99)
+    prep = PREP_WIN_RATE.get((cls, min(pos, 6)), PREP_WIN_RATE.get((cls, 1), 2.0))
+    s["prep"] = min(prep / NORM["prep"], 1.0)
+
+    ti1 = safe_float(h.get("1走前_タイム指数", 0))
+    ti2 = safe_float(h.get("2走前_タイム指数", 0))
+    ti_r = lookup(max(ti1, ti2), TI_PEAK_RATE)
+    s["ti"] = ti_r / NORM["ti"]
+
+    ur1 = safe_float(h.get("1走前_上り3F_指数", 0))
+    ur2 = safe_float(h.get("2走前_上り3F_指数", 0))
+    ur_r = lookup(max(ur1, ur2), UR_PEAK_RATE)
+    s["ur"] = ur_r / NORM["ur"]
+
+    iv = safe_float(h.get("間隔", 0))
+    s["interval"] = lookup(iv, INTERVAL_RATE) / NORM["interval"]
+
+    # parquetの脚質: 0=逃,1=先,2=中,3=後 → STYLE_RATE key
+    sn_raw = h.get("前走脚質_num", None)
+    if sn_raw is not None and not (isinstance(sn_raw, float) and np.isnan(float(sn_raw) if sn_raw is not None else float("nan"))):
+        sn = PARQUET_STYLE_MAP.get(safe_int(sn_raw, 2), 3)
+    else:
+        sn = 3
+    s["style"] = STYLE_RATE.get(sn, 3.2) / NORM["style"]
+
+    sire = str(h.get("種牡馬", "") or "")
+    s["sire"] = min(SIRE_RATE.get(sire, 3.0) / NORM["sire"], 1.0)
+
+    bnum = safe_int(h.get("馬番", 9), 9)
+    wr = 5.1 if bnum <= 6 else 7.7 if bnum <= 12 else 4.2
+    s["waku"] = wr / NORM["waku"]
+
+    wd = safe_float(h.get("馬体重増減", 0))
+    wt_r = lookup(wd, WEIGHT_RATE)
+    s["weight"] = wt_r / NORM["weight"]
+
+    total = sum(s[k] * WEIGHTS_NO_MODEL[k] for k in WEIGHTS_NO_MODEL) \
+          / sum(WEIGHTS_NO_MODEL[k] for k in WEIGHTS_NO_MODEL) * 100
+    return total
+
+
+def compute_elimination_threshold() -> dict:
+    """過去皐月賞の全馬スコアリング → 3着以内最低スコアをしきい値として返す"""
+    parquet_path = ROOT / "data/processed/all_venues_features.parquet"
+    df = pd.read_parquet(parquet_path)
+    hist = df[df["レース名"] == "皐月賞G1"].copy()
+    hist = hist.dropna(subset=["着順_num"])
+    hist["着順_num"] = hist["着順_num"].astype(int)
+
+    scores_all = []
+    for _, h in hist.iterrows():
+        sc = score_horse_historical(h)
+        top3 = int(h["着順_num"]) <= 3
+        scores_all.append({
+            "馬名": h.get("馬名", ""),
+            "日付": str(h.get("日付", "")),
+            "着順": int(h["着順_num"]),
+            "score": sc,
+            "top3": top3,
+        })
+
+    df_sc = pd.DataFrame(scores_all)
+    top3_df = df_sc[df_sc["top3"]]
+    threshold = float(top3_df["score"].min())
+    eliminated = df_sc[~df_sc["top3"] & (df_sc["score"] < threshold)]
+
+    return {
+        "threshold": threshold,
+        "top3_min": threshold,
+        "top3_max": float(top3_df["score"].max()),
+        "top3_mean": float(top3_df["score"].mean()),
+        "all_df": df_sc,
+        "eliminated_hist": eliminated,
+        "total_horses": len(df_sc),
+        "total_top3": len(top3_df),
+    }
+
+
+def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
+    t = thresh_data["threshold"]
+    elim_today = [(item["h"]["馬名"], item["total_no_model"]) for item in today_horses
+                  if item["total_no_model"] < t]
+    near_today = [(item["h"]["馬名"], item["total_no_model"]) for item in today_horses
+                  if t <= item["total_no_model"] < t + 5]
+
+    # 消し馬リスト HTML
+    if elim_today:
+        elim_html = "".join(
+            f'<div style="background:#1c0000;border:1px solid #5a1a1a;border-radius:6px;padding:10px 14px;margin-bottom:6px">'
+            f'<span style="color:#e74c3c;font-weight:bold;font-size:14px">❌ {name}</span>'
+            f'<span style="color:#555;font-size:12px;margin-left:12px">参照スコア {sc:.1f}（しきい値 {t:.1f} 未満）</span>'
+            f'</div>'
+            for name, sc in sorted(elim_today, key=lambda x: x[1])
+        )
+    else:
+        elim_html = '<div style="color:#2ecc71;padding:10px">今年はしきい値を下回る馬なし（全馬が過去3着以内水準以上）</div>'
+
+    near_html = ""
+    if near_today:
+        near_html = '<div style="color:#f1c40f;font-size:12px;margin-top:8px">▲ 際どいライン（+5pt以内）: ' + \
+                    " / ".join(f"{n}（{s:.1f}）" for n, s in near_today) + '</div>'
+
+    # 過去データ散布サマリー（年別トップ3最低スコア）
+    df = thresh_data["all_df"]
+    df["year"] = df["日付"].str[:4]
+    year_min = df[df["top3"]].groupby("year")["score"].min().reset_index()
+    year_rows = "".join(
+        f'<tr><td style="text-align:center">{r.year}年</td>'
+        f'<td style="text-align:center;color:{"#e74c3c" if r.score < 35 else "#f1c40f" if r.score < 45 else "#2ecc71"}">{r.score:.1f}</td></tr>'
+        for _, r in year_rows_iter(year_min)
+    )
+
+    return f"""
+<div style="background:#161b22;border-radius:10px;padding:20px;margin-bottom:24px;border-left:4px solid #e74c3c">
+  <h2 style="color:#e74c3c;border:none;margin-top:0;padding-left:0">🚫 過去データによる消し馬分析</h2>
+  <p style="color:#8b949e;font-size:12px;margin-bottom:16px;line-height:1.8">
+    過去13年（2013〜2025）の皐月賞全出走馬（{thresh_data['total_horses']}頭）に同じスコアリングシステムを適用。<br>
+    3着以内に入った馬の<strong style="color:#f0a500">最低スコアは {t:.1f}点</strong>（参照スコア = model次元除外の7指標）。<br>
+    このしきい値を下回った馬は過去13年で一度も3着以内に入っていない。
+  </p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;text-align:center">
+    <div style="background:#1c2128;border-radius:6px;padding:12px">
+      <div style="color:#e74c3c;font-size:22px;font-weight:bold">{t:.1f}</div>
+      <div style="color:#8b949e;font-size:11px">3着以内最低スコア<br>（消しラインしきい値）</div>
+    </div>
+    <div style="background:#1c2128;border-radius:6px;padding:12px">
+      <div style="color:#2ecc71;font-size:22px;font-weight:bold">{thresh_data['top3_mean']:.1f}</div>
+      <div style="color:#8b949e;font-size:11px">3着以内平均スコア</div>
+    </div>
+    <div style="background:#1c2128;border-radius:6px;padding:12px">
+      <div style="color:#f0a500;font-size:22px;font-weight:bold">{thresh_data['top3_max']:.1f}</div>
+      <div style="color:#8b949e;font-size:11px">3着以内最高スコア</div>
+    </div>
+  </div>
+  <h3 style="color:#e74c3c;font-size:14px;margin-bottom:10px">今年の消し馬候補（しきい値 {t:.1f}点未満）</h3>
+  {elim_html}
+  {near_html}
+  <details style="margin-top:16px">
+    <summary style="color:#8b949e;font-size:12px;cursor:pointer">▼ 年別3着以内最低スコア（過去13年）</summary>
+    <table style="width:100%;border-collapse:collapse;margin-top:8px;font-size:12px">
+      <thead><tr><th style="background:#21262d;padding:6px;text-align:center">年</th><th style="background:#21262d;padding:6px;text-align:center">3着以内最低スコア</th></tr></thead>
+      <tbody>{year_rows}</tbody>
+    </table>
+  </details>
+</div>"""
+
+
+def year_rows_iter(year_min):
+    yield from year_min.sort_values("year").iterrows()
+
+
 def generate():
     print("データ読み込み中...")
     with open(ROOT / "data/raw/cache/出馬表形式4月19日オッズcsv.cache.pkl", "rb") as f:
@@ -265,15 +441,21 @@ def generate():
     result = cache["result"]
     r11 = result[(result["会場"] == "中") & (result["Ｒ"] == 11)].copy()
 
+    print("過去皐月賞スコアリング（消し馬しきい値算出）...")
+    thresh_data = compute_elimination_threshold()
+    print(f"  消しラインしきい値: {thresh_data['threshold']:.1f}点 (3着以内最低)")
+
     horses = []
     for _, h in r11.iterrows():
         total, sc, det = score_horse(h)
+        total_no_model = score_horse_historical(h)
         odds = h.get("単勝オッズ", np.nan)
         try:
             odds = float(odds)
         except (TypeError, ValueError):
             odds = np.nan
-        horses.append({"h": h, "total": total, "scores": sc, "details": det, "odds": odds})
+        horses.append({"h": h, "total": total, "scores": sc, "details": det,
+                       "odds": odds, "total_no_model": total_no_model})
 
     horses.sort(key=lambda x: -x["total"])
 
@@ -302,6 +484,9 @@ def generate():
           <td style="text-align:center">{'🟢' if sc['model']>=0.7 else '🟡' if sc['model']>=0.4 else '🔴'}</td>
           <td style="text-align:center;color:#555">{'⏳' if sc['weight'] is None else ('🟢' if sc['weight']>=0.7 else '🟡' if sc['weight']>=0.4 else '🔴')}</td>
         </tr>"""
+
+    # 消し馬分析セクション
+    elim_html_section = elimination_section_html(thresh_data, horses)
 
     # 馬別詳細カード
     cards_html = ""
@@ -356,6 +541,8 @@ def generate():
   <li><strong>枠番</strong> ― 中枠(7〜12)が <strong>7.7%</strong>、外枠4.2%、内枠5.1%</li>
 </ul>
 </div>
+
+{elim_html_section}
 
 <h2>📋 総合スコア サマリー（クリックで詳細へ）</h2>
 <table class="summary-table">
