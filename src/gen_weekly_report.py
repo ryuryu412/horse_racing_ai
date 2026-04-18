@@ -365,7 +365,15 @@ def main():
         print(f'キャッシュファイルが見つかりません: {cache_dir}')
         sys.exit(1)
 
-    cache_file = cache_files[-1]
+    # ベース名（オッズ確認用suffix除去）のpklを優先
+    def base_name_of(p):
+        s = os.path.basename(p)
+        s = re.sub(r'オッズ確認用.*\.cache\.pkl$', '.cache.pkl', s)
+        return s
+
+    # ベース名pklがあればそれを使う（オッズ確認用より優先）
+    base_candidates = [f for f in cache_files if 'オッズ確認用' not in f]
+    cache_file = base_candidates[-1] if base_candidates else cache_files[-1]
     cache_name = os.path.basename(cache_file)
     print(f'読み込み: {cache_name}')
 
@@ -373,6 +381,20 @@ def main():
         cached = pickle.load(f)
     df = cached['result']
     card_df = cached.get('card_df')
+
+    # オッズjsonがあれば適用
+    base_stem = re.sub(r'\.cache\.pkl$', '', cache_name)
+    odds_path = os.path.join(cache_dir, base_stem + '.odds.json')
+    if os.path.exists(odds_path):
+        with open(odds_path, encoding='utf-8') as f:
+            odds_dict = json.load(f)
+        if card_df is not None and '馬名S' in card_df.columns:
+            card_df = card_df.copy()
+            card_df['単勝オッズ'] = card_df['馬名S'].map(
+                lambda x: odds_dict.get(str(x), card_df.loc[card_df['馬名S']==x, '単勝オッズ'].values[0]
+                          if '単勝オッズ' in card_df.columns and (card_df['馬名S']==x).any() else float('nan'))
+            )
+        print(f'オッズ適用: {len(odds_dict)}頭')
 
     # 日付ラベル抽出（オッズ確認用などのsuffixは除去）
     m = re.search(r'出馬表形式(.+?)(?:オッズ確認用)?\.cache\.pkl', cache_name)

@@ -1272,10 +1272,49 @@ def generate_html(result, card_df, target_date_num, out_path):
         print("Chrome未検出のためPDF生成スキップ")
 
 
+def get_base_cache_name(card_file):
+    """オッズ確認用などのsuffixを除去したキャッシュ基本名を返す"""
+    stem = os.path.splitext(os.path.basename(card_file))[0]
+    stem = re.sub(r'オッズ確認用.*$', '', stem).rstrip('_').rstrip()
+    return stem
+
+
+def load_odds_json(odds_path):
+    """オッズjsonを読み込む（なければ空dict）"""
+    if os.path.exists(odds_path):
+        with open(odds_path, encoding='utf-8') as f:
+            return json.load(f)
+    return {}
+
+
+def save_odds_json(card_df, odds_path):
+    """card_dfの単勝オッズをjsonに保存"""
+    if '単勝オッズ' in card_df.columns:
+        odds = {str(k): float(v) for k, v in
+                card_df.dropna(subset=['単勝オッズ']).set_index('馬名S')['単勝オッズ'].items()
+                if pd.notna(v)}
+        with open(odds_path, 'w', encoding='utf-8') as f:
+            json.dump(odds, f, ensure_ascii=False)
+        print(f"オッズ保存: {len(odds)}頭 → {odds_path}")
+
+
+def apply_odds_to_card(card_df, odds_dict):
+    """オッズdictをcard_dfの単勝オッズ列に適用"""
+    if not odds_dict:
+        return card_df
+    card_df = card_df.copy()
+    card_df['単勝オッズ'] = card_df['馬名S'].map(
+        lambda x: odds_dict.get(str(x), card_df.loc[card_df['馬名S']==x, '単勝オッズ'].values[0]
+                  if '単勝オッズ' in card_df.columns and (card_df['馬名S']==x).any() else float('nan'))
+    )
+    return card_df
+
+
 def main():
     parser = argparse.ArgumentParser(description='出馬表形式CSVから予測を実行')
     parser.add_argument('card_file', help='出馬表形式CSVのパス（例: data/raw/出馬表形式3月15日.csv）')
     parser.add_argument('--no-rebuild', action='store_true', help='特徴量再生成をスキップ')
+    parser.add_argument('--odds-only', action='store_true', help='予測キャッシュを再利用してオッズのみ更新')
     parser.add_argument('--no-html', action='store_true', help='HTML出力をスキップ')
     parser.add_argument('--html-only', action='store_true', help='キャッシュから予測結果を読み込んでHTMLのみ生成')
     parser.add_argument('--html-dir', default=r'G:\マイドライブ\競馬AI\予想レポート', help='HTML保存先フォルダ')
@@ -1287,23 +1326,43 @@ def main():
     print(f"=== 競馬AI 出馬表予測 ===")
     print(f"入力: {args.card_file}")
 
-    # キャッシュパス（data/raw/cache/ に保存）
+    # キャッシュパス（予測pkl + オッズjson に分離）
     cache_dir = os.path.join(base_dir, 'data', 'raw', 'cache')
     os.makedirs(cache_dir, exist_ok=True)
-    cache_path = os.path.join(cache_dir, os.path.splitext(os.path.basename(args.card_file))[0] + '.cache.pkl')
+    base_name   = get_base_cache_name(args.card_file)
+    cache_path  = os.path.join(cache_dir, base_name + '.cache.pkl')
+    odds_path   = os.path.join(cache_dir, base_name + '.odds.json')
 
-    if args.html_only:
-        # キャッシュから読み込んでHTML生成のみ
+    if args.odds_only:
+        # ── オッズのみ更新（予測キャッシュ再利用）──
         if not os.path.exists(cache_path):
-            print(f"[ERROR] キャッシュが見つかりません: {cache_path}")
+            print(f"[ERROR] 予測キャッシュが見つかりません: {cache_path}")
             print("  先に通常実行してキャッシュを生成してください。")
             sys.exit(1)
-        print(f"キャッセュ読み込み: {cache_path}")
         with open(cache_path, 'rb') as f:
             cached = pickle.load(f)
         result      = cached['result']
         card_df     = cached['card_df']
         target_date = cached['target_date']
+        # 新しいCSVからオッズだけ抽出して保存
+        new_card = convert_card_to_base_format(args.card_file)
+        save_odds_json(new_card, odds_path)
+        card_df = apply_odds_to_card(card_df, load_odds_json(odds_path))
+        print(f"日付: {target_date}  オッズ更新完了")
+
+    elif args.html_only:
+        # ── キャッシュからHTML生成のみ ──
+        if not os.path.exists(cache_path):
+            print(f"[ERROR] キャッシュが見つかりません: {cache_path}")
+            print("  先に通常実行してキャッシュを生成してください。")
+            sys.exit(1)
+        print(f"キャッシュ読み込み: {cache_path}")
+        with open(cache_path, 'rb') as f:
+            cached = pickle.load(f)
+        result      = cached['result']
+        card_df     = cached['card_df']
+        target_date = cached['target_date']
+        card_df = apply_odds_to_card(card_df, load_odds_json(odds_path))
         print(f"日付: {target_date}  ({len(card_df)}頭)")
 
     else:
@@ -1325,7 +1384,6 @@ def main():
                 for rf in sorted(glob_mod.glob(os.path.join(result_dir, '*.csv'))):
                     try:
                         rdf = convert_card_to_base_format(rf)
-                        # 予測日より前の日付のみ（予測日当日の結果は不要）
                         rdf_dates = pd.to_numeric(rdf['日付'], errors='coerce')
                         rdf = rdf[rdf_dates < target_date]
                         if len(rdf) > 0:
@@ -1344,10 +1402,10 @@ def main():
         else:
             print("特徴量再生成スキップ")
 
-        # 3. 予測（両モデル）
+        # 4. 予測（両モデル）
         result = predict_date(base_dir, target_date, card_df)
 
-        # キャッシュ保存（predicted_at は初回のみ記録、再実行では保持）
+        # キャッシュ保存（予測pkl + オッズjson を分離保存）
         if result is not None:
             existing_predicted_at = ''
             if os.path.exists(cache_path):
@@ -1360,6 +1418,7 @@ def main():
             with open(cache_path, 'wb') as f:
                 pickle.dump({'result': result, 'card_df': card_df, 'target_date': target_date,
                              'predicted_at': predicted_at}, f)
+            save_odds_json(card_df, odds_path)
             print(f"キャッシュ保存: {cache_path}")
 
     # 4. HTML生成
