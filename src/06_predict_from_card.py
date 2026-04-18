@@ -94,6 +94,13 @@ def convert_card_to_base_format(card_path):
     if '距離' in df.columns:
         df['距離'] = pd.to_numeric(df['距離'], errors='coerce')
 
+    # 斤量を数値に（'54㎏' → 54.0）
+    if '斤量' in df.columns:
+        df['斤量'] = pd.to_numeric(
+            df['斤量'].astype(str).str.replace(r'[^\d.]', '', regex=True),
+            errors='coerce'
+        )
+
     return df
 
 
@@ -1189,7 +1196,7 @@ def generate_html(result, card_df, target_date_num, out_path):
                 f'<td style="text-align:left;font-weight:bold;white-space:nowrap">{r.get("馬名S","")}'
                 f' <span style="font-weight:normal;color:#888;font-size:8px">{seir(r)}</span></td>'
                 f'<td style="white-space:nowrap;font-size:9px">{r.get("dc_騎手", r.get("騎手",""))}'
-                f' <span style="color:#888;font-size:8px">{r.get("dc_斤量","")}kg</span></td>'
+                f' <span style="color:#888;font-size:8px">{fmt(r.get("dc_斤量"), ".0f") + "kg" if pd.notna(r.get("dc_斤量")) else ""}</span></td>'
                 f'<td style="white-space:nowrap">{taiju}</td>'
                 f'<td>{fmt(odds_v, ".1f")}</td>'
                 f'<td>{rank_str(r.get("cur_ランカー順位"))}</td>'
