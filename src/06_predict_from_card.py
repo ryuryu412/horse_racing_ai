@@ -569,7 +569,7 @@ def generate_html(result, card_df, target_date_num, out_path):
     _card_extra = {}
     for _, _cr in card_df.drop_duplicates('馬名S').iterrows():
         _card_extra[_cr['馬名S']] = {
-            '前場所': str(_cr.get('前場所', '') or ''),
+            '前場所': str(_cr.get('前場所', '') if not pd.isna(_cr.get('前場所', '')) else ''),
             '間隔_card': _cr.get('間隔', ''),
         }
     alert_rows = []
