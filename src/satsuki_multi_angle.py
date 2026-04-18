@@ -169,11 +169,17 @@ def score_horse(h: pd.Series) -> dict:
     scores["sire"] = min(sire_rate / NORM["sire"], 1.0)
     details["sire"] = f"{sire} → {sire_rate:.1f}%"
 
-    # 7. 馬体重増減
-    wdiff = h.get("馬体重増減", 0) or 0
-    wrate = lookup_range(wdiff, WEIGHT_RATE)
-    scores["weight"] = wrate / NORM["weight"]
-    details["weight"] = f"{int(wdiff):+d}kg → {wrate:.1f}%"
+    # 7. 馬体重増減（当日計量前はNaN → スコア除外）
+    bw_raw = h.get("馬体重", None)
+    bw_available = bw_raw is not None and str(bw_raw) not in ("NaN", "nan", "", "None")
+    if bw_available:
+        wdiff = float(h.get("馬体重増減", 0) or 0)
+        wrate = lookup_range(wdiff, WEIGHT_RATE)
+        scores["weight"] = wrate / NORM["weight"]
+        details["weight"] = f"{int(wdiff):+d}kg → {wrate:.1f}%"
+    else:
+        scores["weight"] = None
+        details["weight"] = "⏳ 当日計量待ち"
 
     # 8. 間隔（3歳成長補正）
     interval = pd.to_numeric(h.get("間隔", np.nan), errors="coerce")
@@ -204,7 +210,8 @@ def score_horse(h: pd.Series) -> dict:
     details["model"] = f"距離{int(cur_r)}位 / クラス{int(sub_r)}位"
 
     # 総合スコア
-    total = sum(scores[k] * WEIGHTS[k] for k in WEIGHTS) / sum(WEIGHTS.values())
+    total = sum(scores[k] * WEIGHTS[k] for k in WEIGHTS if scores[k] is not None) \
+          / sum(WEIGHTS[k] for k in WEIGHTS if scores[k] is not None)
     return {"total": total * 100, "scores": scores, "details": details}
 
 
@@ -225,6 +232,11 @@ def score_color(v):
 
 
 def dimension_cell(score_0to1, detail_str):
+    if score_0to1 is None:
+        return f"""<td>
+      <div style="font-size:11px;color:#8b949e;margin-bottom:2px">{detail_str}</div>
+      <div style="color:#444;font-size:10px">⏳ 当日確定待ち</div>
+    </td>"""
     pct = score_0to1 * 100
     color = score_color(pct)
     bar_w = int(min(pct, 100))

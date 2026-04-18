@@ -118,11 +118,18 @@ def score_horse(h):
     s["waku"] = wr / NORM["waku"]
     d["waku"] = {"rate": wr, "label": f"{bnum}番 {wg}", "max": 7.7}
 
-    wd = float(h.get("馬体重増減", 0) or 0)
-    wt_r = lookup(wd, WEIGHT_RATE)
-    bw = h.get("馬体重", "-")
-    s["weight"] = wt_r / NORM["weight"]
-    d["weight"] = {"rate": wt_r, "label": f"{int(wd):+d}kg（{bw}kg）", "max": 7.6}
+    # 馬体重増減は当日計量後に確定するため現時点では使用不可
+    bw_raw = h.get("馬体重", None)
+    bw_available = bw_raw is not None and str(bw_raw) not in ("NaN", "nan", "", "None")
+    if bw_available:
+        wd = float(h.get("馬体重増減", 0) or 0)
+        wt_r = lookup(wd, WEIGHT_RATE)
+        bw_label = f"{int(wd):+d}kg（{bw_raw}kg）"
+    else:
+        wt_r = None  # 未確定
+        bw_label = "⏳ 当日計量待ち"
+    s["weight"] = (wt_r / NORM["weight"]) if wt_r is not None else None
+    d["weight"] = {"rate": wt_r, "label": bw_label, "max": 7.6, "pending": wt_r is None}
 
     cur_r = int(h.get("cur_ランカー順位", 18) or 18)
     sub_r = int(h.get("sub_ランカー順位", 18) or 18)
@@ -133,7 +140,9 @@ def score_horse(h):
     d["model"] = {"rate": mdl * 100, "label": f"距離{cur_r}位 / クラス{sub_r}位",
                   "max": 100, "sub": f"距離diff:{cur_d:+.1f} / クラスdiff:{sub_d:+.1f}"}
 
-    total = sum(s[k] * WEIGHTS[k] for k in WEIGHTS) / sum(WEIGHTS.values()) * 100
+    # 未確定指標(None)を除いて正規化
+    total = sum(s[k] * WEIGHTS[k] for k in WEIGHTS if s[k] is not None) \
+          / sum(WEIGHTS[k] for k in WEIGHTS if s[k] is not None) * 100
     return total, s, d
 
 
@@ -152,6 +161,17 @@ def bar_html(score_01, color, height=8):
 
 
 def dim_block(key, label, data, score_01):
+    pending = data.get("pending", False)
+    if pending:
+        return f"""
+    <div style="background:#1c2128;border-radius:6px;padding:10px 12px;margin-bottom:6px;border:1px dashed #333">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="color:#8b949e;font-size:11px;font-weight:bold">{label}</span>
+        <span style="color:#555;font-size:12px">未確定</span>
+      </div>
+      <div style="color:#555;font-size:12px;margin-top:4px">{data['label']}</div>
+      <div style="color:#444;font-size:11px">スコア計算から除外（当日確定後に反映）</div>
+    </div>"""
     color, _ = grade_color(score_01 * 100)
     pct = score_01 * 100
     warn = data.get("warn", False)
@@ -160,6 +180,7 @@ def dim_block(key, label, data, score_01):
     notable_icon = ' <span style="color:#f0a500;font-size:10px">★得意血統</span>' if notable else ""
     sub = data.get("sub", "")
     sub_html = f'<div style="color:#555;font-size:10px;margin-top:2px">{sub}</div>' if sub else ""
+    rate_str = f"{data['rate']:.1f}%" if data['rate'] is not None else "-"
     return f"""
     <div style="background:#1c2128;border-radius:6px;padding:10px 12px;margin-bottom:6px">
       <div style="display:flex;justify-content:space-between;align-items:center">
@@ -167,7 +188,7 @@ def dim_block(key, label, data, score_01):
         <span style="color:{color};font-weight:bold;font-size:13px">{pct:.0f}点</span>
       </div>
       <div style="color:#c9d1d9;font-size:12px;margin-top:4px">{data['label']}{warn_icon}{notable_icon}</div>
-      <div style="color:{color};font-size:11px">勝率参考値: {data['rate']:.1f}% (基準:{data['max']:.1f}%)</div>
+      <div style="color:{color};font-size:11px">勝率参考値: {rate_str} (基準:{data['max']:.1f}%)</div>
       {sub_html}
       {bar_html(score_01, color)}
     </div>"""
@@ -190,8 +211,8 @@ def horse_card(rank, h_data, total, scores, details, odds):
     dims_html = "".join(dim_block(k, dim_labels[k], details[k], scores[k]) for k in dim_labels)
 
     # 総合評価コメント
-    strengths = [dim_labels[k] for k in scores if scores[k] >= 0.7]
-    weaknesses = [dim_labels[k] for k in scores if scores[k] <= 0.25]
+    strengths = [dim_labels[k] for k in scores if scores[k] is not None and scores[k] >= 0.7]
+    weaknesses = [dim_labels[k] for k in scores if scores[k] is not None and scores[k] <= 0.25]
     verdict = ""
     if total >= 75:
         verdict = "複数の重要指標が高水準で揃った有力候補。"
@@ -279,6 +300,7 @@ def generate():
           <td style="text-align:center">{'🟢' if sc['ur']>=0.7 else '🟡' if sc['ur']>=0.4 else '🔴'}</td>
           <td style="text-align:center">{'🟢' if sc['style']>=0.7 else '🟡' if sc['style']>=0.4 else '🔴'}</td>
           <td style="text-align:center">{'🟢' if sc['model']>=0.7 else '🟡' if sc['model']>=0.4 else '🔴'}</td>
+          <td style="text-align:center;color:#555">{'⏳' if sc['weight'] is None else ('🟢' if sc['weight']>=0.7 else '🟡' if sc['weight']>=0.4 else '🔴')}</td>
         </tr>"""
 
     # 馬別詳細カード
