@@ -340,30 +340,26 @@ def compute_elimination_threshold() -> dict:
 
 
 def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
-    # 今年の平均・各馬の平均差を計算
-    scores_nm = [item["total_no_model"] for item in today_horses]
-    race_mean = float(np.mean(scores_nm))
+    # v3フルスコア（AIモデル込み）で平均差を計算
+    scores_v3 = [item["total"] for item in today_horses]
+    race_mean = float(np.mean(scores_v3))
 
     def gap_label(gap):
-        """平均との差を日本語テキストで返す"""
         if gap >= 0:
             return f"平均より{gap:.1f}点高い", "#2ecc71"
         else:
             return f"平均より{abs(gap):.1f}点低い", "#e74c3c" if gap < -5 else "#f1c40f"
 
     def zone(gap):
-        """平均差に基づく消し判定"""
-        if gap < -17:  return "full_elim", "#e74c3c", "3着以内ゼロ圏（過去13年で3着以内なし）"
-        if gap < -5:   return "win_elim",  "#e67e22", "1着ゼロ圏（過去13年で1着なし）"
+        if gap < -17:  return "full_elim", "#e74c3c", "消しゾーン（過去13年で3着以内1頭/32頭）"
+        if gap <  -5:  return "win_elim",  "#e67e22", "1着消しゾーン（過去13年で1着ゼロ）"
         return                 "ok",        "#8b949e", ""
 
-    # 今年18頭を低い順に
-    today_sorted = sorted(today_horses, key=lambda x: x["total_no_model"])
+    today_sorted = sorted(today_horses, key=lambda x: x["total"])
 
-    # ---- 消し馬ブロック ----
     full_elim, win_elim = [], []
     for item in today_sorted:
-        gap = item["total_no_model"] - race_mean
+        gap = item["total"] - race_mean
         zkey, zcolor, zlabel = zone(gap)
         gl, _ = gap_label(gap)
         if zkey == "full_elim":
@@ -382,44 +378,56 @@ def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
 
     elim_html = ""
     if full_elim:
-        elim_html += '<div style="color:#e74c3c;font-size:12px;font-weight:bold;margin-bottom:6px">▼ 3着以内ゼロ圏（過去13年で平均より17点以上低い馬は3着以内なし）</div>'
-        elim_html += "".join(elim_card(n, g, gl, "#e74c3c", "完全消し") for n, g, gl in full_elim)
+        elim_html += '<div style="color:#e74c3c;font-size:12px;font-weight:bold;margin-bottom:6px">▼ 消しゾーン（過去13年・平均より17点以上低い32頭で3着以内1頭のみ）</div>'
+        elim_html += "".join(elim_card(n, g, gl, "#e74c3c", "消し") for n, g, gl in full_elim)
     if win_elim:
-        elim_html += '<div style="color:#e67e22;font-size:12px;font-weight:bold;margin:12px 0 6px">▼ 1着ゼロ圏（過去13年で平均より5点以上低い馬は1着なし）</div>'
+        elim_html += '<div style="color:#e67e22;font-size:12px;font-weight:bold;margin:12px 0 6px">▼ 1着消しゾーン（過去13年・平均より5点以上低い馬は1着ゼロ）</div>'
         elim_html += "".join(elim_card(n, g, gl, "#e67e22", "1着消し") for n, g, gl in win_elim)
     if not full_elim and not win_elim:
         elim_html = '<div style="color:#8b949e;padding:10px 0">消し馬なし</div>'
 
     # ---- 平均差テーブル ----
-    # v3フルスコア（ランカー予測込み）で過去13年を再計算した実績値
+    # v3フルスコア（AIモデル35%+TI30%+前走19%+騎手10%+間隔3%+上り3%）で
+    # 過去13年225頭・ランカー予測込みで再計算した実績値
     gap_data = [
-        ("平均より17点以上低い", None, -17, "消し",        "3%",    "3%",    "0%"),
-        ("平均より5〜17点低い",  -17,   -5, "1着消し",     "3%",    "0%",    "0%"),
-        ("平均±5点以内",         -5,    5,  "1着消し",     "11%",   "6%",    "0%"),
-        ("平均より5〜10点高い",    5,   10,  "有望",        "19%",   "14%",  "10%"),
-        ("平均より10〜15点高い",  10,   15,  "上位",        "20%",   "10%",   "5%"),
-        ("平均より15〜20点高い",  15,   20,  "強力",        "35%",   "35%",  "18%"),
-        ("平均より20点以上高い",  20,  None, "別格",        "73%",   "50%",  "32%"),
+        ("平均より17点以上低い", None, -17, "消し",    "3%",  "3%",  "0%"),
+        ("平均より5〜17点低い",  -17,   -5, "1着消し", "3%",  "0%",  "0%"),
+        ("平均±5点以内",          -5,    5, "1着消し", "11%", "6%",  "0%"),
+        ("平均より5〜10点高い",    5,   10, "有望",    "19%", "14%", "10%"),
+        ("平均より10〜15点高い",  10,   15, "上位",    "20%", "10%",  "5%"),
+        ("平均より15〜20点高い",  15,   20, "強力",    "35%", "35%", "18%"),
+        ("平均より20点以上高い",  20, None, "別格",    "73%", "50%", "32%"),
     ]
+
+    def r_color(r_str):
+        try:
+            v = float(r_str.replace("%", ""))
+            if v == 0:   return "#e74c3c"
+            if v < 15:   return "#f1c40f"
+            if v < 35:   return "#2ecc71"
+            return "#58d68d"
+        except Exception:
+            return "#8b949e"
 
     gap_rows = ""
     for label, lo, hi, tag, r3, r2, r1 in gap_data:
         today_in = []
         for item in today_horses:
-            gap = item["total_no_model"] - race_mean
-            in_band = (lo is None or gap >= lo) and (hi is None or gap < hi)
-            if in_band:
+            g = item["total"] - race_mean
+            if (lo is None or g >= lo) and (hi is None or g < hi):
                 today_in.append(item["h"]["馬名"])
-        names_html = " / ".join(f'<span style="color:#f0a500;font-weight:bold">{n}</span>' for n in today_in) if today_in else '<span style="color:#444">—</span>'
-        r3_color = "#e74c3c" if r3 in ("0%","〜10%") else "#f1c40f" if "%" in r3 and float(r3.replace("〜","").replace("%","")) < 20 else "#2ecc71"
+        names_html = " / ".join(
+            f'<span style="color:#f0a500;font-weight:bold">{n}</span>' for n in today_in
+        ) if today_in else '<span style="color:#444">—</span>'
+        c3, c2, c1 = r_color(r3), r_color(r2), r_color(r1)
         gap_rows += f"""
       <tr>
-        <td style="font-size:12px;color:#c9d1d9">{label}</td>
-        <td style="text-align:center;color:#8b949e;font-size:11px">{tag}</td>
-        <td style="text-align:center;color:{r3_color};font-weight:bold">{r3}</td>
-        <td style="text-align:center;color:{r3_color}">{r2}</td>
-        <td style="text-align:center;color:{r3_color}">{r1}</td>
-        <td style="font-size:12px">{names_html}</td>
+        <td style="font-size:12px;color:#c9d1d9;padding:8px">{label}</td>
+        <td style="text-align:center;color:#8b949e;font-size:11px;padding:8px">{tag}</td>
+        <td style="text-align:center;color:{c3};font-weight:bold;padding:8px">{r3}</td>
+        <td style="text-align:center;color:{c2};padding:8px">{r2}</td>
+        <td style="text-align:center;color:{c1};padding:8px">{r1}</td>
+        <td style="font-size:12px;padding:8px">{names_html}</td>
       </tr>"""
 
     return f"""
@@ -427,13 +435,14 @@ def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
   <h2 style="color:#e74c3c;border:none;margin-top:0;padding-left:0">🚫 消し馬分析（平均差方式）</h2>
   <p style="color:#8b949e;font-size:12px;margin-bottom:16px;line-height:1.8">
     過去13年（2013〜2025）の皐月賞全{thresh_data['total_horses']}頭を分析。<br>
+    <strong style="color:#c9d1d9">v3フルスコア</strong>（AIモデル35%・TI30%・前走19%・騎手10%・間隔3%・上り3F3%）で統一計算。<br>
     各レースの出走馬平均スコアからの差（平均より何点高い／低い）で判定。<br>
     今年18頭の平均スコア = <strong style="color:#f0a500">{race_mean:.1f}点</strong>
   </p>
 
   {elim_html}
 
-  <h3 style="color:#8b949e;font-size:13px;margin:20px 0 10px">平均差と着順確率（過去13年の実績）</h3>
+  <h3 style="color:#8b949e;font-size:13px;margin:20px 0 10px">平均差と着順確率（過去13年の実績・v3フルスコア）</h3>
   <table style="width:100%;border-collapse:collapse;font-size:13px">
     <thead><tr>
       <th style="background:#21262d;padding:8px;text-align:left">平均との差</th>
@@ -446,7 +455,7 @@ def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
     <tbody>{gap_rows}</tbody>
   </table>
   <div style="color:#555;font-size:11px;margin-top:10px">
-    ※ スコアは前走データ7指標（AIモデル除外）。サマリー表の総合スコアとは異なります。
+    ※ 過去13年225頭・ランカーモデル（中山芝2000m）で再予測した v3フルスコアを使用。今年の馬も同一スコア系で判定。
   </div>
 </div>"""
 

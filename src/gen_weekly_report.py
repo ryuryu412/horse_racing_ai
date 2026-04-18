@@ -3,6 +3,16 @@
 import sys, io, os, re, json, pickle, argparse, glob
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 import pandas as pd, numpy as np
+# pandas 1.x pickleとの互換パッチ
+try:
+    import pandas.core.arrays.string_ as _s
+    _orig = _s.StringDtype.__init__
+    def _p(self, *a, **k):
+        try: _orig(self, *a, **k)
+        except TypeError: _orig(self)
+    _s.StringDtype.__init__ = _p
+except Exception:
+    pass
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -381,6 +391,19 @@ def main():
         cached = pickle.load(f)
     df = cached['result']
     card_df = cached.get('card_df')
+
+    # ArrowBacked/StringDtype列・列インデックスをobjectに変換（pandas互換性）
+    if 'string' in str(df.columns.dtype).lower():
+        df.columns = df.columns.astype(object)
+    for _c in list(df.columns):
+        if 'string' in str(df[_c].dtype).lower():
+            df[_c] = df[_c].astype(object)
+    if card_df is not None:
+        if 'string' in str(card_df.columns.dtype).lower():
+            card_df.columns = card_df.columns.astype(object)
+        for _c in list(card_df.columns):
+            if 'string' in str(card_df[_c].dtype).lower():
+                card_df[_c] = card_df[_c].astype(object)
 
     # オッズjsonがあれば適用
     base_stem = re.sub(r'\.cache\.pkl$', '', cache_name)
