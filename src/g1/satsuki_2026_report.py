@@ -378,159 +378,113 @@ def compute_elimination_threshold() -> dict:
 
 
 def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
-    t = thresh_data["threshold"]
+    # 今年の平均・各馬の平均差を計算
+    scores_nm = [item["total_no_model"] for item in today_horses]
+    race_mean = float(np.mean(scores_nm))
 
-    # 今年18頭をサマリーと同じ total（8指標）順に並べる
-    today_sorted = sorted(today_horses, key=lambda x: x["total"])
+    def gap_label(gap):
+        """平均との差を日本語テキストで返す"""
+        if gap >= 0:
+            return f"平均より{gap:.1f}点高い", "#2ecc71"
+        else:
+            return f"平均より{abs(gap):.1f}点低い", "#e74c3c" if gap < -5 else "#f1c40f"
 
-    # ゾーン判定は過去比較用の total_no_model（7指標）ベース
-    def zone(sc_no_model):
-        if sc_no_model < t:    return "elim",    "#e74c3c", "消し（過去0回3着以内）"
-        if sc_no_model < 50:   return "caution", "#f1c40f", "普通圏（3着率〜13%）"
-        if sc_no_model < 60:   return "watch",   "#27ae60", "有望圏（3着率28%）"
-        if sc_no_model < 70:   return "strong",  "#3498db", "上位圏（3着率60%）"
-        return                         "elite",  "#9b59b6", "最上位（過去100%）"
+    def zone(gap):
+        """平均差に基づく消し判定"""
+        if gap < -17:  return "full_elim", "#e74c3c", "3着以内ゼロ圏（過去13年で3着以内なし）"
+        if gap < -5:   return "win_elim",  "#e67e22", "1着ゼロ圏（過去13年で1着なし）"
+        return                 "ok",        "#8b949e", ""
 
-    # ---- スコア帯別3着以内率テーブル（過去比較は total_no_model で帯分け）----
-    bucket_rows = ""
-    today_bucket_map = {}
-    for item in today_horses:
-        sc = item["total_no_model"]
-        lo = (int(sc) // 10) * 10
-        label = f"{lo}〜{lo+10}"
-        today_bucket_map.setdefault(label, []).append(item["h"]["馬名"])
+    # 今年18頭を低い順に
+    today_sorted = sorted(today_horses, key=lambda x: x["total_no_model"])
 
-    for bs in thresh_data["bucket_stats"]:
-        if bs["total"] == 0:
-            continue
-        rate = bs["rate"]
-        bar_w = int(min(rate * 3, 100))
-        rate_color = "#e74c3c" if rate < 5 else "#f1c40f" if rate < 12 else "#2ecc71"
-        today_in = today_bucket_map.get(bs["range"], [])
-        today_cell = ""
-        if today_in:
-            today_cell = " / ".join(f'<span style="color:#f0a500;font-weight:bold">{n}</span>' for n in today_in)
-
-        bucket_rows += f"""
-      <tr>
-        <td style="text-align:center;font-weight:bold">{bs['range']}</td>
-        <td style="text-align:center;color:#8b949e">{bs['total']}</td>
-        <td style="text-align:center;color:#e74c3c">{bs['top3']}</td>
-        <td style="min-width:120px">
-          <div style="display:flex;align-items:center;gap:6px">
-            <div style="background:#21262d;border-radius:3px;height:10px;flex:1">
-              <div style="background:{rate_color};height:10px;border-radius:3px;width:{bar_w}%"></div>
-            </div>
-            <span style="color:{rate_color};font-weight:bold;font-size:12px;min-width:36px">{rate:.1f}%</span>
-          </div>
-        </td>
-        <td style="font-size:12px">{today_cell}</td>
-      </tr>"""
-
-    # ---- 今年18頭の一覧（サマリーと同じ total スコア表示・低い順）----
-    horse_rows = ""
+    # ---- 消し馬ブロック ----
+    full_elim, win_elim = [], []
     for item in today_sorted:
-        sc_display = item["total"]           # サマリーと同じ8指標スコア
-        sc_hist    = item["total_no_model"]  # ゾーン判定用（過去比較）
-        name = item["h"]["馬名"]
-        zkey, zcolor, zlabel = zone(sc_hist)
-        bar_w = int(min(sc_display, 100))
-        horse_rows += f"""
+        gap = item["total_no_model"] - race_mean
+        zkey, zcolor, zlabel = zone(gap)
+        gl, _ = gap_label(gap)
+        if zkey == "full_elim":
+            full_elim.append((item["h"]["馬名"], gap, gl))
+        elif zkey == "win_elim":
+            win_elim.append((item["h"]["馬名"], gap, gl))
+
+    def elim_card(name, gap, gl, color, badge):
+        return (f'<div style="background:#1a1a2e;border:1px solid {color};border-radius:8px;'
+                f'padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px">'
+                f'<span style="background:{color};color:white;border-radius:4px;padding:2px 8px;'
+                f'font-size:11px;font-weight:bold;white-space:nowrap">{badge}</span>'
+                f'<span style="color:#fff;font-weight:bold;font-size:15px">{name}</span>'
+                f'<span style="color:{color};font-size:13px;margin-left:auto">{gl}</span>'
+                f'</div>')
+
+    elim_html = ""
+    if full_elim:
+        elim_html += '<div style="color:#e74c3c;font-size:12px;font-weight:bold;margin-bottom:6px">▼ 3着以内ゼロ圏（過去13年で平均より17点以上低い馬は3着以内なし）</div>'
+        elim_html += "".join(elim_card(n, g, gl, "#e74c3c", "完全消し") for n, g, gl in full_elim)
+    if win_elim:
+        elim_html += '<div style="color:#e67e22;font-size:12px;font-weight:bold;margin:12px 0 6px">▼ 1着ゼロ圏（過去13年で平均より5点以上低い馬は1着なし）</div>'
+        elim_html += "".join(elim_card(n, g, gl, "#e67e22", "1着消し") for n, g, gl in win_elim)
+    if not full_elim and not win_elim:
+        elim_html = '<div style="color:#8b949e;padding:10px 0">消し馬なし</div>'
+
+    # ---- 平均差テーブル ----
+    gap_data = [
+        ("平均より17点以上低い", None, -17, "3着以内ゼロ",  "0%",    "0%",    "0%"),
+        ("平均より5〜17点低い",  -17,   -5, "1着ゼロ",     "〜10%", "〜7%",  "0%"),
+        ("平均±5点以内",         -5,    5,  "互角",        "13%",   "8%",   "2.5%"),
+        ("平均より5〜10点高い",    5,   10,  "有望",        "34%",   "23%",  "17%"),
+        ("平均より10〜15点高い",  10,   15,  "上位",        "41%",   "29%",  "24%"),
+        ("平均より15〜20点高い",  15,   20,  "強力",        "55%",   "36%",  "27%"),
+        ("平均より20点以上高い",  20,  None, "別格",        "64%",   "55%",  "36%"),
+    ]
+
+    gap_rows = ""
+    for label, lo, hi, tag, r3, r2, r1 in gap_data:
+        today_in = []
+        for item in today_horses:
+            gap = item["total_no_model"] - race_mean
+            in_band = (lo is None or gap >= lo) and (hi is None or gap < hi)
+            if in_band:
+                today_in.append(item["h"]["馬名"])
+        names_html = " / ".join(f'<span style="color:#f0a500;font-weight:bold">{n}</span>' for n in today_in) if today_in else '<span style="color:#444">—</span>'
+        r3_color = "#e74c3c" if r3 in ("0%","〜10%") else "#f1c40f" if "%" in r3 and float(r3.replace("〜","").replace("%","")) < 20 else "#2ecc71"
+        gap_rows += f"""
       <tr>
-        <td style="font-weight:bold;color:#c9d1d9">{name}</td>
-        <td style="text-align:center;font-weight:bold;color:{zcolor}">{sc_display:.1f}</td>
-        <td>
-          <div style="background:#21262d;border-radius:3px;height:8px">
-            <div style="background:{zcolor};height:8px;border-radius:3px;width:{bar_w}%"></div>
-          </div>
-        </td>
-        <td style="color:{zcolor};font-size:12px">{zlabel}</td>
+        <td style="font-size:12px;color:#c9d1d9">{label}</td>
+        <td style="text-align:center;color:#8b949e;font-size:11px">{tag}</td>
+        <td style="text-align:center;color:{r3_color};font-weight:bold">{r3}</td>
+        <td style="text-align:center;color:{r3_color}">{r2}</td>
+        <td style="text-align:center;color:{r3_color}">{r1}</td>
+        <td style="font-size:12px">{names_html}</td>
       </tr>"""
-
-    # ---- 消し馬・危険馬リスト ----
-    warn_list = [(item["h"]["馬名"], item["total"], zone(item["total_no_model"]))
-                 for item in today_sorted if zone(item["total_no_model"])[0] in ("elim", "caution")]
-    if warn_list:
-        warn_html = "".join(
-            f'<div style="background:#1c0a00;border:1px solid {zcolor};border-radius:6px;'
-            f'padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">'
-            f'<span style="color:{zcolor};font-weight:bold;font-size:14px">{name}</span>'
-            f'<span style="color:#aaa;font-size:12px">参照スコア {sc:.1f} ／ {zlabel}</span>'
-            f'</div>'
-            for name, sc, (_, zcolor, zlabel) in warn_list
-        )
-    else:
-        warn_html = '<div style="color:#8b949e;font-size:13px;padding:10px 0">今年は消し圏の馬なし</div>'
-
-    # ---- 年別しきい値 ----
-    year_rows = "".join(
-        f'<tr><td style="text-align:center;padding:5px 10px">{r["year"]}年</td>'
-        f'<td style="text-align:center;padding:5px 10px;color:{"#e74c3c" if r["score"]<35 else "#f1c40f" if r["score"]<45 else "#2ecc71"}">'
-        f'{r["score"]:.1f}</td></tr>'
-        for _, r in thresh_data["year_min"].sort_values("year").iterrows()
-    )
 
     return f"""
 <div style="background:#161b22;border-radius:10px;padding:20px;margin-bottom:24px;border-left:4px solid #e74c3c">
-  <h2 style="color:#e74c3c;border:none;margin-top:0;padding-left:0">🚫 過去データによる消し馬分析</h2>
+  <h2 style="color:#e74c3c;border:none;margin-top:0;padding-left:0">🚫 消し馬分析（平均差方式）</h2>
   <p style="color:#8b949e;font-size:12px;margin-bottom:16px;line-height:1.8">
-    過去13年（2013〜2025）の皐月賞全出走馬 <strong style="color:#c9d1d9">{thresh_data['total_horses']}頭</strong> に
-    前走データ7指標（AIモデル除外）で同じスコアリングを適用。<br>
-    ※ サマリー表の「総合スコア」はAIモデル込み8指標のため値が異なります。<br>
-    3着以内馬の最低スコアは <strong style="color:#f0a500">{t:.1f}点</strong>（平均 {thresh_data['top3_mean']:.1f}点 ／ 最高 {thresh_data['top3_max']:.1f}点）。
+    過去13年（2013〜2025）の皐月賞全{thresh_data['total_horses']}頭を分析。<br>
+    各レースの出走馬平均スコアからの差（平均より何点高い／低い）で判定。<br>
+    今年18頭の平均スコア = <strong style="color:#f0a500">{race_mean:.1f}点</strong>
   </p>
 
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;text-align:center">
-    <div style="background:#1c2128;border-radius:6px;padding:12px">
-      <div style="color:#e74c3c;font-size:22px;font-weight:bold">{t:.1f}</div>
-      <div style="color:#8b949e;font-size:11px">3着以内 最低スコア<br>（絶対消しライン）</div>
-    </div>
-    <div style="background:#1c2128;border-radius:6px;padding:12px">
-      <div style="color:#27ae60;font-size:22px;font-weight:bold">50.0</div>
-      <div style="color:#8b949e;font-size:11px">有望圏ライン<br>（50以上は3着率28%↑）</div>
-    </div>
-    <div style="background:#1c2128;border-radius:6px;padding:12px">
-      <div style="color:#2ecc71;font-size:22px;font-weight:bold">{thresh_data['top3_mean']:.1f}</div>
-      <div style="color:#8b949e;font-size:11px">3着以内 平均スコア</div>
-    </div>
-  </div>
+  {elim_html}
 
-  <h3 style="color:#e74c3c;font-size:14px;margin-bottom:10px">消し・危険圏の馬</h3>
-  {warn_html}
-
-  <h3 style="color:#8b949e;font-size:14px;margin:20px 0 10px">今年18頭 スコア一覧（低い順）<span style="color:#555;font-weight:normal;font-size:11px;margin-left:8px">スコアはサマリー表と同じ8指標（AIモデル込み）／ 判定はAIモデル除外の過去比較ベース</span></h3>
-  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px">
+  <h3 style="color:#8b949e;font-size:13px;margin:20px 0 10px">平均差と着順確率（過去13年の実績）</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
     <thead><tr>
-      <th style="background:#21262d;padding:8px 10px;text-align:left">馬名</th>
-      <th style="background:#21262d;padding:8px 10px;text-align:center">スコア（8指標）</th>
-      <th style="background:#21262d;padding:8px 10px">バー</th>
-      <th style="background:#21262d;padding:8px 10px;text-align:left">判定（過去比較）</th>
-    </tr></thead>
-    <tbody>{horse_rows}</tbody>
-  </table>
-
-  <h3 style="color:#8b949e;font-size:14px;margin-bottom:10px">スコア帯別 3着以内率（過去13年 {thresh_data['total_horses']}頭）</h3>
-  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px">
-    <thead><tr>
-      <th style="background:#21262d;padding:8px;text-align:center">スコア帯</th>
-      <th style="background:#21262d;padding:8px;text-align:center">頭数</th>
-      <th style="background:#21262d;padding:8px;text-align:center">3着以内</th>
-      <th style="background:#21262d;padding:8px">3着以内率</th>
+      <th style="background:#21262d;padding:8px;text-align:left">平均との差</th>
+      <th style="background:#21262d;padding:8px;text-align:center">判定</th>
+      <th style="background:#21262d;padding:8px;text-align:center">3着以内率</th>
+      <th style="background:#21262d;padding:8px;text-align:center">2着以内率</th>
+      <th style="background:#21262d;padding:8px;text-align:center">1着率</th>
       <th style="background:#21262d;padding:8px;text-align:left">今年の該当馬</th>
     </tr></thead>
-    <tbody>{bucket_rows}</tbody>
+    <tbody>{gap_rows}</tbody>
   </table>
-
-  <details>
-    <summary style="color:#8b949e;font-size:12px;cursor:pointer">▼ 年別 3着以内 最低スコア</summary>
-    <table style="width:200px;border-collapse:collapse;margin-top:8px;font-size:12px">
-      <thead><tr>
-        <th style="background:#21262d;padding:5px 10px;text-align:center">年</th>
-        <th style="background:#21262d;padding:5px 10px;text-align:center">最低スコア</th>
-      </tr></thead>
-      <tbody>{year_rows}</tbody>
-    </table>
-  </details>
+  <div style="color:#555;font-size:11px;margin-top:10px">
+    ※ スコアは前走データ7指標（AIモデル除外）。サマリー表の総合スコアとは異なります。
+  </div>
 </div>"""
 
 
