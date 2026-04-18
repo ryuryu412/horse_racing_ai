@@ -94,10 +94,11 @@ def score_horse(h):
     s["interval"] = iv_r / NORM["interval"]
     d["interval"] = {"rate": iv_r, "label": f"{int(iv)}週 / {iv_comment}", "max": 13.9}
 
-    sn = h.get("前走脚質_num", np.nan)
-    sn_int = int(float(sn)) if not pd.isna(sn) else -1
-    st_r = STYLE_RATE.get(sn_int, 5.0)
-    st_l = STYLE_LABEL.get(sn_int, "不明")
+    # 前脚質（文字列）を正とする。前走脚質_numはコード体系が異なるため不使用
+    style_txt = str(h.get("前脚質", "") or "").strip()
+    style_map_txt = {"逃": (1, "逃げ"), "先": (2, "先行"), "中": (3, "差し(中団)"), "後": (4, "後方追込")}
+    sn_int, st_l = style_map_txt.get(style_txt, (3, f"不明({style_txt})"))
+    st_r = STYLE_RATE.get(sn_int, 3.2)
     s["style"] = st_r / NORM["style"]
     d["style"] = {"rate": st_r, "label": st_l, "max": 9.5}
 

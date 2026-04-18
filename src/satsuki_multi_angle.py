@@ -139,15 +139,11 @@ def score_horse(h: pd.Series) -> dict:
     scores["waku"] = wr / NORM["waku"]
     details["waku"] = f"{wg} → {wr}%"
 
-    # 3. 脚質
-    style_num = h.get("前走脚質_num", np.nan)
-    if pd.isna(style_num):
-        sr = 5.0
-        sl = "不明"
-    else:
-        style_num = int(style_num)
-        sr = STYLE_RATE.get(style_num, 3.0)
-        sl = STYLE_LABEL.get(style_num, "不明")
+    # 3. 脚質（前脚質テキストを正とする。前走脚質_numはコード体系が異なり不使用）
+    style_txt = str(h.get("前脚質", "") or "").strip()
+    style_map_txt = {"逃": (1, "逃げ"), "先": (2, "先行"), "中": (3, "差し(中団)"), "後": (4, "後方追込")}
+    style_num, sl = style_map_txt.get(style_txt, (3, f"不明({style_txt})"))
+    sr = STYLE_RATE.get(style_num, 3.2)
     scores["style"] = sr / NORM["style"]
     details["style"] = f"{sl} → {sr:.1f}%"
 
