@@ -535,6 +535,156 @@ def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
 </div>"""
 
 
+def compute_jockey_stats() -> dict:
+    """過去13年皐月賞の騎手別成績を返す"""
+    parquet_path = ROOT / "data/processed/all_venues_features.parquet"
+    df = pd.read_parquet(parquet_path)
+    hist = df[df["レース名"] == "皐月賞G1"].dropna(subset=["着順_num"]).copy()
+    hist["着順_num"] = hist["着順_num"].astype(int)
+    grp = hist.groupby("騎手").agg(
+        rides=("着順_num", "count"),
+        wins=("着順_num", lambda x: (x == 1).sum()),
+        top3=("着順_num", lambda x: (x <= 3).sum()),
+    ).reset_index()
+    grp["win_rate"] = grp["wins"] / grp["rides"] * 100
+    grp["top3_rate"] = grp["top3"] / grp["rides"] * 100
+    return {row["騎手"]: row.to_dict() for _, row in grp.iterrows()}
+
+
+def jockey_section_html(jk_stats: dict, today_horses: list) -> str:
+    rows = []
+    for item in today_horses:
+        h = item["h"]
+        name = h["馬名"]
+        jk = str(h.get("騎手", "-") or "-")
+        st = jk_stats.get(jk, {})
+        rides = int(st.get("rides", 0))
+        wins  = int(st.get("wins", 0))
+        top3  = int(st.get("top3", 0))
+        t3r   = st.get("top3_rate", None)
+        wr    = st.get("win_rate", None)
+        # 全体勝率
+        jk_overall = float(h.get("騎手_勝率", 0) or 0)
+
+        if rides == 0:
+            hist_str = "初騎乗"
+            t3_color = "#555"
+            bar_w = 0
+        else:
+            hist_str = f"{top3}/{rides}回 ({t3r:.0f}%)"
+            t3_color = "#e74c3c" if t3r >= 40 else "#f1c40f" if t3r >= 20 else "#8b949e"
+            bar_w = int(min(t3r * 2, 100))
+
+        overall_bar = int(min(jk_overall * 400, 100))
+        overall_color = "#3498db" if jk_overall >= 0.20 else "#8b949e" if jk_overall >= 0.12 else "#555"
+
+        rows.append((item["total"], f"""
+      <tr>
+        <td style="font-weight:bold;color:#c9d1d9">{name}</td>
+        <td style="color:#f0a500;font-weight:bold">{jk}</td>
+        <td style="text-align:center;color:{t3_color};font-weight:bold">{hist_str}</td>
+        <td style="min-width:100px">
+          <div style="background:#21262d;border-radius:3px;height:8px">
+            <div style="background:{t3_color};height:8px;border-radius:3px;width:{bar_w}%"></div>
+          </div>
+        </td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="background:#21262d;border-radius:3px;height:8px;flex:1">
+              <div style="background:{overall_color};height:8px;border-radius:3px;width:{overall_bar}%"></div>
+            </div>
+            <span style="color:{overall_color};font-size:12px;min-width:40px">{jk_overall*100:.1f}%</span>
+          </div>
+        </td>
+      </tr>"""))
+
+    rows.sort(key=lambda x: -x[0])
+    rows_html = "".join(r for _, r in rows)
+
+    return f"""
+<div style="background:#161b22;border-radius:10px;padding:20px;margin-bottom:24px;border-left:4px solid #f0a500">
+  <h2 style="color:#f0a500;border:none;margin-top:0;padding-left:0">🏇 騎手評価</h2>
+  <p style="color:#8b949e;font-size:12px;margin-bottom:16px;line-height:1.8">
+    皐月賞3着以内率は過去13年の実績。全体勝率（騎手_勝率）は直近の全レースベース。<br>
+    分析上、全体勝率は着順との相関が最も高い指標（rho=0.49）でした。
+  </p>
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead><tr>
+      <th style="background:#21262d;padding:8px;text-align:left">馬名</th>
+      <th style="background:#21262d;padding:8px;text-align:left">騎手</th>
+      <th style="background:#21262d;padding:8px;text-align:center">皐月賞3着率（過去13年）</th>
+      <th style="background:#21262d;padding:8px">バー</th>
+      <th style="background:#21262d;padding:8px">全体勝率</th>
+    </tr></thead>
+    <tbody>{rows_html}</tbody>
+  </table>
+  <div style="color:#555;font-size:11px;margin-top:10px">
+    ※ 表は総合スコア順。騎手成績はスコアに未加算（参考情報）。
+  </div>
+</div>"""
+
+
+def and_analysis_section_html(today_horses: list) -> str:
+    """AND指標分析（高スコア指標の数 → 過去3着率）"""
+    EXPECTED = {0: ("11.8%", "1着率2%", "#555"),
+                1: ("14.6%", "1着率3%", "#8b949e"),
+                2: ("22.2%", "1着率11%", "#f1c40f"),
+                3: ("46.7%", "1着率27%", "#27ae60"),
+                4: ("参考値以上", "1着率67%超", "#e74c3c")}
+
+    rows_html = ""
+    for item in sorted(today_horses, key=lambda x: (
+        -sum(1 for k in ["prep","ti","interval","ur"] if (x["scores"].get(k) or 0) >= 0.5),
+        -x["total"]
+    )):
+        h = item["h"]
+        sc = item["scores"]
+        n_high = sum(1 for k in ["prep","ti","interval","ur"] if (sc.get(k) or 0) >= 0.5)
+        exp3, exp1, color = EXPECTED.get(n_high, ("?", "?", "#555"))
+
+        def cell(k):
+            v = sc.get(k) or 0
+            c = "#2ecc71" if v >= 0.5 else "#555"
+            return f'<td style="text-align:center;color:{c};font-weight:bold">{v*100:.0f}</td>'
+
+        rows_html += f"""
+      <tr>
+        <td style="font-weight:bold;color:{color}">{h["馬名"]}</td>
+        <td style="text-align:center;color:{color};font-weight:bold;font-size:16px">{n_high}</td>
+        {cell("prep")}{cell("ti")}{cell("interval")}{cell("ur")}
+        <td style="color:{color};font-size:12px">{exp3}</td>
+        <td style="color:{color};font-size:12px">{exp1}</td>
+      </tr>"""
+
+    return f"""
+<div style="background:#161b22;border-radius:10px;padding:20px;margin-bottom:24px;border-left:4px solid #27ae60">
+  <h2 style="color:#27ae60;border:none;margin-top:0;padding-left:0">📐 AND指標分析（指標の重なり）</h2>
+  <p style="color:#8b949e;font-size:12px;margin-bottom:16px;line-height:1.8">
+    prep（前走クラス）・ti（タイム指数）・interval（間隔）・ur（上り3F）の4指標で50点超えを「高評価」とし、<br>
+    何指標同時に高いかで3着以内率が大きく変わる。加重平均では見えない<strong style="color:#c9d1d9">AND的な強さ</strong>を示す。
+  </p>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px;text-align:center">
+    {"".join(f'<div style="background:#1c2128;border-radius:6px;padding:10px;border-top:2px solid {c}"><div style="color:{c};font-size:18px;font-weight:bold">{n}指標</div><div style="color:#c9d1d9;font-size:13px;margin-top:4px">{e3}</div><div style="color:#8b949e;font-size:11px">{e1}</div></div>' for n,(e3,e1,c) in EXPECTED.items())}
+  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead><tr>
+      <th style="background:#21262d;padding:8px;text-align:left">馬名</th>
+      <th style="background:#21262d;padding:8px;text-align:center">高指標数</th>
+      <th style="background:#21262d;padding:8px;text-align:center">前走<br>クラス</th>
+      <th style="background:#21262d;padding:8px;text-align:center">TI<br>ピーク</th>
+      <th style="background:#21262d;padding:8px;text-align:center">間隔</th>
+      <th style="background:#21262d;padding:8px;text-align:center">上り3F</th>
+      <th style="background:#21262d;padding:8px;text-align:center">期待3着率</th>
+      <th style="background:#21262d;padding:8px;text-align:center">期待1着率</th>
+    </tr></thead>
+    <tbody>{rows_html}</tbody>
+  </table>
+  <div style="color:#555;font-size:11px;margin-top:10px">
+    ※ 数値は各指標の0〜100スコア。緑=50超（高評価）。過去実績は2013〜2025年の{227}頭ベース。
+  </div>
+</div>"""
+
+
 def generate():
     print("データ読み込み中...")
     with open(ROOT / "data/raw/cache/出馬表形式4月19日オッズcsv.cache.pkl", "rb") as f:
@@ -542,8 +692,9 @@ def generate():
     result = cache["result"]
     r11 = result[(result["会場"] == "中") & (result["Ｒ"] == 11)].copy()
 
-    print("過去皐月賞スコアリング（消し馬しきい値算出）...")
+    print("過去皐月賞スコアリング（消し馬しきい値算出 + 騎手成績）...")
     thresh_data = compute_elimination_threshold()
+    jk_stats = compute_jockey_stats()
     print(f"  消しラインしきい値: {thresh_data['threshold']:.1f}点 (3着以内最低)")
 
     horses = []
@@ -559,6 +710,10 @@ def generate():
                        "odds": odds, "total_no_model": total_no_model})
 
     horses.sort(key=lambda x: -x["total"])
+
+    # 新セクション生成
+    jk_html = jockey_section_html(jk_stats, horses)
+    and_html = and_analysis_section_html(horses)
 
     # サマリーテーブル
     summary_rows = ""
@@ -589,7 +744,7 @@ def generate():
     # 消し馬分析セクション
     elim_html_section = elimination_section_html(thresh_data, horses)
 
-    # 馬別詳細カード
+    # 馬別詳細カード（全馬）
     cards_html = ""
     for i, item in enumerate(horses, 1):
         cards_html += f'<div id="{item["h"]["馬名"]}">' + horse_card(i, item["h"], item["total"], item["scores"], item["details"], item["odds"]) + "</div>"
@@ -642,6 +797,10 @@ def generate():
   <li><strong>枠番</strong> ― 中枠(7〜12)が <strong>7.7%</strong>、外枠4.2%、内枠5.1%</li>
 </ul>
 </div>
+
+{jk_html}
+
+{and_html}
 
 {elim_html_section}
 
