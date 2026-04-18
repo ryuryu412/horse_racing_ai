@@ -439,6 +439,67 @@ def main():
           </table>
         </div>'''
 
+    # 印候補サマリ (_nomi_印 が存在する場合)
+    NOMI_MARK_ORDER = {'激熱※': 0, '〇※': 1, '▲※': 2, '☆※': 3}
+    NOMI_MARK_COLOR = {'激熱※': '#c0392b', '〇※': '#1e8449', '▲※': '#1a5276', '☆※': '#b7770d'}
+    all_nomi = []
+    if '_nomi_印' in df.columns:
+        for v in venues:
+            dv = df[df['_venue_abbr'] == v]
+            for r_num, grp in dv.groupby('Ｒ'):
+                for _, h in grp.iterrows():
+                    nomi = h.get('_nomi_印', '')
+                    if not nomi: continue
+                    odds = fmt_odds(h.get('単勝オッズ', h.get('dc_単勝オッズ', '')))
+                    cur_d = h.get('cur_偏差値の差', np.nan)
+                    sub_d = h.get('sub_偏差値の差', np.nan)
+                    cur_r = int(h['cur_ランカー順位']) if 'cur_ランカー順位' in grp.columns and pd.notna(h.get('cur_ランカー順位')) else '-'
+                    sub_r = int(h['sub_ランカー順位']) if 'sub_ランカー順位' in grp.columns and pd.notna(h.get('sub_ランカー順位')) else '-'
+                    current_mark = h.get('_印', '') or '無印'
+                    all_nomi.append({
+                        'venue': VENUE_FULL.get(v, v),
+                        'r': int(float(r_num)),
+                        'nomi': nomi,
+                        'current_mark': current_mark,
+                        'horse': h['馬名S'],
+                        'odds': odds,
+                        'cur_d': cur_d,
+                        'sub_d': sub_d,
+                        'cur_r': cur_r,
+                        'sub_r': sub_r,
+                        'sort_key': (NOMI_MARK_ORDER.get(nomi, 9), int(float(r_num))),
+                    })
+    all_nomi.sort(key=lambda x: x['sort_key'])
+
+    nomi_summary_html = ''
+    if all_nomi:
+        nomi_rows = ''
+        for m in all_nomi:
+            mc = NOMI_MARK_COLOR.get(m['nomi'], '#aaa')
+            cd = f"+{m['cur_d']:.1f}" if pd.notna(m['cur_d']) else '-'
+            sd = f"+{m['sub_d']:.1f}" if pd.notna(m['sub_d']) else '-'
+            nomi_rows += (
+                f'<tr>'
+                f'<td style="font-weight:bold;color:{mc};font-size:14px">{m["nomi"]}</td>'
+                f'<td style="color:#888;font-size:11px">{m["current_mark"]}</td>'
+                f'<td style="color:#aaa">{m["venue"]}</td>'
+                f'<td style="font-weight:bold;color:#e8b400">{m["r"]}R</td>'
+                f'<td style="font-weight:bold;color:#fff;font-size:14px">{m["horse"]}</td>'
+                f'<td style="color:#f0a500;font-weight:bold">{m["odds"]}</td>'
+                f'<td style="color:#8b949e">{m["cur_r"]}位</td>'
+                f'<td style="color:#2ecc71">{cd}</td>'
+                f'<td style="color:#8b949e">{m["sub_r"]}位</td>'
+                f'<td style="color:#3498db">{sd}</td>'
+                f'</tr>'
+            )
+        nomi_summary_html = f'''<div class="summary-box" style="border-color:#7d6608;background:linear-gradient(135deg,#1a1500,#2d2500)">
+          <div class="summary-title" style="color:#e8b400">🔍 印候補一覧（オッズ条件未達）</div>
+          <table class="picks-table">
+            <thead><tr><th>能力印</th><th>現印</th><th>会場</th><th>R</th><th>馬名</th><th>オッズ</th><th>距離Rnk</th><th>距離diff</th><th>クラスRnk</th><th>クラスdiff</th></tr></thead>
+            <tbody>{nomi_rows}</tbody>
+          </table>
+        </div>'''
+
     # 会場セクション生成
     venue_sections = '\n'.join([
         render_venue_section(
@@ -531,6 +592,7 @@ body{{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;colo
 </div>
 <nav class="top-nav">{top_nav}</nav>
 {summary_html}
+{nomi_summary_html}
 {venue_sections}
 <div style="text-align:center;padding:20px;color:#444;font-size:11px">競馬AI ／ 強さPT=コース偏差値（50=平均）／ diff=偏差値差</div>
 </body>
