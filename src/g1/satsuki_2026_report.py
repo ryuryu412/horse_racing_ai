@@ -476,7 +476,8 @@ def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
   <h2 style="color:#e74c3c;border:none;margin-top:0;padding-left:0">🚫 過去データによる消し馬分析</h2>
   <p style="color:#8b949e;font-size:12px;margin-bottom:16px;line-height:1.8">
     過去13年（2013〜2025）の皐月賞全出走馬 <strong style="color:#c9d1d9">{thresh_data['total_horses']}頭</strong> に
-    同じスコアリングを適用（model次元除外の7指標）。<br>
+    前走データ7指標（AIモデル除外）で同じスコアリングを適用。<br>
+    ※ サマリー表の「総合スコア」はAIモデル込み8指標のため値が異なります。<br>
     3着以内馬の最低スコアは <strong style="color:#f0a500">{t:.1f}点</strong>（平均 {thresh_data['top3_mean']:.1f}点 ／ 最高 {thresh_data['top3_max']:.1f}点）。
   </p>
 
@@ -633,7 +634,7 @@ def generate():
 <div class="findings">
 <h2>📊 過去データで判明した皐月賞の傾向</h2>
 <ul>
-  <li><strong>前哨戦クラス×着順</strong>が最重要 ― G1前走1着 <strong>33.3%</strong> / G3前走1着 <strong>16.2%</strong> / G2前走1着はわずか <strong>4.0%</strong>（弥生賞1着も1.9%）</li>
+  <li><strong>前走クラス×着順</strong>が最重要 ― G1前走1着 <strong>33.3%</strong> / G3前走1着 <strong>16.2%</strong> / G2前走1着はわずか <strong>4.0%</strong>（弥生賞1着も1.9%）</li>
   <li><strong>間隔・成長補正</strong> ― 9〜12週が <strong>13.9%</strong> で最高、13週以上も <strong>11.5%</strong>。5〜6週（スプリングS直行）はわずか <strong>1.8%</strong>。3歳馬は成長余地が大きい冬明け組が有利</li>
   <li><strong>脚質</strong> ― 中山は逃げ <strong>9.5%</strong> が突出。差しは3.2%、追込は0%。末脚自慢でも届かないコース</li>
   <li><strong>タイム指数ピーク</strong> ― 68以上は <strong>20%</strong>（今年は72.7のカヴァレリッツォのみ）。58〜63も <strong>8.0%</strong> と優秀</li>
@@ -648,7 +649,8 @@ def generate():
 <table class="summary-table">
   <thead>
     <tr>
-      <th>総合Rnk</th><th>馬名</th><th>騎手</th><th>人気</th><th>単勝</th><th>総合スコア</th>
+      <th>総合Rnk</th><th>馬名</th><th>騎手</th><th>人気</th><th>単勝</th>
+      <th>総合スコア<br><span style="font-weight:normal;color:#555;font-size:10px">8指標・AIモデル込み</span></th>
       <th>前走<br>クラス×着順</th><th>間隔<br>成長補正</th><th>TI<br>ピーク</th><th>上り3F<br>指数</th><th>脚質</th><th>AIモデル</th>
     </tr>
   </thead>
@@ -677,7 +679,7 @@ def generate():
 <div style="color:#555;font-size:11px;margin-top:20px;line-height:2">
   ※ このレポートは統計的傾向の参考資料です。投資判断はご自身で行ってください。<br>
   ※ データソース：JRA-VAN / 過去13年（2013〜2025年）の皐月賞出走馬実績<br>
-  ※ <a href="../satsuki_multi_2026.html">多角的分析サマリー版はこちら</a> ／ <a href="../satsuki_2026.html">前哨戦特化MLモデルはこちら</a>
+  ※ <a href="../satsuki_multi_2026.html">多角的分析サマリー版はこちら</a> ／ <a href="../satsuki_2026.html">前走データ特化MLモデルはこちら</a>
 </div>
 
 </div>
