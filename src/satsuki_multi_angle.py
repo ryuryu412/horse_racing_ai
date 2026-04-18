@@ -1,6 +1,6 @@
 """
 皐月賞 多角的分析レポート
-7つの角度から各馬を評価して総合スコアを算出
+8つの角度から各馬を評価して総合スコアを算出
 """
 import pickle
 import warnings
@@ -70,29 +70,42 @@ WEIGHT_RATE = [
     (float("-inf"), -4, 3.4),  # -5以下
 ]
 
+# 前走からの間隔（週）→ 勝率
+# 9-12週が13.9%で最高。5-6週（スプリングS組）は1.8%で最低
+# 3歳馬は長い間隔のほうが成長分が乗る傾向
+INTERVAL_RATE = [
+    (9,  13,  13.9),  # 9-12週: 共同通信杯→皐月等
+    (13, 999, 11.5),  # 13週以上: ホープフルS明け等（成長余地大）
+    (7,   9,   6.2),  # 7-8週
+    (0,   5,   3.2),  # 4週以内（連闘気味）
+    (5,   7,   1.8),  # 5-6週（スプリングS直行組）← 歴史的に最低
+]
+
 # -----------------------------------------------------------------------
 # 正規化: 全カテゴリを0〜100点に換算するための最大値
 # -----------------------------------------------------------------------
 NORM = {
-    "prep":   33.3,
-    "waku":    7.7,
-    "style":   9.5,
-    "ti":     20.0,
-    "ur":      8.3,
-    "sire":   33.3,
-    "weight":  7.6,
-    "model":   1.0,   # rank 1/18 → score 1.0 (18/rank を正規化)
+    "prep":     33.3,
+    "waku":      7.7,
+    "style":     9.5,
+    "ti":       20.0,
+    "ur":        8.3,
+    "sire":     33.3,
+    "weight":    7.6,
+    "interval": 13.9,
+    "model":     1.0,
 }
 
 WEIGHTS = {
-    "prep":   0.20,
-    "ti":     0.18,
-    "ur":     0.15,
-    "model":  0.15,
-    "style":  0.12,
-    "sire":   0.10,
-    "waku":   0.05,
-    "weight": 0.05,
+    "prep":     0.18,
+    "ti":       0.16,
+    "ur":       0.13,
+    "model":    0.14,
+    "interval": 0.13,  # 成長・間隔補正
+    "style":    0.10,
+    "sire":     0.09,
+    "waku":     0.04,
+    "weight":   0.03,
 }
 
 
@@ -166,7 +179,28 @@ def score_horse(h: pd.Series) -> dict:
     scores["weight"] = wrate / NORM["weight"]
     details["weight"] = f"{int(wdiff):+d}kg → {wrate:.1f}%"
 
-    # 8. 現行モデル（距離・クラス rankを統合）
+    # 8. 間隔（3歳成長補正）
+    interval = pd.to_numeric(h.get("間隔", np.nan), errors="coerce")
+    if pd.isna(interval):
+        irate = 5.6
+        ilabel = "不明"
+    else:
+        interval = float(interval)
+        irate = lookup_range(interval, INTERVAL_RATE)
+        if interval >= 13:
+            ilabel = f"{int(interval)}週 (冬明け・成長余地大)"
+        elif interval >= 9:
+            ilabel = f"{int(interval)}週 (適度な間隔)"
+        elif interval >= 7:
+            ilabel = f"{int(interval)}週 (中間隔)"
+        elif interval >= 5:
+            ilabel = f"{int(interval)}週 (スプリングS組)"
+        else:
+            ilabel = f"{int(interval)}週 (短間隔)"
+    scores["interval"] = irate / NORM["interval"]
+    details["interval"] = f"{ilabel} → {irate:.1f}%"
+
+    # 9. 現行モデル（距離・クラス rankを統合）
     cur_r = h.get("cur_ランカー順位", 18) or 18
     sub_r = h.get("sub_ランカー順位", 18) or 18
     model_score = ((19 - cur_r) + (19 - sub_r)) / (2 * 18)
@@ -214,8 +248,8 @@ def generate_html(rows: list) -> str:
     top3 = [r["name"] for r in rows_sorted[:3]]
 
     header_dims = ["前走<br>クラス×着順", "タイム指数<br>ピーク", "上り3F<br>指数", "通常モデル<br>(距離/クラス)",
-                   "脚質", "種牡馬", "枠番", "馬体重<br>増減"]
-    dim_keys    = ["prep", "ti", "ur", "model", "style", "sire", "waku", "weight"]
+                   "間隔<br>(成長補正)", "脚質", "種牡馬", "枠番", "馬体重<br>増減"]
+    dim_keys    = ["prep", "ti", "ur", "model", "interval", "style", "sire", "waku", "weight"]
 
     rows_html = ""
     for i, r in enumerate(rows_sorted):
@@ -254,14 +288,15 @@ def generate_html(rows: list) -> str:
     # 凡例テーブル
     legend_rows = ""
     for key, label, data in [
-        ("prep", "前走クラス×着順", "G1-1着:33.3% / G3-1着:16.2% / G2-1着:4.0% / G1-2着:0%"),
-        ("ti",   "タイム指数ピーク", "68以上:20.0% / 58-63:8.0% / 63-68:3.8% / 58未満:3.7%"),
-        ("ur",   "上り3F指数ピーク", "60-65:8.3% / 55-60:5.6% / 65以上:2.8% / 55未満:2.9%"),
-        ("model","通常AIモデル",    "距離ランカー順位 + クラスランカー順位の統合"),
-        ("style","脚質",           "逃げ:9.5% / 先行:4.6% / 差し:3.2% / 追込:0.0%（中山特有）"),
-        ("sire", "種牡馬",         "キタサンブラック25% / ドレフォン33% / G1血統優遇"),
-        ("waku", "枠番",           "中(7-12):7.7% / 内(1-6):5.1% / 外(13-18):4.2%"),
-        ("weight","馬体重増減",    "維持(-4~+4):7.6% / 増加:4.5% / 減少:3.4%"),
+        ("prep",     "前走クラス×着順",  "G1-1着:33.3% / G3-1着:16.2% / G2-1着:4.0% / G1-2着:0%"),
+        ("ti",       "タイム指数ピーク", "68以上:20.0% / 58-63:8.0% / 63-68:3.8% / 58未満:3.7%"),
+        ("ur",       "上り3F指数ピーク", "60-65:8.3% / 55-60:5.6% / 65以上:2.8% / 55未満:2.9%"),
+        ("model",    "通常AIモデル",     "距離ランカー順位 + クラスランカー順位の統合"),
+        ("interval", "間隔（成長補正）", "9-12週:13.9% / 13週以上:11.5% / 7-8週:6.2% / 4週以内:3.2% / 5-6週:1.8%"),
+        ("style",    "脚質",            "逃げ:9.5% / 先行:4.6% / 差し:3.2% / 追込:0.0%（中山特有）"),
+        ("sire",     "種牡馬",          "キタサンブラック25% / ドレフォン33% / G1血統優遇"),
+        ("waku",     "枠番",            "中(7-12):7.7% / 内(1-6):5.1% / 外(13-18):4.2%"),
+        ("weight",   "馬体重増減",      "維持(-4~+4):7.6% / 増加:4.5% / 減少:3.4%"),
     ]:
         w = int(WEIGHTS[key] * 100)
         legend_rows += f"<tr><td style='color:#c9d1d9'>{label}</td><td style='color:#f0a500;text-align:center'>{w}%</td><td style='color:#8b949e;font-size:12px'>{data}</td></tr>"
@@ -302,6 +337,7 @@ def generate_html(rows: list) -> str:
     <h2>📊 過去の皐月賞から見えた傾向</h2>
     <ul>
       <li><strong>前哨戦の質</strong>が最重要。<span style="color:#e74c3c">共同通信杯(G3)1着 → 勝率25%</span>、<span style="color:#e67e22">G1前走1着 → 33%</span>。弥生賞1着は意外に1.9%止まり。</li>
+      <li><strong>間隔・成長補正</strong>：<span style="color:#2ecc71">9〜12週(13.9%)・13週以上(11.5%)</span>が高勝率。<span style="color:#e74c3c">5〜6週（スプリングS直行組）はわずか1.8%</span>。3歳の成長余地が大きい冬明け馬が有利。</li>
       <li><strong>脚質</strong>は中山らしく<span style="color:#2ecc71">逃げが9.5%</span>で最高。差しは3.2%、追込は0%。先行力が問われる。</li>
       <li><strong>タイム指数ピーク68以上</strong>は勝率20%。ただし今年はそのゾーンの馬がいない（最高値 72.7）ので相対比較が重要。</li>
       <li><strong>上り3F指数</strong>は60〜65が最適ゾーン(8.3%)。65超えは逆に2.8%（末脚型は中山向きでない）。</li>
