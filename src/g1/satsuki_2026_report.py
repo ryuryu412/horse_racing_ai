@@ -347,7 +347,22 @@ def compute_elimination_threshold() -> dict:
     df_sc = pd.DataFrame(scores_all)
     top3_df = df_sc[df_sc["top3"]]
     threshold = float(top3_df["score"].min())
-    eliminated = df_sc[~df_sc["top3"] & (df_sc["score"] < threshold)]
+
+    # スコア帯別集計（10点刻み）
+    bins = list(range(0, 101, 10))
+    labels = [f"{lo}〜{lo+10}" for lo in range(0, 100, 10)]
+    df_sc["bucket"] = pd.cut(df_sc["score"], bins=bins, labels=labels, right=False)
+    bucket_stats = []
+    for label in labels:
+        sub = df_sc[df_sc["bucket"] == label]
+        total_b = len(sub)
+        top3_b = int(sub["top3"].sum())
+        rate = top3_b / total_b * 100 if total_b > 0 else 0.0
+        bucket_stats.append({"range": label, "total": total_b, "top3": top3_b, "rate": rate})
+
+    # 年別3着以内最低スコア
+    df_sc["year"] = df_sc["日付"].str[:4]
+    year_min = df_sc[df_sc["top3"]].groupby("year")["score"].min().reset_index()
 
     return {
         "threshold": threshold,
@@ -355,7 +370,8 @@ def compute_elimination_threshold() -> dict:
         "top3_max": float(top3_df["score"].max()),
         "top3_mean": float(top3_df["score"].mean()),
         "all_df": df_sc,
-        "eliminated_hist": eliminated,
+        "bucket_stats": bucket_stats,
+        "year_min": year_min,
         "total_horses": len(df_sc),
         "total_top3": len(top3_df),
     }
@@ -363,75 +379,159 @@ def compute_elimination_threshold() -> dict:
 
 def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
     t = thresh_data["threshold"]
-    elim_today = [(item["h"]["馬名"], item["total_no_model"]) for item in today_horses
-                  if item["total_no_model"] < t]
-    near_today = [(item["h"]["馬名"], item["total_no_model"]) for item in today_horses
-                  if t <= item["total_no_model"] < t + 5]
 
-    # 消し馬リスト HTML
-    if elim_today:
-        elim_html = "".join(
-            f'<div style="background:#1c0000;border:1px solid #5a1a1a;border-radius:6px;padding:10px 14px;margin-bottom:6px">'
-            f'<span style="color:#e74c3c;font-weight:bold;font-size:14px">❌ {name}</span>'
-            f'<span style="color:#555;font-size:12px;margin-left:12px">参照スコア {sc:.1f}（しきい値 {t:.1f} 未満）</span>'
+    # 今年18頭をスコア順に並べる
+    today_sorted = sorted(today_horses, key=lambda x: x["total_no_model"])
+
+    # 消し馬・危険ゾーン判定（実データ根拠）
+    # 20-30: 12.8%, 30-40: 10.8%, 40-50: 12.5%, 50-60: 28.1%, 60-70: 60%, 70+: 100%
+    def zone(sc):
+        if sc < t:    return "elim",    "#e74c3c", "消し（過去0回3着以内）"
+        if sc < 50:   return "caution", "#f1c40f", "普通圏（3着率〜13%）"
+        if sc < 60:   return "watch",   "#27ae60", "有望圏（3着率28%）"
+        if sc < 70:   return "strong",  "#3498db", "上位圏（3着率60%）"
+        return                "elite",  "#9b59b6", "最上位（過去100%）"
+
+    # ---- スコア帯別3着以内率テーブル ----
+    bucket_rows = ""
+    today_bucket_map = {}  # bucket_label → list of 馬名
+    for item in today_horses:
+        sc = item["total_no_model"]
+        # find bucket
+        lo = (int(sc) // 10) * 10
+        label = f"{lo}〜{lo+10}"
+        today_bucket_map.setdefault(label, []).append(item["h"]["馬名"])
+
+    for bs in thresh_data["bucket_stats"]:
+        if bs["total"] == 0:
+            continue
+        rate = bs["rate"]
+        bar_w = int(min(rate * 3, 100))
+        rate_color = "#e74c3c" if rate < 5 else "#f1c40f" if rate < 12 else "#2ecc71"
+        today_in = today_bucket_map.get(bs["range"], [])
+        today_cell = ""
+        if today_in:
+            today_cell = " / ".join(f'<span style="color:#f0a500;font-weight:bold">{n}</span>' for n in today_in)
+
+        bucket_rows += f"""
+      <tr>
+        <td style="text-align:center;font-weight:bold">{bs['range']}</td>
+        <td style="text-align:center;color:#8b949e">{bs['total']}</td>
+        <td style="text-align:center;color:#e74c3c">{bs['top3']}</td>
+        <td style="min-width:120px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="background:#21262d;border-radius:3px;height:10px;flex:1">
+              <div style="background:{rate_color};height:10px;border-radius:3px;width:{bar_w}%"></div>
+            </div>
+            <span style="color:{rate_color};font-weight:bold;font-size:12px;min-width:36px">{rate:.1f}%</span>
+          </div>
+        </td>
+        <td style="font-size:12px">{today_cell}</td>
+      </tr>"""
+
+    # ---- 今年18頭の一覧 ----
+    horse_rows = ""
+    for item in today_sorted:
+        sc = item["total_no_model"]
+        name = item["h"]["馬名"]
+        zkey, zcolor, zlabel = zone(sc)
+        bar_w = int(min(sc, 100))
+        horse_rows += f"""
+      <tr>
+        <td style="font-weight:bold;color:#c9d1d9">{name}</td>
+        <td style="text-align:center;font-weight:bold;color:{zcolor}">{sc:.1f}</td>
+        <td>
+          <div style="background:#21262d;border-radius:3px;height:8px">
+            <div style="background:{zcolor};height:8px;border-radius:3px;width:{bar_w}%"></div>
+          </div>
+        </td>
+        <td style="color:{zcolor};font-size:12px">{zlabel}</td>
+      </tr>"""
+
+    # ---- 消し馬・危険馬リスト ----
+    warn_list = [(item["h"]["馬名"], item["total_no_model"], zone(item["total_no_model"]))
+                 for item in today_sorted if zone(item["total_no_model"])[0] in ("elim", "caution")]
+    if warn_list:
+        warn_html = "".join(
+            f'<div style="background:#1c0a00;border:1px solid {zcolor};border-radius:6px;'
+            f'padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">'
+            f'<span style="color:{zcolor};font-weight:bold;font-size:14px">{name}</span>'
+            f'<span style="color:#aaa;font-size:12px">参照スコア {sc:.1f} ／ {zlabel}</span>'
             f'</div>'
-            for name, sc in sorted(elim_today, key=lambda x: x[1])
+            for name, sc, (_, zcolor, zlabel) in warn_list
         )
     else:
-        elim_html = '<div style="color:#2ecc71;padding:10px">今年はしきい値を下回る馬なし（全馬が過去3着以内水準以上）</div>'
+        warn_html = '<div style="color:#8b949e;font-size:13px;padding:10px 0">今年は消し圏の馬なし</div>'
 
-    near_html = ""
-    if near_today:
-        near_html = '<div style="color:#f1c40f;font-size:12px;margin-top:8px">▲ 際どいライン（+5pt以内）: ' + \
-                    " / ".join(f"{n}（{s:.1f}）" for n, s in near_today) + '</div>'
-
-    # 過去データ散布サマリー（年別トップ3最低スコア）
-    df = thresh_data["all_df"]
-    df["year"] = df["日付"].str[:4]
-    year_min = df[df["top3"]].groupby("year")["score"].min().reset_index()
+    # ---- 年別しきい値 ----
     year_rows = "".join(
-        f'<tr><td style="text-align:center">{r.year}年</td>'
-        f'<td style="text-align:center;color:{"#e74c3c" if r.score < 35 else "#f1c40f" if r.score < 45 else "#2ecc71"}">{r.score:.1f}</td></tr>'
-        for _, r in year_rows_iter(year_min)
+        f'<tr><td style="text-align:center;padding:5px 10px">{r["year"]}年</td>'
+        f'<td style="text-align:center;padding:5px 10px;color:{"#e74c3c" if r["score"]<35 else "#f1c40f" if r["score"]<45 else "#2ecc71"}">'
+        f'{r["score"]:.1f}</td></tr>'
+        for _, r in thresh_data["year_min"].sort_values("year").iterrows()
     )
 
     return f"""
 <div style="background:#161b22;border-radius:10px;padding:20px;margin-bottom:24px;border-left:4px solid #e74c3c">
   <h2 style="color:#e74c3c;border:none;margin-top:0;padding-left:0">🚫 過去データによる消し馬分析</h2>
   <p style="color:#8b949e;font-size:12px;margin-bottom:16px;line-height:1.8">
-    過去13年（2013〜2025）の皐月賞全出走馬（{thresh_data['total_horses']}頭）に同じスコアリングシステムを適用。<br>
-    3着以内に入った馬の<strong style="color:#f0a500">最低スコアは {t:.1f}点</strong>（参照スコア = model次元除外の7指標）。<br>
-    このしきい値を下回った馬は過去13年で一度も3着以内に入っていない。
+    過去13年（2013〜2025）の皐月賞全出走馬 <strong style="color:#c9d1d9">{thresh_data['total_horses']}頭</strong> に
+    同じスコアリングを適用（model次元除外の7指標）。<br>
+    3着以内馬の最低スコアは <strong style="color:#f0a500">{t:.1f}点</strong>（平均 {thresh_data['top3_mean']:.1f}点 ／ 最高 {thresh_data['top3_max']:.1f}点）。
   </p>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;text-align:center">
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;text-align:center">
     <div style="background:#1c2128;border-radius:6px;padding:12px">
       <div style="color:#e74c3c;font-size:22px;font-weight:bold">{t:.1f}</div>
-      <div style="color:#8b949e;font-size:11px">3着以内最低スコア<br>（消しラインしきい値）</div>
+      <div style="color:#8b949e;font-size:11px">3着以内 最低スコア<br>（絶対消しライン）</div>
+    </div>
+    <div style="background:#1c2128;border-radius:6px;padding:12px">
+      <div style="color:#27ae60;font-size:22px;font-weight:bold">50.0</div>
+      <div style="color:#8b949e;font-size:11px">有望圏ライン<br>（50以上は3着率28%↑）</div>
     </div>
     <div style="background:#1c2128;border-radius:6px;padding:12px">
       <div style="color:#2ecc71;font-size:22px;font-weight:bold">{thresh_data['top3_mean']:.1f}</div>
-      <div style="color:#8b949e;font-size:11px">3着以内平均スコア</div>
-    </div>
-    <div style="background:#1c2128;border-radius:6px;padding:12px">
-      <div style="color:#f0a500;font-size:22px;font-weight:bold">{thresh_data['top3_max']:.1f}</div>
-      <div style="color:#8b949e;font-size:11px">3着以内最高スコア</div>
+      <div style="color:#8b949e;font-size:11px">3着以内 平均スコア</div>
     </div>
   </div>
-  <h3 style="color:#e74c3c;font-size:14px;margin-bottom:10px">今年の消し馬候補（しきい値 {t:.1f}点未満）</h3>
-  {elim_html}
-  {near_html}
-  <details style="margin-top:16px">
-    <summary style="color:#8b949e;font-size:12px;cursor:pointer">▼ 年別3着以内最低スコア（過去13年）</summary>
-    <table style="width:100%;border-collapse:collapse;margin-top:8px;font-size:12px">
-      <thead><tr><th style="background:#21262d;padding:6px;text-align:center">年</th><th style="background:#21262d;padding:6px;text-align:center">3着以内最低スコア</th></tr></thead>
+
+  <h3 style="color:#e74c3c;font-size:14px;margin-bottom:10px">消し・危険圏の馬</h3>
+  {warn_html}
+
+  <h3 style="color:#8b949e;font-size:14px;margin:20px 0 10px">今年18頭 スコア一覧（低い順）</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px">
+    <thead><tr>
+      <th style="background:#21262d;padding:8px 10px;text-align:left">馬名</th>
+      <th style="background:#21262d;padding:8px 10px;text-align:center">スコア</th>
+      <th style="background:#21262d;padding:8px 10px">バー</th>
+      <th style="background:#21262d;padding:8px 10px;text-align:left">判定</th>
+    </tr></thead>
+    <tbody>{horse_rows}</tbody>
+  </table>
+
+  <h3 style="color:#8b949e;font-size:14px;margin-bottom:10px">スコア帯別 3着以内率（過去13年 {thresh_data['total_horses']}頭）</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px">
+    <thead><tr>
+      <th style="background:#21262d;padding:8px;text-align:center">スコア帯</th>
+      <th style="background:#21262d;padding:8px;text-align:center">頭数</th>
+      <th style="background:#21262d;padding:8px;text-align:center">3着以内</th>
+      <th style="background:#21262d;padding:8px">3着以内率</th>
+      <th style="background:#21262d;padding:8px;text-align:left">今年の該当馬</th>
+    </tr></thead>
+    <tbody>{bucket_rows}</tbody>
+  </table>
+
+  <details>
+    <summary style="color:#8b949e;font-size:12px;cursor:pointer">▼ 年別 3着以内 最低スコア</summary>
+    <table style="width:200px;border-collapse:collapse;margin-top:8px;font-size:12px">
+      <thead><tr>
+        <th style="background:#21262d;padding:5px 10px;text-align:center">年</th>
+        <th style="background:#21262d;padding:5px 10px;text-align:center">最低スコア</th>
+      </tr></thead>
       <tbody>{year_rows}</tbody>
     </table>
   </details>
 </div>"""
-
-
-def year_rows_iter(year_min):
-    yield from year_min.sort_values("year").iterrows()
 
 
 def generate():
