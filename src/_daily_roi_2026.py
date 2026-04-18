@@ -454,7 +454,7 @@ if (os.path.exists(_cache44) and os.path.exists(_result44)
     })
     print(f"4/4 追加完了: {len(_res44)}頭")
 
-df_daily = pd.DataFrame(daily_rows)
+df_daily = pd.DataFrame(daily_rows).sort_values('日付_num').reset_index(drop=True)
 df_res_only = df_daily[df_daily['has_result']]
 
 # 累計（結果あり日のみ）
@@ -486,6 +486,8 @@ def mark_cell(n, w, pf, roi, has_res):
 
 rows_html = ''
 for _, r in df_daily.iterrows():
+    if not bool(r['has_result']):
+        continue
     hr = bool(r['has_result'])
     cum_col = '#2d862d' if r['累計_pf'] >= 0 else '#c0392b'
     rows_html += f'''<tr>
