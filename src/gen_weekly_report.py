@@ -89,6 +89,20 @@ def assign_marks(df):
         return ''
     df = df.copy()
     df['_印'] = [mark_of(i) for i in range(len(df))]
+
+    # 印候補: 能力条件を満たすがオッズ条件未達の馬
+    _odds_known = _odds.notna()
+    mask_gekiatu_nomi = both_r1 & (cur_diff >= 10) & (sub_diff >= 10) & _odds_known & (_odds < 5)
+    mask_maru_nomi    = both_r1 & (sub_diff >= 10) & ~(cur_diff >= 10) & _odds_known & (_odds < 3)
+    mask_diamond_nomi = (cur_r <= 2) & (sub_r <= 2) & ~both_r1 & (sub_diff >= 10) & _odds_known & (_odds < 5)
+    mask_hoshi_nomi   = star & ~((cur_r <= 2) & (sub_r <= 2)) & (sub_diff >= 10) & _odds_known & (_odds < 5)
+    def nomi_mark_of(i):
+        if mask_gekiatu_nomi.iloc[i]: return '激熱※'
+        if mask_maru_nomi.iloc[i]:    return '〇※'
+        if mask_diamond_nomi.iloc[i]: return '▲※'
+        if mask_hoshi_nomi.iloc[i]:   return '☆※'
+        return ''
+    df['_nomi_印'] = [nomi_mark_of(i) for i in range(len(df))]
     return df
 
 # ── ヘルパー ──
