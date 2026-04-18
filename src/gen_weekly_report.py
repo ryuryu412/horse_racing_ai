@@ -652,5 +652,128 @@ body{{font-family:'Hiragino Sans','Yu Gothic',sans-serif;background:#0d1117;colo
         f.write(html)
     print(f'出力完了: {out}')
 
+    # index.html も自動更新
+    update_index(docs_dir)
+    print(f'index.html 更新完了')
+
+
+def update_index(docs_dir):
+    """docs/ の内容からindex.htmlを再生成"""
+    from datetime import datetime as _dt
+
+    # 週次レポート一覧（新しい順）
+    weekly_files = sorted(glob.glob(os.path.join(docs_dir, 'weekly_report_*.html')), reverse=True)
+    weekly_cards = ''
+    for f in weekly_files:
+        name = os.path.basename(f)
+        m = re.search(r'weekly_report_26(\d{2})(\d{2})\.html', name)
+        if m:
+            label = f"20{m.group(1)[0:2]}/{m.group(1)[0:2] and m.group(1)[-0:] or ''}"
+            mo, dy = m.group(1), m.group(2)
+            label = f"2026/{mo}/{dy}"
+        else:
+            label = name
+        weekly_cards += f'''
+      <a class="item" href="{name}">
+        <span class="item-icon">📰</span>
+        <span class="item-label">{label} 週次レポート</span>
+        <span class="item-arrow">›</span>
+      </a>'''
+
+    # 出馬予測カード（日付ごとに最新1つ、新しい順）
+    card_files = sorted(glob.glob(os.path.join(docs_dir, 'card_*.html')), reverse=True)
+    seen_dates = set()
+    card_cards = ''
+    for f in card_files:
+        name = os.path.basename(f)
+        m = re.search(r'card_(26\d{4})', name)
+        if not m:
+            continue
+        date_key = m.group(1)
+        if date_key in seen_dates:
+            continue
+        seen_dates.add(date_key)
+        d = date_key
+        label = f"2026/{d[2:4]}/{d[4:6]}"
+        card_cards += f'''
+      <a class="item" href="{name}">
+        <span class="item-icon">🔍</span>
+        <span class="item-label">{label} 出馬予測カード</span>
+        <span class="item-arrow">›</span>
+      </a>'''
+
+    updated_at = _dt.now().strftime('%Y-%m-%d %H:%M')
+
+    html = f'''<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>競馬AI ダッシュボード</title>
+<style>
+*{{box-sizing:border-box;margin:0;padding:0}}
+body{{font-family:"Hiragino Kaku Gothic Pro",Meiryo,sans-serif;background:#1a1a2e;color:#e0e0e0;min-height:100vh;padding:24px 16px}}
+header{{text-align:center;padding:32px 0 28px}}
+header h1{{font-size:1.7em;color:#f0c040;letter-spacing:0.05em}}
+header p{{color:#aaa;margin-top:8px;font-size:0.85em}}
+header .updated{{color:#555;font-size:0.75em;margin-top:6px}}
+.section{{max-width:520px;margin:0 auto 28px}}
+.section-title{{font-size:0.8em;font-weight:bold;color:#f0c040;letter-spacing:0.1em;text-transform:uppercase;padding:0 4px 8px;border-bottom:1px solid #2a2a4a;margin-bottom:10px}}
+.item{{display:flex;align-items:center;gap:12px;background:#16213e;border-radius:10px;padding:14px 16px;text-decoration:none;color:#e0e0e0;margin-bottom:8px;border:1px solid #2a2a4a;transition:background 0.15s}}
+.item:hover{{background:#1a3a5a;border-color:#f0c040}}
+.item-icon{{font-size:1.3em;min-width:28px;text-align:center}}
+.item-label{{flex:1;font-size:0.95em}}
+.item-arrow{{color:#555;font-size:1.2em}}
+footer{{text-align:center;color:#555;font-size:0.75em;margin-top:32px}}
+footer a{{color:#4a9eff;text-decoration:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🏇 競馬AI ダッシュボード</h1>
+  <p>LightGBM + LambdaMART による競馬予測システム</p>
+  <div class="updated">更新: {updated_at}</div>
+</header>
+
+<div class="section">
+  <div class="section-title">週次予想レポート</div>
+  {weekly_cards}
+</div>
+
+<div class="section">
+  <div class="section-title">出馬予測カード</div>
+  {card_cards}
+</div>
+
+<div class="section">
+  <div class="section-title">ROI・成績</div>
+  <a class="item" href="actual_bet_roi.html">
+    <span class="item-icon">🎫</span>
+    <span class="item-label">実際の馬券ROI</span>
+    <span class="item-arrow">›</span>
+  </a>
+  <a class="item" href="daily_roi_2026.html">
+    <span class="item-icon">📊</span>
+    <span class="item-label">予測ROI（最終オッズ基準）</span>
+    <span class="item-arrow">›</span>
+  </a>
+  <a class="item" href="predict_time_roi_2026.html">
+    <span class="item-icon">⏱️</span>
+    <span class="item-label">予測ROI（予想時点オッズ基準）</span>
+    <span class="item-arrow">›</span>
+  </a>
+</div>
+
+<footer>
+  <p>keiba-dragon / horse_racing_ai &nbsp;|&nbsp; <a href="https://github.com/keiba-dragon/horse_racing_ai">GitHub</a></p>
+</footer>
+</body>
+</html>'''
+
+    index_path = os.path.join(docs_dir, 'index.html')
+    with open(index_path, 'w', encoding='utf-8') as f:
+        f.write(html)
+
+
 if __name__ == '__main__':
     main()

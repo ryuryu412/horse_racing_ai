@@ -3,56 +3,83 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>競馬AI ROI ダッシュボード</title>
+<title>競馬AI ダッシュボード</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"Hiragino Kaku Gothic Pro",Meiryo,sans-serif;background:#1a1a2e;color:#e0e0e0;min-height:100vh;padding:24px 16px}
-header{text-align:center;padding:32px 0 24px}
-header h1{font-size:1.6em;color:#f0c040;letter-spacing:0.05em}
-header p{color:#aaa;margin-top:8px;font-size:0.9em}
-.cards{display:flex;flex-direction:column;gap:16px;max-width:480px;margin:0 auto}
-.card{background:#16213e;border-radius:12px;padding:20px 24px;text-decoration:none;color:#e0e0e0;display:flex;align-items:center;gap:16px;transition:background 0.2s;border:1px solid #2a2a4a}
-.card:hover{background:#1a3a5a;border-color:#f0c040}
-.card .icon{font-size:2em;min-width:40px;text-align:center}
-.card .body .title{font-size:1.05em;font-weight:bold;color:#f0c040}
-.card .body .desc{font-size:0.82em;color:#aaa;margin-top:4px}
-footer{text-align:center;color:#555;font-size:0.75em;margin-top:40px}
+header{text-align:center;padding:32px 0 28px}
+header h1{font-size:1.7em;color:#f0c040;letter-spacing:0.05em}
+header p{color:#aaa;margin-top:8px;font-size:0.85em}
+header .updated{color:#555;font-size:0.75em;margin-top:6px}
+.section{max-width:520px;margin:0 auto 28px}
+.section-title{font-size:0.8em;font-weight:bold;color:#f0c040;letter-spacing:0.1em;text-transform:uppercase;padding:0 4px 8px;border-bottom:1px solid #2a2a4a;margin-bottom:10px}
+.item{display:flex;align-items:center;gap:12px;background:#16213e;border-radius:10px;padding:14px 16px;text-decoration:none;color:#e0e0e0;margin-bottom:8px;border:1px solid #2a2a4a;transition:background 0.15s}
+.item:hover{background:#1a3a5a;border-color:#f0c040}
+.item-icon{font-size:1.3em;min-width:28px;text-align:center}
+.item-label{flex:1;font-size:0.95em}
+.item-arrow{color:#555;font-size:1.2em}
+footer{text-align:center;color:#555;font-size:0.75em;margin-top:32px}
+footer a{color:#4a9eff;text-decoration:none}
 </style>
 </head>
 <body>
 <header>
-  <h1>🏇 競馬AI ROI ダッシュボード</h1>
+  <h1>🏇 競馬AI ダッシュボード</h1>
   <p>LightGBM + LambdaMART による競馬予測システム</p>
+  <div class="updated">更新: 2026-04-18 12:10</div>
 </header>
 
-<div class="cards">
-  <a class="card" href="actual_bet_roi.html">
-    <div class="icon">🎫</div>
-    <div class="body">
-      <div class="title">実際の馬券ROI</div>
-      <div class="desc">実際に購入した馬券の損益・ROI集計<br>日別 / 式別 / 月次</div>
-    </div>
-  </a>
+<div class="section">
+  <div class="section-title">週次予想レポート</div>
+  
+      <a class="item" href="weekly_report_260418.html">
+        <span class="item-icon">📰</span>
+        <span class="item-label">2026/04/18 週次レポート</span>
+        <span class="item-arrow">›</span>
+      </a>
+      <a class="item" href="weekly_report_260412.html">
+        <span class="item-icon">📰</span>
+        <span class="item-label">2026/04/12 週次レポート</span>
+        <span class="item-arrow">›</span>
+      </a>
+</div>
 
-  <a class="card" href="daily_roi_2026.html">
-    <div class="icon">📊</div>
-    <div class="body">
-      <div class="title">予測ROI（最終オッズ）</div>
-      <div class="desc">AIの予測に基づくシミュレーション<br>レース確定後の最終オッズ基準</div>
-    </div>
-  </a>
+<div class="section">
+  <div class="section-title">出馬予測カード</div>
+  
+      <a class="item" href="card_260418_20260418_1159.html">
+        <span class="item-icon">🔍</span>
+        <span class="item-label">2026/04/18 出馬予測カード</span>
+        <span class="item-arrow">›</span>
+      </a>
+      <a class="item" href="card_260412.html">
+        <span class="item-icon">🔍</span>
+        <span class="item-label">2026/04/12 出馬予測カード</span>
+        <span class="item-arrow">›</span>
+      </a>
+</div>
 
-  <a class="card" href="predict_time_roi_2026.html">
-    <div class="icon">⏱️</div>
-    <div class="body">
-      <div class="title">予測ROI（予想時点オッズ）</div>
-      <div class="desc">AIの予測に基づくシミュレーション<br>予想した時点のオッズ基準</div>
-    </div>
+<div class="section">
+  <div class="section-title">ROI・成績</div>
+  <a class="item" href="actual_bet_roi.html">
+    <span class="item-icon">🎫</span>
+    <span class="item-label">実際の馬券ROI</span>
+    <span class="item-arrow">›</span>
+  </a>
+  <a class="item" href="daily_roi_2026.html">
+    <span class="item-icon">📊</span>
+    <span class="item-label">予測ROI（最終オッズ基準）</span>
+    <span class="item-arrow">›</span>
+  </a>
+  <a class="item" href="predict_time_roi_2026.html">
+    <span class="item-icon">⏱️</span>
+    <span class="item-label">予測ROI（予想時点オッズ基準）</span>
+    <span class="item-arrow">›</span>
   </a>
 </div>
 
 <footer>
-  <p>keiba-dragon / horse_racing_ai &nbsp;|&nbsp; <a href="https://github.com/keiba-dragon/horse_racing_ai" style="color:#4a9eff">GitHub</a></p>
+  <p>keiba-dragon / horse_racing_ai &nbsp;|&nbsp; <a href="https://github.com/keiba-dragon/horse_racing_ai">GitHub</a></p>
 </footer>
 </body>
 </html>
