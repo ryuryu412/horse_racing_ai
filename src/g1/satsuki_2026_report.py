@@ -36,19 +36,18 @@ SIRE_RATE = {
 WEIGHT_RATE = [(5, 999, 4.5), (-4, 5, 7.6), (-999, -4, 3.4)]
 
 WEIGHTS = {
-    "model":    0.30,  # 普段モデル（距離/クラスランカー）を軸
+    "model":    0.35,  # 普段モデル（距離/クラスランカー）を軸
     "jockey":   0.15,  # 騎手勝率（全指標中最強相関 rho=0.49）
-    "prep":     0.15,  # 前走クラス×着順
-    "ti":       0.14,  # タイム指数ピーク
-    "interval": 0.10,  # 間隔・成長補正
-    "ur":       0.08,  # 上り3F指数
-    "sire":     0.08,  # 種牡馬
-    # style/waku/weight は相関ほぼゼロのため削除
+    "prep":     0.17,  # 前走クラス×着順
+    "ti":       0.16,  # タイム指数ピーク
+    "interval": 0.11,  # 間隔・成長補正
+    "ur":       0.06,  # 上り3F指数
+    # style/waku/weight/sire は相関低・サンプル不足のため削除
 }
 NORM = {
     "model": 1.0, "jockey": 0.25,
     "prep": 33.3, "ti": 20.0, "ur": 8.3,
-    "interval": 13.9, "sire": 33.3,
+    "interval": 13.9,
 }
 
 CLS_LABEL = {9: "G1", 8: "G2", 7: "G3", 6: "OP", 5: "3勝", 4: "2勝", 3: "1勝"}
@@ -100,12 +99,6 @@ def score_horse(h):
         iv_comment = "短間隔・連闘気味"
     s["interval"] = iv_r / NORM["interval"]
     d["interval"] = {"rate": iv_r, "label": f"{int(iv)}週 / {iv_comment}", "max": 13.9}
-
-    sire = str(h.get("種牡馬", "") or "")
-    si_r = SIRE_RATE.get(sire, 3.0)
-    s["sire"] = min(si_r / NORM["sire"], 1.0)
-    d["sire"] = {"rate": si_r, "label": sire or "不明", "max": 33.3,
-                 "notable": sire in SIRE_RATE}
 
     jk_wr = float(h.get("騎手_勝率", 0) or 0)
     s["jockey"] = min(jk_wr / NORM["jockey"], 1.0)
@@ -191,7 +184,6 @@ def horse_card(rank, h_data, total, scores, details, odds):
         "ti":       "タイム指数ピーク",
         "interval": "間隔・成長補正",
         "ur":       "上り3F指数",
-        "sire":     "種牡馬",
     }
     dims_html = "".join(dim_block(k, dim_labels[k], details[k], scores[k]) for k in dim_labels if k in details)
 
@@ -285,9 +277,6 @@ def score_horse_historical(h) -> float:
 
     iv = safe_float(h.get("間隔", 0))
     s["interval"] = lookup(iv, INTERVAL_RATE) / NORM["interval"]
-
-    sire = str(h.get("種牡馬", "") or "")
-    s["sire"] = min(SIRE_RATE.get(sire, 3.0) / NORM["sire"], 1.0)
 
     jk_wr = safe_float(h.get("騎手_勝率", 0))
     s["jockey"] = min(jk_wr / NORM["jockey"], 1.0)
@@ -664,7 +653,6 @@ def generate():
           <td style="text-align:center">{'🟢' if sc['ti']>=0.7 else '🟡' if sc['ti']>=0.4 else '🔴'}</td>
           <td style="text-align:center">{'🟢' if sc['interval']>=0.7 else '🟡' if sc['interval']>=0.4 else '🔴'}</td>
           <td style="text-align:center">{'🟢' if sc['ur']>=0.7 else '🟡' if sc['ur']>=0.4 else '🔴'}</td>
-          <td style="text-align:center">{'🟢' if sc['sire']>=0.7 else '🟡' if sc['sire']>=0.4 else '🔴'}</td>
         </tr>"""
 
     # 消し馬分析セクション
@@ -736,7 +724,7 @@ def generate():
     <tr>
       <th>総合Rnk</th><th>馬名</th><th>騎手</th><th>人気</th><th>単勝</th>
       <th>総合スコア</th>
-      <th>AIモデル<br>30%</th><th>騎手<br>15%</th><th>前走<br>クラス15%</th><th>TI<br>14%</th><th>間隔<br>10%</th><th>上り3F<br>8%</th><th>種牡馬<br>8%</th>
+      <th>AIモデル<br>35%</th><th>騎手<br>15%</th><th>前走<br>クラス17%</th><th>TI<br>16%</th><th>間隔<br>11%</th><th>上り3F<br>6%</th>
     </tr>
   </thead>
   <tbody>{summary_rows}</tbody>
@@ -749,13 +737,12 @@ def generate():
 <table class="weight-table">
   <thead><tr><th>指標</th><th>重み</th><th>根拠（過去皐月賞の勝率帯）</th></tr></thead>
   <tbody>
-    <tr><td>AIモデル（距離/クラス）</td><td>30%</td><td>LightGBM LambdaMARTランカー順位。普段の予想モデルを軸に</td></tr>
+    <tr><td>AIモデル（距離/クラス）</td><td>35%</td><td>LightGBM LambdaMARTランカー順位。普段の予想モデルを軸に</td></tr>
     <tr><td>騎手（全体勝率）</td><td>15%</td><td>全指標中最強の相関（rho=0.49）。優秀騎手は強い馬に乗る傾向も反映</td></tr>
-    <tr><td>前走クラス×着順</td><td>15%</td><td>G1前走1着:33.3% / G3前走1着:16.2% / G2前走1着:4.0%</td></tr>
-    <tr><td>タイム指数ピーク</td><td>14%</td><td>68以上:20.0% / 58-63:8.0% / 63-68:3.8%</td></tr>
-    <tr><td>間隔・成長補正</td><td>10%</td><td>9-12週:13.9% / 13週以上:11.5% / 5-6週:1.8%（3歳特有）</td></tr>
-    <tr><td>上り3F指数</td><td>8%</td><td>60-65:8.3% / 55-60:5.6% / 65以上:2.8%（高すぎに注意）</td></tr>
-    <tr><td>種牡馬</td><td>8%</td><td>キタサンブラック:25% / ドレフォン:33% / エピファネイア:14%</td></tr>
+    <tr><td>前走クラス×着順</td><td>17%</td><td>G1前走1着:33.3% / G3前走1着:16.2% / G2前走1着:4.0%</td></tr>
+    <tr><td>タイム指数ピーク</td><td>16%</td><td>68以上:20.0% / 63-68:3.8% / 58-63:8.0%（中間帯に注意）</td></tr>
+    <tr><td>間隔・成長補正</td><td>11%</td><td>9-12週:13.9% / 13週以上:11.5% / 5-6週:1.8%（3歳特有）</td></tr>
+    <tr><td>上り3F指数</td><td>6%</td><td>60-65:8.3% / 55-60:5.6% / 65以上:2.8%（高すぎに注意）</td></tr>
   </tbody>
 </table>
 
