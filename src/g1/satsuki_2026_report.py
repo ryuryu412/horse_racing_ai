@@ -380,24 +380,22 @@ def compute_elimination_threshold() -> dict:
 def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
     t = thresh_data["threshold"]
 
-    # 今年18頭をスコア順に並べる
-    today_sorted = sorted(today_horses, key=lambda x: x["total_no_model"])
+    # 今年18頭をサマリーと同じ total（8指標）順に並べる
+    today_sorted = sorted(today_horses, key=lambda x: x["total"])
 
-    # 消し馬・危険ゾーン判定（実データ根拠）
-    # 20-30: 12.8%, 30-40: 10.8%, 40-50: 12.5%, 50-60: 28.1%, 60-70: 60%, 70+: 100%
-    def zone(sc):
-        if sc < t:    return "elim",    "#e74c3c", "消し（過去0回3着以内）"
-        if sc < 50:   return "caution", "#f1c40f", "普通圏（3着率〜13%）"
-        if sc < 60:   return "watch",   "#27ae60", "有望圏（3着率28%）"
-        if sc < 70:   return "strong",  "#3498db", "上位圏（3着率60%）"
-        return                "elite",  "#9b59b6", "最上位（過去100%）"
+    # ゾーン判定は過去比較用の total_no_model（7指標）ベース
+    def zone(sc_no_model):
+        if sc_no_model < t:    return "elim",    "#e74c3c", "消し（過去0回3着以内）"
+        if sc_no_model < 50:   return "caution", "#f1c40f", "普通圏（3着率〜13%）"
+        if sc_no_model < 60:   return "watch",   "#27ae60", "有望圏（3着率28%）"
+        if sc_no_model < 70:   return "strong",  "#3498db", "上位圏（3着率60%）"
+        return                         "elite",  "#9b59b6", "最上位（過去100%）"
 
-    # ---- スコア帯別3着以内率テーブル ----
+    # ---- スコア帯別3着以内率テーブル（過去比較は total_no_model で帯分け）----
     bucket_rows = ""
-    today_bucket_map = {}  # bucket_label → list of 馬名
+    today_bucket_map = {}
     for item in today_horses:
         sc = item["total_no_model"]
-        # find bucket
         lo = (int(sc) // 10) * 10
         label = f"{lo}〜{lo+10}"
         today_bucket_map.setdefault(label, []).append(item["h"]["馬名"])
@@ -429,17 +427,18 @@ def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
         <td style="font-size:12px">{today_cell}</td>
       </tr>"""
 
-    # ---- 今年18頭の一覧 ----
+    # ---- 今年18頭の一覧（サマリーと同じ total スコア表示・低い順）----
     horse_rows = ""
     for item in today_sorted:
-        sc = item["total_no_model"]
+        sc_display = item["total"]           # サマリーと同じ8指標スコア
+        sc_hist    = item["total_no_model"]  # ゾーン判定用（過去比較）
         name = item["h"]["馬名"]
-        zkey, zcolor, zlabel = zone(sc)
-        bar_w = int(min(sc, 100))
+        zkey, zcolor, zlabel = zone(sc_hist)
+        bar_w = int(min(sc_display, 100))
         horse_rows += f"""
       <tr>
         <td style="font-weight:bold;color:#c9d1d9">{name}</td>
-        <td style="text-align:center;font-weight:bold;color:{zcolor}">{sc:.1f}</td>
+        <td style="text-align:center;font-weight:bold;color:{zcolor}">{sc_display:.1f}</td>
         <td>
           <div style="background:#21262d;border-radius:3px;height:8px">
             <div style="background:{zcolor};height:8px;border-radius:3px;width:{bar_w}%"></div>
@@ -449,7 +448,7 @@ def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
       </tr>"""
 
     # ---- 消し馬・危険馬リスト ----
-    warn_list = [(item["h"]["馬名"], item["total_no_model"], zone(item["total_no_model"]))
+    warn_list = [(item["h"]["馬名"], item["total"], zone(item["total_no_model"]))
                  for item in today_sorted if zone(item["total_no_model"])[0] in ("elim", "caution")]
     if warn_list:
         warn_html = "".join(
@@ -499,13 +498,13 @@ def elimination_section_html(thresh_data: dict, today_horses: list) -> str:
   <h3 style="color:#e74c3c;font-size:14px;margin-bottom:10px">消し・危険圏の馬</h3>
   {warn_html}
 
-  <h3 style="color:#8b949e;font-size:14px;margin:20px 0 10px">今年18頭 スコア一覧（低い順）</h3>
+  <h3 style="color:#8b949e;font-size:14px;margin:20px 0 10px">今年18頭 スコア一覧（低い順）<span style="color:#555;font-weight:normal;font-size:11px;margin-left:8px">スコアはサマリー表と同じ8指標（AIモデル込み）／ 判定はAIモデル除外の過去比較ベース</span></h3>
   <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px">
     <thead><tr>
       <th style="background:#21262d;padding:8px 10px;text-align:left">馬名</th>
-      <th style="background:#21262d;padding:8px 10px;text-align:center">スコア</th>
+      <th style="background:#21262d;padding:8px 10px;text-align:center">スコア（8指標）</th>
       <th style="background:#21262d;padding:8px 10px">バー</th>
-      <th style="background:#21262d;padding:8px 10px;text-align:left">判定</th>
+      <th style="background:#21262d;padding:8px 10px;text-align:left">判定（過去比較）</th>
     </tr></thead>
     <tbody>{horse_rows}</tbody>
   </table>
