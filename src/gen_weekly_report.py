@@ -80,6 +80,25 @@ def assign_marks(df):
     if cur_diff.isna().all() or cur_r.isna().all():
         df['_印'] = ''
         return df
+
+    # G1等で偏差値の差が全馬マイナスになる場合、レース内偏差値ベースで補正
+    # cur_レース内偏差値 (mean=50, std=10 within race) - 50 を代替指標として使用
+    cur_hensa = pd.to_numeric(df.get('cur_レース内偏差値'), errors='coerce')
+    sub_hensa = pd.to_numeric(df.get('sub_レース内偏差値'), errors='coerce')
+    if '開催' in df.columns and 'Ｒ' in df.columns and cur_hensa.notna().any():
+        race_key = df['開催'].astype(str) + '_' + df['Ｒ'].astype(str)
+        cur_diff_adj = cur_diff.copy()
+        sub_diff_adj = sub_diff.copy()
+        for rk in race_key.unique():
+            idx = race_key[race_key == rk].index
+            if cur_diff.loc[idx].max() < 5 and cur_hensa.loc[idx].notna().any():
+                cur_diff_adj.loc[idx] = (cur_hensa.loc[idx] - 50).values
+            if sub_diff.loc[idx].max() < 5 and sub_hensa.loc[idx].notna().any():
+                sub_diff_adj.loc[idx] = (sub_hensa.loc[idx] - 50).values
+    else:
+        cur_diff_adj = cur_diff
+        sub_diff_adj = sub_diff
+
     both_r1  = (cur_r == 1) & (sub_r == 1)
     star     = (cur_r <= 3) & (sub_r <= 3) & ~both_r1
     _odds = pd.to_numeric(df['dc_単勝オッズ'] if 'dc_単勝オッズ' in df.columns else pd.Series(np.nan, index=df.index), errors='coerce')
@@ -87,10 +106,10 @@ def assign_marks(df):
         _odds = pd.to_numeric(df['単勝オッズ'], errors='coerce')
     odds_ok3 = _odds.isna() | (_odds >= 3)
     odds_ok5 = _odds.isna() | (_odds >= 5)
-    mask_gekiatu = both_r1 & (cur_diff >= 10) & (sub_diff >= 10) & odds_ok5
-    mask_maru    = both_r1 & (sub_diff >= 10) & odds_ok3 & ~mask_gekiatu
-    mask_diamond = (cur_r <= 2) & (sub_r <= 2) & ~both_r1 & (sub_diff >= 10) & odds_ok5
-    mask_hoshi   = star & ~((cur_r <= 2) & (sub_r <= 2)) & odds_ok5 & (sub_diff >= 10)
+    mask_gekiatu = both_r1 & (cur_diff_adj >= 10) & (sub_diff_adj >= 10) & odds_ok5
+    mask_maru    = both_r1 & (sub_diff_adj >= 10) & odds_ok3 & ~mask_gekiatu
+    mask_diamond = (cur_r <= 2) & (sub_r <= 2) & ~both_r1 & (sub_diff_adj >= 10) & odds_ok5
+    mask_hoshi   = star & ~((cur_r <= 2) & (sub_r <= 2)) & odds_ok5 & (sub_diff_adj >= 10)
     def mark_of(i):
         if mask_gekiatu.iloc[i]: return '激熱'
         if mask_maru.iloc[i]:    return '〇'
@@ -102,10 +121,10 @@ def assign_marks(df):
 
     # 印候補: 能力条件を満たすがオッズ条件未達の馬
     _odds_known = _odds.notna()
-    mask_gekiatu_nomi = both_r1 & (cur_diff >= 10) & (sub_diff >= 10) & _odds_known & (_odds < 5)
-    mask_maru_nomi    = both_r1 & (sub_diff >= 10) & ~(cur_diff >= 10) & _odds_known & (_odds < 3)
-    mask_diamond_nomi = (cur_r <= 2) & (sub_r <= 2) & ~both_r1 & (sub_diff >= 10) & _odds_known & (_odds < 5)
-    mask_hoshi_nomi   = star & ~((cur_r <= 2) & (sub_r <= 2)) & (sub_diff >= 10) & _odds_known & (_odds < 5)
+    mask_gekiatu_nomi = both_r1 & (cur_diff_adj >= 10) & (sub_diff_adj >= 10) & _odds_known & (_odds < 5)
+    mask_maru_nomi    = both_r1 & (sub_diff_adj >= 10) & ~(cur_diff_adj >= 10) & _odds_known & (_odds < 3)
+    mask_diamond_nomi = (cur_r <= 2) & (sub_r <= 2) & ~both_r1 & (sub_diff_adj >= 10) & _odds_known & (_odds < 5)
+    mask_hoshi_nomi   = star & ~((cur_r <= 2) & (sub_r <= 2)) & (sub_diff_adj >= 10) & _odds_known & (_odds < 5)
     def nomi_mark_of(i):
         if mask_gekiatu_nomi.iloc[i]: return '激熱※'
         if mask_maru_nomi.iloc[i]:    return '〇※'
