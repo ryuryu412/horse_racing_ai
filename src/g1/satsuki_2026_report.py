@@ -612,7 +612,7 @@ def and_analysis_section_html(today_horses: list) -> str:
 
 def generate():
     print("データ読み込み中...")
-    with open(ROOT / "data/raw/cache/出馬表形式4月19日オッズcsv.cache.pkl", "rb") as f:
+    with open(ROOT / "data/raw/cache/出馬表形式4月19日オッズあり.cache.pkl", "rb") as f:
         cache = pickle.load(f)
     result = cache["result"]
     r11 = result[(result["会場"] == "中") & (result["Ｒ"] == 11)].copy()
