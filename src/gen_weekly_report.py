@@ -411,12 +411,12 @@ def main():
     if os.path.exists(odds_path):
         with open(odds_path, encoding='utf-8') as f:
             odds_dict = json.load(f)
+        # dfにも適用
+        if '馬名S' in df.columns:
+            df['単勝オッズ'] = df['馬名S'].map(lambda x: odds_dict.get(str(x), float('nan')))
         if card_df is not None and '馬名S' in card_df.columns:
             card_df = card_df.copy()
-            card_df['単勝オッズ'] = card_df['馬名S'].map(
-                lambda x: odds_dict.get(str(x), card_df.loc[card_df['馬名S']==x, '単勝オッズ'].values[0]
-                          if '単勝オッズ' in card_df.columns and (card_df['馬名S']==x).any() else float('nan'))
-            )
+            card_df['単勝オッズ'] = card_df['馬名S'].map(lambda x: odds_dict.get(str(x), float('nan')))
         print(f'オッズ適用: {len(odds_dict)}頭')
 
     # 日付ラベル抽出（オッズ確認用などのsuffixは除去）
