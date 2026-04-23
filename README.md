@@ -37,8 +37,10 @@ horse_racing_ai/
 │   ├── 09_train_submodel.py    # サブモデル学習
 │   ├── 11_train_class_ranker.py# クラスランカー学習
 │   ├── weekly_update.py        # 週次マスターデータ更新
+│   ├── gen_weekly_report.py    # ★実運用 週次レポート生成 → HTML + index.html更新
 │   ├── _daily_roi_2026.py      # 予測ROI日別集計 → HTML
 │   ├── _predict_time_roi_2026.py # 予想時点ROI集計 → HTML
+│   ├── _actual_bet_roi.py      # 実馬券ROI集計 → HTML
 │   └── archive/                # 旧スクリプト（参照用）
 ├── data/
 │   ├── raw/
@@ -47,14 +49,12 @@ horse_racing_ai/
 │   │   ├── results/            # 結果確認CSV（週次）
 │   │   └── cache/              # 予想時点キャッシュ（.cache.pkl）
 │   ├── processed/              # 生成済み特徴量（gitignore）
-│   ├── tohyo/                  # 実際の馬券データ
-│   │   ├── all_tohyo.csv       # 統合済み馬券データ
-│   │   └── archive/            # 日付別CSV原本
-│   ├── merge_tohyo.py          # 馬券CSV統合スクリプト
-│   └── update_roi_html.py      # 実馬券ROI HTML更新スクリプト
+│   └── tohyo/                  # 実際の馬券データ
+│       ├── all_tohyo.csv       # 統合済み馬券データ
+│       └── archive/            # 日付別CSV原本
 ├── models_2025/                # 学習済みモデル（gitignore）
 ├── diary/devlog.md             # 開発日記
-├── docs/                       # 仕様書・プロジェクトレポート
+├── docs/                       # GitHub Pages公開ファイル
 └── requirements.txt
 ```
 
@@ -77,38 +77,26 @@ python src/06_predict_from_card.py data/raw/cards/出馬表形式XX月XX日.csv
 python src/06_predict_from_card.py data/raw/cards/出馬表形式XX月XX日.csv --html-only
 ```
 
-### 2. 週次ROI一括更新（毎週月曜）★推奨
+### 2. 週次レポート生成（レース翌日）
 
 ```bash
 # 事前に配置:
-#   data/tohyo/YYYYMMDD_tohyo.csv   ← 土日分の馬券CSV
-#   data/raw/results/出馬表形式XX月XX日結果*.csv  ← 結果CSV
-bash update_roi.sh
+#   data/raw/results/出馬表形式XX月XX日結果確認用.csv  ← 結果CSV
+#   data/raw/cache/出馬表形式XX月XX日オッズあり.cache.pkl  ← 予想時点キャッシュ
+
+python src/gen_weekly_report.py --date "4月19日"
+# docs/weekly_report_260419.html と docs/index.html を自動生成
 ```
 
-これ1コマンドで以下をすべて実行してGitHub Pagesに公開します:
-1. 馬券データ統合 (`merge_tohyo.py`)
-2. 予測ROI更新・HTML生成 (`_daily_roi_2026.py`)
-3. 予想時点ROI更新・HTML生成 (`_predict_time_roi_2026.py`)
-4. 実馬券ROI更新・HTML生成 (`update_roi_html.py`)
-5. `docs/` をコミット & push
+### 3. 週次ROI更新（毎週月曜）
 
 ```bash
-bash update_roi.sh --no-push   # push なしで動作確認
-```
-
-#### 手動で個別実行する場合
-
-```bash
-# 1. 馬券データ統合（data/tohyo/ の新規CSV を archive へ移動し all_tohyo.csv に追記）
-python data/merge_tohyo.py
-
-# 2. 各ROI HTML更新
+# 各ROI HTML更新
 python src/_daily_roi_2026.py         # 予測ROI（最終オッズ）
 python src/_predict_time_roi_2026.py  # 予測ROI（予想時点オッズ）
-python data/update_roi_html.py        # 実馬券ROI
+python src/_actual_bet_roi.py         # 実馬券ROI（data/tohyo/all_tohyo.csv が必要）
 
-# 3. GitHub Pages に公開
+# GitHub Pages に公開
 git add docs/daily_roi_2026.html docs/predict_time_roi_2026.html docs/actual_bet_roi.html
 git commit -m "ROI更新 YYYYMMDD"
 git push
@@ -126,16 +114,15 @@ git push
 
 **gitignore 対象ファイルの復元**:
 ```bash
-# all_tohyo.csv を消してしまった場合（1/4〜3/29分）
+# all_tohyo.csv を消してしまった場合
 git show 2397b9c:data/tohyo/all_tohyo.csv > data/tohyo/all_tohyo.csv
-python data/merge_tohyo.py   # archiveの未収録日付も自動追記
 
 # 3/28・3/29 の結果CSVが消えた場合
 git show 6124f64:"data/raw/results/出馬表形式3月28日結果確認.csv" > "data/raw/results/出馬表形式3月28日結果確認.csv"
 git show 6124f64:"data/raw/results/出馬表形式3月29日結果確認.csv" > "data/raw/results/出馬表形式3月29日結果確認.csv"
 ```
 
-### 3. マスターデータ更新（週次）
+### 4. マスターデータ更新（週次）
 
 ```bash
 # JRA-VANからrecent_all.csvをダウンロード → data/raw/master/ に上書き保存
@@ -159,14 +146,18 @@ python src/08_evaluate_models.py        # ROI評価確認
 
 ## 印ロジック（2026-03-28確定）
 
-| 印 | 条件 | 単勝賭け金 | 2026実績ROI |
-|---|---|---|---|
-| 激熱 | 両モデル1位 & cur_diff≥10 & sub_diff≥10 & odds≥5 | 1,000円 | +253% |
-| 〇 | 両モデル1位 & sub_diff≥10 & odds≥3 | 300円 | -24% |
-| ▲ | 両Rnk≤2 & sub_diff≥10 & odds≥5 | 500円 | +91% |
-| ☆ | 両Rnk≤3 & sub_diff≥10 & odds≥5 | 200円 | -26% |
+| 印 | 条件 | 単勝賭け金 |
+|---|---|---|
+| 激熱 | 両モデル1位 & cur_diff≥10 & sub_diff≥10 & odds≥5 | 1,000円 |
+| 〇 | 両モデル1位 & sub_diff≥10 & odds≥3 | 300円 |
+| ▲ | 両Rnk≤2（片方2） & sub_diff≥10 & odds≥5 | 500円 |
+| ☆ | 両Rnk≤3（片方3） & sub_diff≥10 & odds≥5 | 200円 |
 
 **※印**: 能力条件クリアだがオッズ未達 → レース直前にオッズ再確認
+
+**2026年累計実績**（2/14〜4/19・34日間）: **累計損益 +9,620円 / ROI +14.2%** / プラス日 14/34日
+- 激熱的中率 2/13頭 / ▲的中率 11/59頭
+- 詳細: [daily_roi_2026.html](https://keiba-dragon.github.io/horse_racing_ai/daily_roi_2026.html)
 
 ---
 
@@ -193,7 +184,7 @@ python src/08_evaluate_models.py        # ROI評価確認
 
 | Gドライブ | 内容 |
 |---|---|
-| `G:/マイドライブ/競馬AI/ROI/actual_bet_roi.html` | 実際の馬券ROI |
+| `G:/マイドライブ/競馬AI/actual_bet_roi.html` | 実際の馬券ROI |
 | `G:/マイドライブ/競馬AI/daily_roi_2026.html` | 予測ROI日別（最終オッズ） |
 | `G:/マイドライブ/競馬AI/predict_time_roi_2026.html` | 予測ROI（予想時点オッズ） |
 
