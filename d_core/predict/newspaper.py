@@ -352,11 +352,11 @@ for v in venues:
               <td>{mk_html}</td>
               <td style="color:#8b949e">{ba}</td>
               <td style="text-align:left;font-weight:bold;font-size:13px">{row['uma']}{ref}</td>
+              <td style="color:{od_c};font-weight:bold">{od_s}倍</td>
               <td style="font-weight:bold">{d_s}</td>
               <td style="color:{pct_c};font-weight:bold">{pct_s}</td>
-              <td style="color:#58a6ff">{cs_s}</td>
-              <td style="color:#3fb950">{ri_s}</td>
-              <td style="color:{od_c};font-weight:bold">{od_s}倍</td>
+              <td style="color:#555;font-size:11px">{cs_s}</td>
+              <td style="color:#555;font-size:11px">{ri_s}</td>
             </tr>'''
 
         cards += f'''
@@ -373,7 +373,8 @@ for v in venues:
     <table class="horse-table">
       <thead><tr>
         <th>印</th><th>馬番</th><th style="text-align:left">馬名</th>
-        <th>D値</th><th>D_pct</th><th>sub_cs</th><th>sub_ri</th><th>オッズ</th>
+        <th>オッズ</th><th>D値</th><th>D_pct</th>
+        <th style="font-size:9px;color:#555">sub_cs</th><th style="font-size:9px;color:#555">sub_ri</th>
       </tr></thead>
       <tbody>{horse_rows}</tbody>
     </table>
