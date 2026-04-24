@@ -341,8 +341,10 @@ for v in venues:
             pct  = row['D_pct']
             pct_c = '#e74c3c' if pct>=200 else ('#e67e22' if pct>=50 else ('#555' if pct<-70 else '#8b949e'))
             pct_s = f'{pct:+.0f}%'
-            cs_s = f'{row["sub_cs"]:.1f}' if pd.notna(row['sub_cs']) else '-'
-            ri_s = f'{row["sub_ri"]:.1f}' if pd.notna(row['sub_ri']) else '-'
+            cs_s  = f'{row["sub_cs"]:.1f}' if pd.notna(row['sub_cs']) else '-'
+            ri_s  = f'{row["sub_ri"]:.1f}' if pd.notna(row['sub_ri']) else '-'
+            cr_s  = f'{row["cur_r"]:.0f}' if pd.notna(row['cur_r']) else '-'
+            sr_s  = f'{row["sub_r"]:.0f}' if pd.notna(row['sub_r']) else '-'
 
             ref = ''
             if row['D_rank']==2 and pd.notna(row['odds']) and row['odds']>6 and row['D_pct']>100:
@@ -357,6 +359,8 @@ for v in venues:
               <td style="color:{pct_c};font-weight:bold">{pct_s}</td>
               <td style="color:#555;font-size:11px">{cs_s}</td>
               <td style="color:#555;font-size:11px">{ri_s}</td>
+              <td style="color:#555;font-size:11px">{cr_s}</td>
+              <td style="color:#555;font-size:11px">{sr_s}</td>
             </tr>'''
 
         cards += f'''
@@ -375,6 +379,7 @@ for v in venues:
         <th>印</th><th>馬番</th><th style="text-align:left">馬名</th>
         <th>オッズ</th><th>D値</th><th>D_pct</th>
         <th style="font-size:9px;color:#555">sub_cs</th><th style="font-size:9px;color:#555">sub_ri</th>
+        <th style="font-size:9px;color:#555">cur_r</th><th style="font-size:9px;color:#555">sub_r</th>
       </tr></thead>
       <tbody>{horse_rows}</tbody>
     </table>
